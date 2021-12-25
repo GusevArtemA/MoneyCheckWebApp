@@ -9,12 +9,16 @@ namespace MoneyCheckWebApp.Models
     {
         public Category()
         {
-            ShopItems = new HashSet<ShopItem>();
+            InverseSubCategory = new HashSet<Category>();
+            Purchases = new HashSet<Purchase>();
         }
 
         public long Id { get; set; }
         public string CategoryName { get; set; }
+        public long? SubCategoryId { get; set; }
 
-        public virtual ICollection<ShopItem> ShopItems { get; set; }
+        public virtual Category SubCategory { get; set; }
+        public virtual ICollection<Category> InverseSubCategory { get; set; }
+        public virtual ICollection<Purchase> Purchases { get; set; }
     }
 }

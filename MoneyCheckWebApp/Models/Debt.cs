@@ -10,6 +10,7 @@ namespace MoneyCheckWebApp.Models
         public long DebtorId { get; set; }
         public long? PurchaseId { get; set; }
         public long Count { get; set; }
+        public string Description { get; set; }
 
         public virtual Debtor Debtor { get; set; }
         public virtual Purchase Purchase { get; set; }
