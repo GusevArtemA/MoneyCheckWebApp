@@ -18,6 +18,7 @@ namespace MoneyCheckWebApp.Models
         }
 
         public virtual DbSet<Debt> Debts { get; set; }
+        public virtual DbSet<Debtor> Debtors { get; set; }
         public virtual DbSet<Friend> Friends { get; set; }
         public virtual DbSet<Purchase> Purchases { get; set; }
         public virtual DbSet<PurchaseShopItemTransfer> PurchaseShopItemTransfers { get; set; }
@@ -40,20 +41,27 @@ namespace MoneyCheckWebApp.Models
 
             modelBuilder.Entity<Debt>(entity =>
             {
-                entity.HasOne(d => d.FromNavigation)
-                    .WithMany(p => p.DebtFromNavigations)
-                    .HasForeignKey(d => d.From)
-                    .HasConstraintName("FK__Debts__From__35BCFE0A");
+                entity.HasNoKey();
+
+                entity.HasOne(d => d.Debtor)
+                    .WithMany()
+                    .HasForeignKey(d => d.DebtorId)
+                    .HasConstraintName("FK__Debts__DebtorId__5165187F");
 
                 entity.HasOne(d => d.Purchase)
-                    .WithMany(p => p.Debts)
+                    .WithMany()
                     .HasForeignKey(d => d.PurchaseId)
-                    .HasConstraintName("FK__Debts__PurchaseI__36B12243");
+                    .HasConstraintName("FK__Debts__PurchaseI__52593CB8");
+            });
 
-                entity.HasOne(d => d.ToNavigation)
-                    .WithMany(p => p.DebtToNavigations)
-                    .HasForeignKey(d => d.To)
-                    .HasConstraintName("FK__Debts__To__34C8D9D1");
+            modelBuilder.Entity<Debtor>(entity =>
+            {
+                entity.Property(e => e.Name).HasMaxLength(50);
+
+                entity.HasOne(d => d.NaturalMask)
+                    .WithMany(p => p.Debtors)
+                    .HasForeignKey(d => d.NaturalMaskId)
+                    .HasConstraintName("FK__Debtors__Natural__4F7CD00D");
             });
 
             modelBuilder.Entity<Friend>(entity =>
