@@ -2,9 +2,11 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using MoneyCheckWebApp.Models;
 
 namespace MoneyCheckWebApp
 {
@@ -20,14 +22,19 @@ namespace MoneyCheckWebApp
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
+#if DEBUG
+            services.AddDbContext<MoneyCheckDbContext>(x =>
+                x.UseInMemoryDatabase("MoneyCheckInMemory"));
+#else
+            services.AddDbContext<MoneyCheckDbContext>(x =>
+                x.UseSqlServer(Configuration.GetConnectionString("MoneyCheckDb")));
+#endif
+            
+            
             services.AddControllersWithViews();
 
             // In production, the React files will be served from this directory
-            services.AddSpaStaticFiles(configuration =>
-            {
-                configuration.RootPath = "ClientApp/build";
-            });
+            services.AddSpaStaticFiles(configuration => { configuration.RootPath = "ClientApp/build"; });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
