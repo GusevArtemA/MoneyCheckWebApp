@@ -9,18 +9,16 @@ namespace MoneyCheckWebApp.Models
     {
         public User()
         {
-            DebtFromNavigations = new HashSet<Debt>();
-            DebtToNavigations = new HashSet<Debt>();
+            Debtors = new HashSet<Debtor>();
             Purchases = new HashSet<Purchase>();
         }
 
         public long Id { get; set; }
         public string Username { get; set; }
         public string PasswordMd5Hash { get; set; }
-        public long? Balance { get; set; }
+        public long Balance { get; set; }
 
-        public virtual ICollection<Debt> DebtFromNavigations { get; set; }
-        public virtual ICollection<Debt> DebtToNavigations { get; set; }
+        public virtual ICollection<Debtor> Debtors { get; set; }
         public virtual ICollection<Purchase> Purchases { get; set; }
     }
 }
