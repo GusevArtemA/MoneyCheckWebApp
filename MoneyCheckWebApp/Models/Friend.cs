@@ -7,8 +7,8 @@ namespace MoneyCheckWebApp.Models
 {
     public partial class Friend
     {
-        public long? FriendAid { get; set; }
-        public long? FriendBid { get; set; }
+        public long FriendAid { get; set; }
+        public long FriendBid { get; set; }
 
         public virtual User FriendA { get; set; }
         public virtual User FriendB { get; set; }

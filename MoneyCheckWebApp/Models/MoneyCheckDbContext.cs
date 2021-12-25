@@ -17,6 +17,7 @@ namespace MoneyCheckWebApp.Models
         {
         }
 
+        public virtual DbSet<Category> Categories { get; set; }
         public virtual DbSet<Debt> Debts { get; set; }
         public virtual DbSet<Debtor> Debtors { get; set; }
         public virtual DbSet<Friend> Friends { get; set; }
@@ -39,6 +40,15 @@ namespace MoneyCheckWebApp.Models
         {
             modelBuilder.HasAnnotation("Relational:Collation", "SQL_Latin1_General_CP1_CI_AS");
 
+            modelBuilder.Entity<Category>(entity =>
+            {
+                entity.ToTable("Category");
+
+                entity.Property(e => e.CategoryName)
+                    .IsRequired()
+                    .HasMaxLength(50);
+            });
+
             modelBuilder.Entity<Debt>(entity =>
             {
                 entity.HasNoKey();
@@ -46,6 +56,7 @@ namespace MoneyCheckWebApp.Models
                 entity.HasOne(d => d.Debtor)
                     .WithMany()
                     .HasForeignKey(d => d.DebtorId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK__Debts__DebtorId__5165187F");
 
                 entity.HasOne(d => d.Purchase)
@@ -56,7 +67,9 @@ namespace MoneyCheckWebApp.Models
 
             modelBuilder.Entity<Debtor>(entity =>
             {
-                entity.Property(e => e.Name).HasMaxLength(50);
+                entity.Property(e => e.Name)
+                    .IsRequired()
+                    .HasMaxLength(50);
 
                 entity.HasOne(d => d.NaturalMask)
                     .WithMany(p => p.Debtors)
@@ -75,11 +88,13 @@ namespace MoneyCheckWebApp.Models
                 entity.HasOne(d => d.FriendA)
                     .WithMany()
                     .HasForeignKey(d => d.FriendAid)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK__Friends__FriendA__30F848ED");
 
                 entity.HasOne(d => d.FriendB)
                     .WithMany()
                     .HasForeignKey(d => d.FriendBid)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK__Friends__FriendB__31EC6D26");
             });
 
@@ -88,6 +103,7 @@ namespace MoneyCheckWebApp.Models
                 entity.HasOne(d => d.Customer)
                     .WithMany(p => p.Purchases)
                     .HasForeignKey(d => d.CustomerId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK__Purchases__Custo__276EDEB3");
             });
 
@@ -98,36 +114,52 @@ namespace MoneyCheckWebApp.Models
                 entity.HasOne(d => d.Purchase)
                     .WithMany()
                     .HasForeignKey(d => d.PurchaseId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK__PurchaseS__Purch__2F10007B");
 
                 entity.HasOne(d => d.ShopItem)
                     .WithMany()
                     .HasForeignKey(d => d.ShopItemId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK__PurchaseS__ShopI__2E1BDC42");
             });
 
             modelBuilder.Entity<Shop>(entity =>
             {
-                entity.Property(e => e.ShopName).HasMaxLength(50);
+                entity.Property(e => e.ShopName)
+                    .IsRequired()
+                    .HasMaxLength(50);
             });
 
             modelBuilder.Entity<ShopItem>(entity =>
             {
-                entity.Property(e => e.ItemName).HasMaxLength(50);
+                entity.Property(e => e.ItemName)
+                    .IsRequired()
+                    .HasMaxLength(50);
+
+                entity.HasOne(d => d.Category)
+                    .WithMany(p => p.ShopItems)
+                    .HasForeignKey(d => d.CategoryId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK__ShopItems__Categ__5535A963");
 
                 entity.HasOne(d => d.Shop)
                     .WithMany(p => p.ShopItems)
                     .HasForeignKey(d => d.ShopId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK__ShopItems__ShopI__2C3393D0");
             });
 
             modelBuilder.Entity<User>(entity =>
             {
                 entity.Property(e => e.PasswordMd5Hash)
+                    .IsRequired()
                     .HasMaxLength(32)
                     .IsUnicode(false);
 
-                entity.Property(e => e.Username).HasMaxLength(32);
+                entity.Property(e => e.Username)
+                    .IsRequired()
+                    .HasMaxLength(32);
             });
 
             modelBuilder.Entity<UserAuthToken>(entity =>
@@ -135,12 +167,14 @@ namespace MoneyCheckWebApp.Models
                 entity.HasNoKey();
 
                 entity.Property(e => e.Token)
+                    .IsRequired()
                     .HasMaxLength(36)
                     .IsUnicode(false);
 
                 entity.HasOne(d => d.User)
                     .WithMany()
                     .HasForeignKey(d => d.UserId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK__UserAuthT__UserI__24927208");
             });
 
