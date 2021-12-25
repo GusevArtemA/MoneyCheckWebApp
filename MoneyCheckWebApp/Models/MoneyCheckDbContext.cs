@@ -20,11 +20,7 @@ namespace MoneyCheckWebApp.Models
         public virtual DbSet<Category> Categories { get; set; }
         public virtual DbSet<Debt> Debts { get; set; }
         public virtual DbSet<Debtor> Debtors { get; set; }
-        public virtual DbSet<Friend> Friends { get; set; }
         public virtual DbSet<Purchase> Purchases { get; set; }
-        public virtual DbSet<PurchaseShopItemTransfer> PurchaseShopItemTransfers { get; set; }
-        public virtual DbSet<Shop> Shops { get; set; }
-        public virtual DbSet<ShopItem> ShopItems { get; set; }
         public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<UserAuthToken> UserAuthTokens { get; set; }
 
@@ -42,11 +38,14 @@ namespace MoneyCheckWebApp.Models
 
             modelBuilder.Entity<Category>(entity =>
             {
-                entity.ToTable("Category");
-
                 entity.Property(e => e.CategoryName)
                     .IsRequired()
                     .HasMaxLength(50);
+
+                entity.HasOne(d => d.SubCategory)
+                    .WithMany(p => p.InverseSubCategory)
+                    .HasForeignKey(d => d.SubCategoryId)
+                    .HasConstraintName("FK__Categorie__SubCa__59FA5E80");
             });
 
             modelBuilder.Entity<Debt>(entity =>
@@ -77,77 +76,23 @@ namespace MoneyCheckWebApp.Models
                     .HasConstraintName("FK__Debtors__Natural__4F7CD00D");
             });
 
-            modelBuilder.Entity<Friend>(entity =>
-            {
-                entity.HasNoKey();
-
-                entity.Property(e => e.FriendAid).HasColumnName("FriendAId");
-
-                entity.Property(e => e.FriendBid).HasColumnName("FriendBId");
-
-                entity.HasOne(d => d.FriendA)
-                    .WithMany()
-                    .HasForeignKey(d => d.FriendAid)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Friends__FriendA__30F848ED");
-
-                entity.HasOne(d => d.FriendB)
-                    .WithMany()
-                    .HasForeignKey(d => d.FriendBid)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Friends__FriendB__31EC6D26");
-            });
-
             modelBuilder.Entity<Purchase>(entity =>
             {
+                entity.Property(e => e.Latitude).HasColumnType("decimal(8, 6)");
+
+                entity.Property(e => e.Longitude).HasColumnType("decimal(9, 6)");
+
+                entity.HasOne(d => d.Category)
+                    .WithMany(p => p.Purchases)
+                    .HasForeignKey(d => d.CategoryId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK__Purchases__Categ__5AEE82B9");
+
                 entity.HasOne(d => d.Customer)
                     .WithMany(p => p.Purchases)
                     .HasForeignKey(d => d.CustomerId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK__Purchases__Custo__276EDEB3");
-            });
-
-            modelBuilder.Entity<PurchaseShopItemTransfer>(entity =>
-            {
-                entity.HasNoKey();
-
-                entity.HasOne(d => d.Purchase)
-                    .WithMany()
-                    .HasForeignKey(d => d.PurchaseId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__PurchaseS__Purch__2F10007B");
-
-                entity.HasOne(d => d.ShopItem)
-                    .WithMany()
-                    .HasForeignKey(d => d.ShopItemId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__PurchaseS__ShopI__2E1BDC42");
-            });
-
-            modelBuilder.Entity<Shop>(entity =>
-            {
-                entity.Property(e => e.ShopName)
-                    .IsRequired()
-                    .HasMaxLength(50);
-            });
-
-            modelBuilder.Entity<ShopItem>(entity =>
-            {
-                entity.Property(e => e.ItemName)
-                    .IsRequired()
-                    .HasMaxLength(50);
-
-                entity.HasOne(d => d.Category)
-                    .WithMany(p => p.ShopItems)
-                    .HasForeignKey(d => d.CategoryId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__ShopItems__Categ__5535A963");
-
-                entity.HasOne(d => d.Shop)
-                    .WithMany(p => p.ShopItems)
-                    .HasForeignKey(d => d.ShopId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__ShopItems__ShopI__2C3393D0");
             });
 
             modelBuilder.Entity<User>(entity =>

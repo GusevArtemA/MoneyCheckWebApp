@@ -10,7 +10,12 @@ namespace MoneyCheckWebApp.Models
         public long Id { get; set; }
         public long CustomerId { get; set; }
         public DateTime BoughtAt { get; set; }
+        public long Amount { get; set; }
+        public long CategoryId { get; set; }
+        public decimal? Longitude { get; set; }
+        public decimal? Latitude { get; set; }
 
+        public virtual Category Category { get; set; }
         public virtual User Customer { get; set; }
     }
 }
