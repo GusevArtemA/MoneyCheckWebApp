@@ -8,48 +8,36 @@ using MoneyCheckWebApp.Models;
 
 namespace MoneyCheckWebApp.HostedServices
 {
-    public class AuthorizationTokenLifetimeEnvironmentService : IHostedService, IDisposable
+    public class AuthorizationTokenLifetimeEnvironmentService : BackgroundService
     {
         private readonly ILogger<AuthorizationTokenLifetimeEnvironmentService> _logger;
-        private readonly MoneyCheckDbContext _context;
 
-        private Timer? _timer;
-        
-        public AuthorizationTokenLifetimeEnvironmentService(ILogger<AuthorizationTokenLifetimeEnvironmentService> logger, MoneyCheckDbContext context)
+        public AuthorizationTokenLifetimeEnvironmentService(ILogger<AuthorizationTokenLifetimeEnvironmentService> logger)
         {
             _logger = logger;
-            _context = context;
-        }
-        
-        public Task StartAsync(CancellationToken cancellationToken)
-        {
-            _logger.LogInformation("Token ecosystem started");
-
-            _timer = new Timer(CheckTokens, null, TimeSpan.Zero, TimeSpan.FromSeconds(1));
-            
-            return Task.CompletedTask;
         }
 
-        private void CheckTokens(object? state)
+        private void CheckTokens(MoneyCheckDbContext dbContext)
         {
             var now = DateTime.Now;
+
+            dbContext.UserAuthTokens.RemoveRange(
+                dbContext.UserAuthTokens.AsEnumerable().Where(x => now - x.ExpiresAt > TimeSpan.Zero));
+
+            dbContext.SaveChanges();
+        }
+
+        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+        {
+            await using MoneyCheckDbContext dbContext = new();
             
-            _context.UserAuthTokens.RemoveRange(
-                _context.UserAuthTokens.Where(x => x.ExpiresAt < now));
-
-            _context.SaveChanges();
-        }
-        
-        public Task StopAsync(CancellationToken cancellationToken)
-        {
-            _logger.LogInformation("Token ecosystem stopped");
-            _timer?.Change(Timeout.Infinite, 0);
-            return Task.CompletedTask;
-        }
-
-        public void Dispose()
-        {
-            _timer?.Dispose();
+            _logger.LogInformation("Token ecosystem started");
+            while (!stoppingToken.IsCancellationRequested)
+            {
+                CheckTokens(dbContext);
+                await Task.Delay(1000, stoppingToken);
+            }
+            _logger.LogInformation("Token ecosystem ended");
         }
     }
 }

@@ -35,7 +35,6 @@ namespace MoneyCheckWebApp
             services.AddHostedService<AuthorizationTokenLifetimeEnvironmentService>();
             
             services.AddTransient<CookieService>();
-            
             services.AddControllersWithViews();
             services.AddSwaggerGen();
             

@@ -14,7 +14,7 @@ namespace MoneyCheckWebApp.Controllers
         private readonly MoneyCheckDbContext _context;
         private readonly CookieService _cookieService;
 
-        private const int CookieLifetime = 221184000; //Время жизни cookie файлов в секундах
+        private const int CookieLifetime = 259200; //Время жизни cookie файлов в секундах
 
         public AuthController(MoneyCheckDbContext context, CookieService cookieService)
         {

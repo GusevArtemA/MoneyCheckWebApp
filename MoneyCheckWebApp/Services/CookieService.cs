@@ -27,7 +27,8 @@ namespace MoneyCheckWebApp.Services
 
             var token = new UserAuthToken
             {
-                Token = Guid.NewGuid().ToString()
+                Token = Guid.NewGuid().ToString(),
+                ExpiresAt = DateTime.Now + TimeSpan.FromSeconds(cookieLifetime)
             };
 
             await _context.UserAuthTokens.AddAsync(token);
