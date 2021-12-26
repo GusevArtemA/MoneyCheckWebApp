@@ -11,6 +11,7 @@ namespace MoneyCheckWebApp.Models
         {
             Debtors = new HashSet<Debtor>();
             Purchases = new HashSet<Purchase>();
+            UserAuthTokens = new HashSet<UserAuthToken>();
         }
 
         public long Id { get; set; }
@@ -20,5 +21,6 @@ namespace MoneyCheckWebApp.Models
 
         public virtual ICollection<Debtor> Debtors { get; set; }
         public virtual ICollection<Purchase> Purchases { get; set; }
+        public virtual ICollection<UserAuthToken> UserAuthTokens { get; set; }
     }
 }
