@@ -1,12 +1,12 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using MoneyCheckWebApp.Extensions;
+using MoneyCheckWebApp.HostedServices;
 using MoneyCheckWebApp.Models;
 using MoneyCheckWebApp.Services;
 
@@ -32,11 +32,13 @@ namespace MoneyCheckWebApp
                 x.UseLazyLoadingProxies() 
                     .UseSqlServer(Configuration.GetConnectionString("MoneyCheckDb")));
 #endif
+            services.AddHostedService<AuthorizationTokenLifetimeEnvironmentService>();
             
+            services.AddTransient<CookieService>();
             services.AddControllersWithViews();
             services.AddSwaggerGen();
-            services.AddTransient<CookieService>();
-            services.AddSpaStaticFiles(configuration => { configuration.RootPath = "ClientApp/build"; });
+            
+            services.AddSpaStaticFiles(configuration => { configuration.RootPath = "ClientApp/build"; }); 
         }
         
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
