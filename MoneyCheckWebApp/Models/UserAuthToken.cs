@@ -9,6 +9,7 @@ namespace MoneyCheckWebApp.Models
     {
         public long UserId { get; set; }
         public string Token { get; set; }
+        public DateTime ExpiresAt { get; set; }
 
         public virtual User User { get; set; }
     }
