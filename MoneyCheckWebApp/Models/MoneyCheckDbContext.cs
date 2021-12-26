@@ -50,16 +50,18 @@ namespace MoneyCheckWebApp.Models
 
             modelBuilder.Entity<Debt>(entity =>
             {
-                entity.HasNoKey();
+                entity.HasKey(e => e.DebtId)
+                    .HasName("Debts_pk")
+                    .IsClustered(false);
 
                 entity.HasOne(d => d.Debtor)
-                    .WithMany()
+                    .WithMany(p => p.Debts)
                     .HasForeignKey(d => d.DebtorId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK__Debts__DebtorId__5165187F");
 
                 entity.HasOne(d => d.Purchase)
-                    .WithMany()
+                    .WithMany(p => p.Debts)
                     .HasForeignKey(d => d.PurchaseId)
                     .HasConstraintName("FK__Debts__PurchaseI__52593CB8");
             });
@@ -109,15 +111,16 @@ namespace MoneyCheckWebApp.Models
 
             modelBuilder.Entity<UserAuthToken>(entity =>
             {
-                entity.HasNoKey();
+                entity.HasKey(e => e.Token)
+                    .HasName("UserAuthTokens_pk")
+                    .IsClustered(false);
 
                 entity.Property(e => e.Token)
-                    .IsRequired()
                     .HasMaxLength(36)
                     .IsUnicode(false);
 
                 entity.HasOne(d => d.User)
-                    .WithMany()
+                    .WithMany(p => p.UserAuthTokens)
                     .HasForeignKey(d => d.UserId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK__UserAuthT__UserI__24927208");
