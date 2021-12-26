@@ -25,10 +25,12 @@ namespace MoneyCheckWebApp
         {
 #if DEBUG
             services.AddDbContext<MoneyCheckDbContext>(x =>
-                x.UseInMemoryDatabase("MoneyCheckInMemory"));
+                x.UseLazyLoadingProxies()
+                    .UseInMemoryDatabase("MoneyCheckInMemory"));
 #else
             services.AddDbContext<MoneyCheckDbContext>(x =>
-                x.UseSqlServer(Configuration.GetConnectionString("MoneyCheckDb")));
+                x.UseLazyLoadingProxies() 
+                    .UseSqlServer(Configuration.GetConnectionString("MoneyCheckDb")));
 #endif
             
             services.AddControllersWithViews();
