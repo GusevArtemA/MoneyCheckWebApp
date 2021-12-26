@@ -52,7 +52,7 @@ namespace MoneyCheckWebApp.Middleware
                         {
                             var httpFiller = new HttpContextAuthorizationFiller(httpContext, firstAssociatedToken);
             
-                            await httpFiller.FillHttpContextAsync(dbContext);
+                            httpFiller.FillHttpContext();
 
                             await _next(httpContext);    
                         }

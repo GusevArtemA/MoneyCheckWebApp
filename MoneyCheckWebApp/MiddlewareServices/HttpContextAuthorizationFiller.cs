@@ -19,9 +19,9 @@ namespace MoneyCheckWebApp.MiddlewareServices
             _token = token;
         }
 
-        public async Task FillHttpContextAsync(MoneyCheckDbContext context)
+        public void FillHttpContext()
         {
-            _context.Items.Add("ContextUser", await context.Users.FirstOrDefaultAsync(x => x.Id == _token.UserId));
+            _context.Items.Add("ContextUser", _token.User);
         }
     }
 }
