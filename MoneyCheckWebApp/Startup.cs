@@ -6,7 +6,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using MoneyCheckWebApp.Extensions;
 using MoneyCheckWebApp.Models;
+using MoneyCheckWebApp.Services;
 
 namespace MoneyCheckWebApp
 {
@@ -30,7 +32,8 @@ namespace MoneyCheckWebApp
 #endif
             
             services.AddControllersWithViews();
-            
+            services.AddSwaggerGen();
+            services.AddTransient<CookieService>();
             services.AddSpaStaticFiles(configuration => { configuration.RootPath = "ClientApp/build"; });
         }
         
@@ -39,6 +42,12 @@ namespace MoneyCheckWebApp
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                app.UseSwagger();
+                app.UseSwaggerUI(options =>
+                {
+                    options.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
+                    options.RoutePrefix = string.Empty;
+                });
             }
             else
             {
@@ -52,6 +61,8 @@ namespace MoneyCheckWebApp
 
             app.UseRouting();
 
+            app.UseTokenAuthorizationMiddleware(); //ПО промежуточного слоя по токену
+            
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
