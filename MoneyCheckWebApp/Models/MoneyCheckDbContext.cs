@@ -1,6 +1,8 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.Extensions.Logging;
 
 #nullable disable
 
@@ -28,12 +30,17 @@ namespace MoneyCheckWebApp.Models
         {
             if (!optionsBuilder.IsConfigured)
             {
+                optionsBuilder
+                    .LogTo(Console.WriteLine,
+                          (eventId, logLevel) => logLevel > LogLevel.Information
+                                              || eventId == RelationalEventId.CommandExecuting)
+                    .EnableSensitiveDataLogging()
+                    .EnableDetailedErrors();
+
                 optionsBuilder.UseLazyLoadingProxies();
-#if DEBUG
-                optionsBuilder.UseInMemoryDatabase("MoneyCheckInMemory");
-#else
+
                 optionsBuilder.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=MoneyCheckDb;Trusted_Connection=true");
-#endif
+
             }
         }
 

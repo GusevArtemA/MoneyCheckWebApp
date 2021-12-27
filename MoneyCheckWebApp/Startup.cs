@@ -20,25 +20,20 @@ namespace MoneyCheckWebApp
         }
 
         public IConfiguration Configuration { get; }
-        
+
         public void ConfigureServices(IServiceCollection services)
         {
-#if DEBUG
             services.AddDbContext<MoneyCheckDbContext>(x =>
                 x.UseLazyLoadingProxies()
-                    .UseInMemoryDatabase("MoneyCheckInMemory"));
-#else
-            services.AddDbContext<MoneyCheckDbContext>(x =>
-                x.UseLazyLoadingProxies() 
                     .UseSqlServer(Configuration.GetConnectionString("MoneyCheckDb")));
-#endif
+
             services.AddHostedService<AuthorizationTokenLifetimeEnvironmentService>();
-            
+
             services.AddTransient<CookieService>();
             services.AddControllersWithViews();
             services.AddSwaggerGen();
-            
-            services.AddSpaStaticFiles(configuration => { configuration.RootPath = "ClientApp/build"; }); 
+
+            services.AddSpaStaticFiles(configuration => { configuration.RootPath = "ClientApp/build"; });
         }
         
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
