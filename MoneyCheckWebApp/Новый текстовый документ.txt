@@ -1,0 +1,33 @@
+[Route("transactions")]
+    [ApiController]
+    public class TransactionController : ControllerBase
+    {
+        private MoneyCheckDbContext _context;
+
+        public TransactionController(MoneyCheckDbContext context)
+        {
+            _context = context;
+        }
+
+        [HttpPost]
+        [Route("add-purchase")]
+        public async Task<IActionResult> AddPurchaseAsync(string x)
+        {
+            string t = x;
+            
+            await _context.SaveChangesAsync();
+
+            return null;
+        }
+
+        [HttpGet]
+        [Route("get-purchase")]
+        public async Task<IActionResult> GetPurchases()
+        {
+
+
+
+            return Ok(_context.Purchases.ToList());
+        }
+
+    }
