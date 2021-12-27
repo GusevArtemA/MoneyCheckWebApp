@@ -1,3 +1,4 @@
+using System;
 using System.Net;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -50,11 +51,18 @@ namespace MoneyCheckWebApp.Middleware
                         }
                         else
                         {
-                            var httpFiller = new HttpContextAuthorizationFiller(httpContext, firstAssociatedToken);
-            
-                            httpFiller.FillHttpContext();
+                            if (DateTime.Now < firstAssociatedToken.ExpiresAt)
+                            {
+                                var httpFiller = new HttpContextAuthorizationFiller(httpContext, firstAssociatedToken);
+                                            
+                                httpFiller.FillHttpContext();
 
-                            await _next(httpContext);    
+                                await _next(httpContext);    
+                            }
+                            else
+                            {
+                                await HandleError(httpContext);
+                            }
                         }
                     }
                 }

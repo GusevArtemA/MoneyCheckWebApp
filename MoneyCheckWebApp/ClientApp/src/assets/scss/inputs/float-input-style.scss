@@ -1,0 +1,35 @@
+@use "../../../brand-assetes";
+
+.float-input {
+  position: relative;
+  cursor: text;
+  padding-top: 20px;
+  
+  input {
+    border: none;
+    border-bottom: 3px solid brand-assetes.$brand-green;
+    outline: none;
+    
+    transition: border-bottom-color 0.3s;
+  }
+  
+  label {
+    cursor: text;
+    position: absolute;
+    user-select: none;
+    transition: transform 0.3s;
+  }
+  
+  .label-bottom {
+    left: 0;
+    bottom: 0;
+  }
+  
+  .label-top {
+    transform: translateY(-20px) scale(0.8);
+  }
+
+  .error-float-input {
+    border-bottom-color: brand-assetes.$brand-red;
+  }
+}

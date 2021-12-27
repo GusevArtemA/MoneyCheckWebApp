@@ -35,7 +35,7 @@ namespace MoneyCheckWebApp.HostedServices
             while (!stoppingToken.IsCancellationRequested)
             {
                 CheckTokens(dbContext);
-                await Task.Delay(1000, stoppingToken);
+                await Task.Delay(TimeSpan.FromDays(1), stoppingToken);
             }
             _logger.LogInformation("Token ecosystem ended");
         }

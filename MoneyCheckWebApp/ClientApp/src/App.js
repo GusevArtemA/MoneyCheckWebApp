@@ -1,16 +1,15 @@
 import React, { Component } from 'react';
 import { Route } from 'react-router-dom';
-import { Layout } from './components/Layout';
-import { Home } from './components/Home';
+
+import "./brand-assetes.scss";
+import {Auth} from "./components/Auth";
 
 export default class App extends Component {
   static displayName = App.name;
 
   render () {
     return (
-      <Layout>
-        <Route exact path='/' component={Home} />
-      </Layout>
+        <Route exact path='/auth' component={Auth} />
     );
   }
 }

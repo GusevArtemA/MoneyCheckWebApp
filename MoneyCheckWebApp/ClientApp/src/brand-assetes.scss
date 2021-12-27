@@ -1,0 +1,33 @@
+$brand-red: #ff775b;
+$brand-yellow: #ffe55b;
+$brand-green: #49fa39;
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;400;600;900&display=swap');
+
+.filled-red {
+  background: $brand-red;
+  color: #FFF;
+}
+
+.filled-yellow {
+  background: $brand-yellow;
+  color: #000;
+}
+
+.filled-green {
+  background: $brand-green;
+  color: #FFF;
+}
+ 
+* {
+  font-family: 'Poppins', sans-serif;
+}
+
+iframe {
+  z-index: -10 !important;
+}
+
+html, body, #root {
+  width: 100%;
+  height: 100%;
+}
