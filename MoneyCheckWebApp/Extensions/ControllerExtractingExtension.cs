@@ -17,8 +17,7 @@ namespace MoneyCheckWebApp.Extensions
             const string userKey = "ContextUser";
             var context = controllerBase.HttpContext.Items;
 
-            if (!context.ContainsKey(userKey) &&
-                context[userKey] is not User)
+            if (context[userKey] is not User)
             {
                 throw new InvalidOperationException("Extracting user from HTTP context failed");
             }
