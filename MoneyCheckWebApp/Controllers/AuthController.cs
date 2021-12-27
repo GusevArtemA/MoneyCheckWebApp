@@ -12,6 +12,7 @@ using MoneyCheckWebApp.Types.Auth;
 namespace MoneyCheckWebApp.Controllers
 {
     [ApiController]
+    [Produces("application/json")]
     [Route("auth/api")]
     public class AuthController : ControllerBase
     {
