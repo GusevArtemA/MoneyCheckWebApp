@@ -9,6 +9,7 @@ namespace MoneyCheckWebApp.Models
     {
         public User()
         {
+            Categories = new HashSet<Category>();
             Debtors = new HashSet<Debtor>();
             Purchases = new HashSet<Purchase>();
             UserAuthTokens = new HashSet<UserAuthToken>();
@@ -19,6 +20,7 @@ namespace MoneyCheckWebApp.Models
         public string PasswordMd5Hash { get; set; }
         public long Balance { get; set; }
 
+        public virtual ICollection<Category> Categories { get; set; }
         public virtual ICollection<Debtor> Debtors { get; set; }
         public virtual ICollection<Purchase> Purchases { get; set; }
         public virtual ICollection<UserAuthToken> UserAuthTokens { get; set; }
