@@ -26,7 +26,7 @@ namespace MoneyCheckWebApp
             services.AddDbContext<MoneyCheckDbContext>(x =>
                 x.UseLazyLoadingProxies()
                     .UseSqlServer(Configuration.GetConnectionString("MoneyCheckDb")));
-
+            
             services.AddHostedService<AuthorizationTokenLifetimeEnvironmentService>();
 
             services.AddTransient<CookieService>();
@@ -60,6 +60,7 @@ namespace MoneyCheckWebApp
 
             app.UseRouting();
 
+            app.UseCookieAuthorizationMiddleware(); //ПО промежуточного слоя по Cookie
             app.UseTokenAuthorizationMiddleware(); //ПО промежуточного слоя по токену
             
             app.UseEndpoints(endpoints =>

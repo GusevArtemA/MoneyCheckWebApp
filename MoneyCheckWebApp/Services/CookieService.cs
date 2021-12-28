@@ -37,7 +37,7 @@ namespace MoneyCheckWebApp.Services
 
             await _context.SaveChangesAsync();
 
-            cookieStringBuilder.Append(token.Token + $"; Max-Age={cookieLifetime};Domain={hostName}");
+            cookieStringBuilder.Append(token.Token + $"; Max-Age={cookieLifetime};Domain={hostName}; path=/;");
             
             response.Headers.Add("Set-Cookie", cookieStringBuilder.ToString());
 

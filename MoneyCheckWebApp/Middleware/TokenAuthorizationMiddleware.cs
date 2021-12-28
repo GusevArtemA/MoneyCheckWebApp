@@ -25,46 +25,43 @@ namespace MoneyCheckWebApp.Middleware
         public async Task InvokeAsync(HttpContext httpContext, MoneyCheckDbContext dbContext)
         {
             var urlSplited = httpContext.Request.GetEncodedUrl().Split("/");
-            if (urlSplited.Length >= 4 && urlSplited[3] == "api")
+            if (urlSplited.Length >= 4 && urlSplited[3] == "api" && !httpContext.Items.ContainsKey("ContextUser"))
             {
                 var query = httpContext.Request.Query;
 
                 if (!query.ContainsKey("token"))
                 {
                     await HandleError(httpContext);
+                    return;
+                }
+
+                var token = query["token"].ToString();
+
+                if (string.IsNullOrEmpty(token))
+                {
+                    await HandleError(httpContext);
+                    return;
+                }
+
+                var firstAssociatedToken = await dbContext.UserAuthTokens.FirstOrDefaultAsync(x => x.Token == token);
+            
+                if(firstAssociatedToken == null) 
+                {
+                    await HandleError(httpContext);
+                    return;
+                }
+
+                if (DateTime.Now < firstAssociatedToken.ExpiresAt)
+                {
+                    var httpFiller = new HttpContextAuthorizationFiller(httpContext, firstAssociatedToken);
+                                            
+                    httpFiller.FillHttpContext();
+
+                    await _next(httpContext);    
                 }
                 else
                 {
-                    var token = query["token"].ToString();
-
-                    if (string.IsNullOrEmpty(token))
-                    {
-                        await HandleError(httpContext);
-                    }
-                    else
-                    {
-                        var firstAssociatedToken = await dbContext.UserAuthTokens.FirstOrDefaultAsync(x => x.Token == token);
-            
-                        if(firstAssociatedToken == null) 
-                        {
-                            await HandleError(httpContext);
-                        }
-                        else
-                        {
-                            if (DateTime.Now < firstAssociatedToken.ExpiresAt)
-                            {
-                                var httpFiller = new HttpContextAuthorizationFiller(httpContext, firstAssociatedToken);
-                                            
-                                httpFiller.FillHttpContext();
-
-                                await _next(httpContext);    
-                            }
-                            else
-                            {
-                                await HandleError(httpContext);
-                            }
-                        }
-                    }
+                    await HandleError(httpContext);
                 }
             }
             else
