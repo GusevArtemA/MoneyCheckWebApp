@@ -1,8 +1,6 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.Extensions.Logging;
 
 #nullable disable
 
@@ -30,17 +28,7 @@ namespace MoneyCheckWebApp.Models
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder
-                    .LogTo(Console.WriteLine,
-                          (eventId, logLevel) => logLevel > LogLevel.Information
-                                              || eventId == RelationalEventId.CommandExecuting)
-                    .EnableSensitiveDataLogging()
-                    .EnableDetailedErrors();
-
-                optionsBuilder.UseLazyLoadingProxies();
-
                 optionsBuilder.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=MoneyCheckDb;Trusted_Connection=true");
-
             }
         }
 
@@ -54,9 +42,15 @@ namespace MoneyCheckWebApp.Models
                     .IsRequired()
                     .HasMaxLength(50);
 
-                entity.HasOne(d => d.SubCategory)
-                    .WithMany(p => p.InverseSubCategory)
-                    .HasForeignKey(d => d.SubCategoryId)
+                entity.HasOne(d => d.Owner)
+                    .WithMany(p => p.Categories)
+                    .HasForeignKey(d => d.OwnerId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK__Categorie__Owner__01142BA1");
+
+                entity.HasOne(d => d.ParentCategory)
+                    .WithMany(p => p.InverseParentCategory)
+                    .HasForeignKey(d => d.ParentCategoryId)
                     .HasConstraintName("FK__Categorie__SubCa__59FA5E80");
             });
 
