@@ -133,9 +133,9 @@ namespace MoneyCheckWebApp.Controllers
         public IActionResult GetPurchases()
         {
             long userId = this.ExtractUser().Id;
-            var purchases = _context.Purchases.Where(x => x.CustomerId == userId);
            
-            var list = purchases.Select(x => new PurchaseType()
+            var list = _context.Purchases.Where(x => x.CustomerId == userId)
+                                         .Select(x => new PurchaseType()
             {
                 Amount = x.Amount,
                 BoughtAt = x.BoughtAt,
