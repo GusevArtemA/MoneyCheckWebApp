@@ -22,17 +22,23 @@ namespace MoneyCheckWebApp.Controllers
 
         [HttpPost]
         [Route("add-purchase")]
-        public async Task<IActionResult> AddPurchaseAsync([FromBody] PurchaseType purchase)
+        public async Task<IActionResult> AddPurchaseAsync([FromBody] PostPurchaseType purchase)
         {
             if ((purchase.BoughtAt - DateTime.Now) > TimeSpan.FromDays(1))
             {
                 return BadRequest("Date error");
             }
-            else if (purchase.CategoryId == default)
+
+            if (purchase.CategoryId == default)
             {
                 return BadRequest("Category not specified");
             }
 
+            if (_context.Categories.All(x => x.Id != purchase.CategoryId))
+            {
+                return BadRequest("Category not found");
+            }
+            
             var addPurchase = new Purchase()
             {
                 BoughtAt = purchase.BoughtAt,
@@ -40,7 +46,6 @@ namespace MoneyCheckWebApp.Controllers
                 CategoryId = purchase.CategoryId,
                 CustomerId = this.ExtractUser().Id
             };
-
 
             if (_context.Categories.FirstOrDefault(x => x.Id == purchase.CategoryId) == null)
             {
@@ -109,45 +114,42 @@ namespace MoneyCheckWebApp.Controllers
         [Route("add-category")]
         public async Task<IActionResult> AddCategoryAsync([FromBody] CategoryType category)
         {
-
-            if (category.SubCategoryId != null && _context.Categories.FirstOrDefault(x => x.Id == category.SubCategoryId) == null)
+            if (category.ParentCategoryId != null && _context.Categories.FirstOrDefault(x => x.Id == category.ParentCategoryId) == null)
                 return BadRequest();
 
-
-            Category addCategory = new Category()
+            Category addCategory = new()
             {
                 CategoryName = category.CategoryName,
-                SubCategoryId = category.SubCategoryId
+                ParentCategoryId = category.ParentCategoryId
             };
 
             await _context.Categories.AddAsync(addCategory);
+
+            addCategory.Owner = this.ExtractUser();
+            
             await _context.SaveChangesAsync();
 
-
-            return Ok(_context.Categories.Find(addCategory).Id);
-
+            return Ok(addCategory.Id);
         }
 
-        [HttpPost]
+        [HttpGet]
         [Route("get-purchases")]
         public IActionResult GetPurchases()
         {
             long userId = this.ExtractUser().Id;
            
             var list = _context.Purchases.Where(x => x.CustomerId == userId)
-                                         .Select(x => new PurchaseType()
-            {
-                Amount = x.Amount,
-                BoughtAt = x.BoughtAt,
-                CategoryId = x.CategoryId,
-                Id = x.Id,
-                Longitude = x.Longitude,
-                Latitude = x.Latitude
-            });
+                .Select(x => new PurchaseType()
+                {
+                    Amount = x.Amount,
+                    BoughtAt = x.BoughtAt,
+                    CategoryId = x.CategoryId,
+                    Id = x.Id,
+                    Longitude = x.Longitude,
+                    Latitude = x.Latitude
+                });
 
             return Ok(list);
         }
-
-
     }
 }

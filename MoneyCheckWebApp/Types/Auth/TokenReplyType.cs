@@ -1,5 +1,7 @@
 using System;
 
+#nullable disable
+
 namespace MoneyCheckWebApp.Types.Auth
 {
     public class TokenReplyType

@@ -1,3 +1,5 @@
+#nullable disable
+
 namespace MoneyCheckWebApp.Types.Auth
 {
     public class LogUpType
