@@ -109,9 +109,8 @@ namespace MoneyCheckWebApp.Controllers
         [Route("add-category")]
         public async Task<IActionResult> AddCategoryAsync([FromBody] CategoryType category)
         {
-            var lastCategory = _context.Categories.LastOrDefault();
 
-            if (lastCategory == null || lastCategory.Id < category.SubCategoryId || _context.Categories.FirstOrDefault(x => x.Id == category.SubCategoryId) == null)
+            if (category.SubCategoryId != null && _context.Categories.FirstOrDefault(x => x.Id == category.SubCategoryId) == null)
                 return BadRequest();
 
 
@@ -144,8 +143,8 @@ namespace MoneyCheckWebApp.Controllers
                     BoughtAt = item.BoughtAt,
                     CategoryId = item.CategoryId,
                     Id = item.Id,
-                    Longitude = item.Longitude == default ? 0 : (decimal)item.Longitude,
-                    Latitude = item.Latitude == default ? 0 : (decimal)item.Latitude
+                    Longitude = item.Longitude == null ? 0 : (decimal)item.Longitude,
+                    Latitude = item.Latitude == null ? 0 : (decimal)item.Latitude
                 });
             }
 
