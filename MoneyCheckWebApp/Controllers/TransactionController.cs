@@ -134,19 +134,16 @@ namespace MoneyCheckWebApp.Controllers
         {
             long userId = this.ExtractUser().Id;
             var purchases = _context.Purchases.Where(x => x.CustomerId == userId);
-            List<PurchaseType> list = new List<PurchaseType>();
-            foreach (var item in purchases)
+           
+            var list = purchases.Select(x => new PurchaseType()
             {
-                list.Add(new PurchaseType()
-                {
-                    Amount = item.Amount,
-                    BoughtAt = item.BoughtAt,
-                    CategoryId = item.CategoryId,
-                    Id = item.Id,
-                    Longitude = item.Longitude == null ? 0 : (decimal)item.Longitude,
-                    Latitude = item.Latitude == null ? 0 : (decimal)item.Latitude
-                });
-            }
+                Amount = x.Amount,
+                BoughtAt = x.BoughtAt,
+                CategoryId = x.CategoryId,
+                Id = x.Id,
+                Longitude = x.Longitude,
+                Latitude = x.Latitude
+            });
 
             return Ok(list);
         }
