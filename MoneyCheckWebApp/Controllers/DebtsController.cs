@@ -33,7 +33,8 @@ namespace MoneyCheckWebApp.Controllers
             };
 
 
-            if (_context.Debtors.FirstOrDefault(x => x.Debts.Contains(debt)) == null)
+            
+            if (_context.Debtors.All(x => x.Id != debt.DebtId))
             {
                 return BadRequest("Debtor was not found");
             }
@@ -78,21 +79,17 @@ namespace MoneyCheckWebApp.Controllers
             var user = this.ExtractUser();
             var beforeEditedDebt = _context.Debts.FirstOrDefault(x => x.DebtId == debt.DebtId && x.InitiatorId == user.Id);
 
-            if (beforeEditedDebt != null)
-            {
-                user.Balance += beforeEditedDebt.Count;
-                user.Balance -= debt.Count;
+            if (beforeEditedDebt == null) return BadRequest("");
 
-                beforeEditedDebt.Count = debt.Count;
-                beforeEditedDebt.Description = debt.Description;
-                beforeEditedDebt.PurchaseId = debt.PurchaseId;
-                
-                await _context.SaveChangesAsync();
-            }
-            else
-            {
-                return BadRequest("");
-            }
+            user.Balance += beforeEditedDebt.Count;
+            user.Balance -= debt.Count;
+
+            beforeEditedDebt.Count = debt.Count;
+            beforeEditedDebt.Description = debt.Description;
+            beforeEditedDebt.PurchaseId = debt.PurchaseId;
+
+            await _context.SaveChangesAsync();
+
 
             return Ok();
         }
