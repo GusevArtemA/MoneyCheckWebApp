@@ -32,9 +32,8 @@ namespace MoneyCheckWebApp.Controllers
                 InitiatorId = this.ExtractUser().Id
             };
 
-
             
-            if (_context.Debtors.All(x => x.Id != debt.DebtId))
+            if (!_context.Debtors.Any(x => x.Id == debt.DebtId))
             {
                 return BadRequest("Debtor was not found");
             }
@@ -58,16 +57,13 @@ namespace MoneyCheckWebApp.Controllers
         {
             var extractedUser = this.ExtractUser();
             var foundDebt = _context.Debts.SingleOrDefault(x => x.DebtId == id && x.InitiatorId == extractedUser.Id);
-            if (foundDebt != null)
-            {
-                extractedUser.Balance += foundDebt.Count;
-                _context.Debts.Remove(foundDebt);
-                await _context.SaveChangesAsync();
-            }
-            else
-            {
-                return BadRequest("");
-            }
+
+            if (foundDebt == null) return BadRequest("Debt was not found");
+
+            extractedUser.Balance += foundDebt.Count;
+
+            _context.Debts.Remove(foundDebt);
+            await _context.SaveChangesAsync();
 
             return Ok();
         }
