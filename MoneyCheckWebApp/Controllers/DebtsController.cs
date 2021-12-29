@@ -32,15 +32,21 @@ namespace MoneyCheckWebApp.Controllers
                 InitiatorId = this.ExtractUser().Id
             };
 
-            if(_context.Debtors.FirstOrDefault(x => x.Debts.Contains(debt)) == null)
+
+            
+            if (_context.Debtors.All(x => x.Id != debt.DebtId))
             {
                 return BadRequest("Debtor was not found");
-            } else if(debt.PurchaseId != null && _context.Purchases.FirstOrDefault(x => x.Id == debt.PurchaseId) == null)
+            }
+            else if (debt.PurchaseId != null && _context.Purchases.FirstOrDefault(x => x.Id == debt.PurchaseId) == null)
             {
                 return BadRequest("Purchase was not found");
             }
 
             await _context.Debts.AddAsync(debt);
+
+            this.ExtractUser().Balance -= debt.Count;
+
             await _context.SaveChangesAsync();
 
             return Ok();
@@ -64,6 +70,47 @@ namespace MoneyCheckWebApp.Controllers
             }
 
             return Ok();
+        }
+
+        [HttpPost]
+        [Route("edit-debt")]
+        public async Task<IActionResult> EditDebt([FromBody] DebtType debt)
+        {
+            var user = this.ExtractUser();
+            var beforeEditedDebt = _context.Debts.FirstOrDefault(x => x.DebtId == debt.DebtId && x.InitiatorId == user.Id);
+
+            if (beforeEditedDebt == null) return BadRequest("");
+
+            user.Balance += beforeEditedDebt.Count;
+            user.Balance -= debt.Count;
+
+            beforeEditedDebt.Count = debt.Count;
+            beforeEditedDebt.Description = debt.Description;
+            beforeEditedDebt.PurchaseId = debt.PurchaseId;
+
+            await _context.SaveChangesAsync();
+
+
+            return Ok();
+        }
+
+        [HttpGet]
+        [Route("get-debts")]
+        public IActionResult GetDebts()
+        {
+            long userId = this.ExtractUser().Id;
+
+            var list = _context.Debts.Where(x => x.InitiatorId == userId)
+                .Select(x => new DebtType()
+                {
+                    DebtId = x.DebtId,
+                    Count = x.Count,
+                    PurchaseId = x.PurchaseId,
+                    DebtorId = x.DebtorId,
+                    Description = x.Description
+                });
+
+            return Ok(list);
         }
 
     }
