@@ -58,7 +58,7 @@ namespace MoneyCheckWebApp.Controllers
 
             await _context.SaveChangesAsync();
 
-            return Ok(purchase);
+            return Ok();
         }
 
         [HttpPost]
