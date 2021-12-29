@@ -2,9 +2,11 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using MoneyCheckWebApp.Extensions;
 using MoneyCheckWebApp.HostedServices;
 using MoneyCheckWebApp.Models;
@@ -25,8 +27,13 @@ namespace MoneyCheckWebApp
         {
             services.AddDbContext<MoneyCheckDbContext>(x =>
                 x.UseLazyLoadingProxies()
-                    .UseSqlServer(Configuration.GetConnectionString("MoneyCheckDb")));
-            
+                 .LogTo(System.Console.WriteLine,
+                          (eventId, logLevel) => logLevel > LogLevel.Information
+                                              || eventId == RelationalEventId.CommandExecuting)
+                 .EnableSensitiveDataLogging()
+                 .EnableDetailedErrors()
+                 .UseSqlServer(Configuration.GetConnectionString("MoneyCheckDb")));
+
             services.AddHostedService<AuthorizationTokenLifetimeEnvironmentService>();
 
             services.AddTransient<CookieService>();
