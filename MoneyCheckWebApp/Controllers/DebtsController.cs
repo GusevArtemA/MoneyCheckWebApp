@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using MoneyCheckWebApp.Extensions;
 using MoneyCheckWebApp.Models;
 using MoneyCheckWebApp.Types.Debts;
@@ -24,7 +24,7 @@ namespace MoneyCheckWebApp.Controllers
         [Route("add-debt")]
         public async Task<IActionResult> AddDebt([FromBody] PostDebtType debtType)
         {
-            Debt debt = new()
+            Debt  debt = new()
             {
                 DebtorId = debtType.DebtorId,
                 Description = debtType.Description,
@@ -83,8 +83,13 @@ namespace MoneyCheckWebApp.Controllers
             user.Balance += beforeEditedDebt.Count;
             user.Balance -= debt.Count;
 
-            beforeEditedDebt.Count = debt.Count;
-            beforeEditedDebt.Description = debt.Description;
+
+            beforeEditedDebt.Count = debt.Count == default ? beforeEditedDebt.Count : debt.Count;
+            beforeEditedDebt.Description = debt.Description == default ? beforeEditedDebt.Description : debt.Description;
+
+            if (debt.PurchaseId != null && _context.Purchases.FirstOrDefault(x => x.Id == debt.PurchaseId) == null) 
+                return BadRequest("Purchase was not found");
+
             beforeEditedDebt.PurchaseId = debt.PurchaseId;
 
             await _context.SaveChangesAsync();
