@@ -50,7 +50,7 @@ namespace MoneyCheckWebApp.Controllers
             return Ok();
         }
 
-        [HttpPost]
+        [HttpDelete]
         [Route("remove-debt")]
         public async Task<IActionResult> RemoveDebt(long id)
         {
@@ -67,7 +67,7 @@ namespace MoneyCheckWebApp.Controllers
             return Ok();
         }
 
-        [HttpPost]
+        [HttpPatch]
         [Route("edit-debt")]
         public async Task<IActionResult> EditDebt([FromBody] DebtType debt)
         {
