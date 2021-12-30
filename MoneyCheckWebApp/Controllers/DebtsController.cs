@@ -23,6 +23,15 @@ namespace MoneyCheckWebApp.Controllers
         [Route("add-debt")]
         public async Task<IActionResult> AddDebt([FromBody] DebtType debtType)
         {
+            if (!_context.Debtors.Any(x => x.Id == debtType.DebtorId))
+            {
+                return BadRequest("Debtor was not found");
+            }
+            else if (debtType.PurchaseId != null && _context.Purchases.FirstOrDefault(x => x.Id == debtType.PurchaseId) == null)
+            {
+                return BadRequest("Purchase was not found");
+            }
+
             Debt debt = new Debt()
             {
                 DebtorId = debtType.DebtorId,
@@ -31,16 +40,6 @@ namespace MoneyCheckWebApp.Controllers
                 Count = debtType.Count,
                 InitiatorId = this.ExtractUser().Id
             };
-
-            
-            if (!_context.Debtors.Any(x => x.Id == debt.DebtId))
-            {
-                return BadRequest("Debtor was not found");
-            }
-            else if (debt.PurchaseId != null && _context.Purchases.FirstOrDefault(x => x.Id == debt.PurchaseId) == null)
-            {
-                return BadRequest("Purchase was not found");
-            }
 
             await _context.Debts.AddAsync(debt);
 
@@ -80,8 +79,13 @@ namespace MoneyCheckWebApp.Controllers
             user.Balance += beforeEditedDebt.Count;
             user.Balance -= debt.Count;
 
-            beforeEditedDebt.Count = debt.Count;
-            beforeEditedDebt.Description = debt.Description;
+
+            beforeEditedDebt.Count = debt.Count == default ? beforeEditedDebt.Count : debt.Count;
+            beforeEditedDebt.Description = debt.Description == default ? beforeEditedDebt.Description : debt.Description;
+
+            if (debt.PurchaseId != null && _context.Purchases.FirstOrDefault(x => x.Id == debt.PurchaseId) == null) 
+                return BadRequest("Purchase was not found");
+
             beforeEditedDebt.PurchaseId = debt.PurchaseId;
 
             await _context.SaveChangesAsync();
