@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using MoneyCheckWebApp.Extensions;
 using MoneyCheckWebApp.Models;
 using MoneyCheckWebApp.Types.Debts;
@@ -9,11 +9,12 @@ using System.Threading.Tasks;
 
 namespace MoneyCheckWebApp.Controllers
 {
-    [Route("api/debts")]
+    [Route("/api/debts/")]
     [ApiController]
+    [Produces("application/json")]
     public class DebtsController : ControllerBase
     {
-        private MoneyCheckDbContext _context;
+        private readonly MoneyCheckDbContext _context;
         public DebtsController(MoneyCheckDbContext context)
         {
             _context = context;
@@ -21,18 +22,9 @@ namespace MoneyCheckWebApp.Controllers
 
         [HttpPost]
         [Route("add-debt")]
-        public async Task<IActionResult> AddDebt([FromBody] DebtType debtType)
+        public async Task<IActionResult> AddDebt([FromBody] PostDebtType debtType)
         {
-            if (!_context.Debtors.Any(x => x.Id == debtType.DebtorId))
-            {
-                return BadRequest("Debtor was not found");
-            }
-            else if (debtType.PurchaseId != null && _context.Purchases.FirstOrDefault(x => x.Id == debtType.PurchaseId) == null)
-            {
-                return BadRequest("Purchase was not found");
-            }
-
-            Debt debt = new Debt()
+            Debt  debt = new()
             {
                 DebtorId = debtType.DebtorId,
                 Description = debtType.Description,
@@ -40,6 +32,18 @@ namespace MoneyCheckWebApp.Controllers
                 Count = debtType.Count,
                 InitiatorId = this.ExtractUser().Id
             };
+
+            if (!_context.Debtors.Any(x => x.Id == debt.DebtorId))
+            {
+                return BadRequest("Debtor was not found");
+            }
+
+            if (debt.PurchaseId != null &&
+                _context.Purchases.FirstOrDefault(x => 
+                    x.Id == debt.PurchaseId) == null)
+            {
+                return BadRequest("Purchase was not found");
+            }
 
             await _context.Debts.AddAsync(debt);
 
@@ -70,7 +74,7 @@ namespace MoneyCheckWebApp.Controllers
         [HttpPatch]
         [Route("edit-debt")]
         public async Task<IActionResult> EditDebt([FromBody] DebtType debt)
-        {
+        {   
             var user = this.ExtractUser();
             var beforeEditedDebt = _context.Debts.FirstOrDefault(x => x.DebtId == debt.DebtId && x.InitiatorId == user.Id);
 
@@ -112,6 +116,5 @@ namespace MoneyCheckWebApp.Controllers
 
             return Ok(list);
         }
-
     }
 }

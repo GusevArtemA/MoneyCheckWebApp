@@ -61,7 +61,7 @@ namespace MoneyCheckWebApp.Controllers
             return Ok();
         }
 
-        [HttpPost]
+        [HttpDelete]
         [Route("remove-purchase")]
         public async Task<IActionResult> RemovePurchaseAsync(long id)
         {
@@ -83,7 +83,7 @@ namespace MoneyCheckWebApp.Controllers
 
 
 
-        [HttpPost]
+        [HttpPatch]
         [Route("edit-purchase")]
         public async Task<IActionResult> EditPurchaseAsync([FromBody] PurchaseType purchase)
         {
