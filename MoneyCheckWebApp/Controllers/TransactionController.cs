@@ -41,7 +41,7 @@ namespace MoneyCheckWebApp.Controllers
             
             var addPurchase = new Purchase()
             {
-                BoughtAt = purchase.BoughtAt,
+                BoughtAt = purchase.BoughtAt ?? DateTime.Now,
                 Amount = purchase.Amount,
                 CategoryId = purchase.CategoryId,
                 CustomerId = this.ExtractUser().Id

@@ -36,6 +36,11 @@ namespace MoneyCheckWebApp.Controllers
             [FromBody]
             LoginType login)
         {
+            if (!Request.IsHttps)
+            {
+                return BadRequest(Statuses.HttpsRequiredStatus);
+            }
+            
             var firstAssociatedUser = await _context.Users.FirstOrDefaultAsync(x => x.Username == login.Username);
             
             if (firstAssociatedUser == null)
@@ -64,6 +69,11 @@ namespace MoneyCheckWebApp.Controllers
         [Route("logout")]
         public async Task<IActionResult> Logout(string token)
         {
+            if (!Request.IsHttps)
+            {
+                return BadRequest(Statuses.HttpsRequiredStatus);
+            }
+            
             var firstToken = await _context.UserAuthTokens.FirstOrDefaultAsync(x => x.Token == token);
 
             if (firstToken == null)
@@ -87,11 +97,16 @@ namespace MoneyCheckWebApp.Controllers
             [FromBody]
             LogUpType logUp)
         {
+            if (!Request.IsHttps)
+            {
+                return BadRequest(Statuses.HttpsRequiredStatus);
+            }
+            
             var username = logUp.Username;
 
             if (await _context.Users.AnyAsync(x => x.Username == username))
             {
-                return BadRequest("User with this username has already created");
+                return BadRequest(Statuses.UserAlreadyCreatedStatus);
             }
             
             using var md5 = new Md5HashHelper();

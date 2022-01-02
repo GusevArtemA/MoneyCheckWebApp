@@ -1,0 +1,113 @@
+@use 'brand';
+
+a {
+  color: brand.$brand-purple;
+}
+
+.box {
+  background: brand.$sub-light-background;
+  padding: 10px;
+  border-radius: 8px;
+}
+
+.max-width {
+  width: 100%;
+}
+
+.max-height {
+  height: 100%;
+}
+
+.max {
+  width: 100%;
+  height: 100%;
+}
+
+.half-fill-x {
+  width: 50%;
+}
+
+.half-fill-y {
+  height: 50%;
+}
+
+.brand-text-input {
+  background: #FFF;
+  border: none;
+  outline: none;
+  padding: 4px;
+  caret-color: brand.$brand-red;
+  width: 100%;
+  height: 100%;
+}
+
+.brand-text-input::placeholder {
+  color: #9F9F9F;
+  font-weight: lighter;
+}
+
+.brand-text-input-error-span {
+  color: brand.$brand-red;
+  font-size: 15px;
+  font-weight: lighter;
+}
+
+.brand-text-input-wrapper {
+  padding: 2px;
+  border-radius: 3px;
+  background: brand.$brand-gradient;
+}
+
+.brand-text-input-pre-wrapper {
+  margin: 10px 0;
+}
+
+.brand-button {
+  margin: 4px 0;
+
+  background: brand.$brand-gradient;
+  color: white;
+  border: none;
+  outline: none;
+  padding: 5px 40px;
+  border-radius: 8px;
+  transition: box-shadow 0.3s;
+  box-shadow: 0 0 0 0 transparentize(brand.$brand-purple, 0.5);
+}
+
+.brand-button:hover {
+  box-shadow: 0 0 0 3px transparentize(brand.$brand-purple, 0.5);
+}
+
+$loader-step: 10px;
+
+.loader {
+  width: 100px;
+  height: 20px;
+
+  div {
+    width: 20px;
+    height: 20px;
+    background: brand.$brand-purple;
+    border-radius: 50%;
+    animation: loader-flow 2s infinite;
+  }
+
+  .second-circle {
+    animation-delay: 0.3s;
+  }
+
+  .third-circle {
+    animation-delay: 0.6s;
+  }
+}
+
+@keyframes loader-flow {
+  20% {
+    transform: translateY(-$loader-step);
+  }
+  40% {
+    transform: translateY(0);
+  }
+}
+
