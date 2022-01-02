@@ -1,0 +1,60 @@
+@use "../brand";
+
+.statistics-wrapper {
+  width: 65%;
+
+  h1 {
+    width: fit-content;
+    background: linear-gradient(90deg, lighten(brand.$brand-purple, 5), lighten(brand.$brand-red, 5));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: brand.$brand-purple;
+  }
+
+  .statistics {
+    width: 1000px;
+    .statistics-indicator {
+      font-weight: bold;
+    }
+
+    .statistics-value {
+      color: brand.$brand-purple;
+    }
+
+    .statistics-indicator, .statistics-value {
+      font-size: 48px;
+      line-height: 2em;
+    }
+
+    border-left: 13px solid brand.$brand-purple;
+  }
+}
+
+.form-wrapper {
+  padding: 20px;
+  width: 500px;
+  height: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+div .form-wrapper:first-child {
+  margin-bottom: 30px;
+}
+
+.logo-wrapper {
+  height: 50px;
+}
+
+.main-wrapper {
+  height: 90%;
+}
+
+#logo {
+  width: 75px;
+}
+
+form, .brand-text-input-pre-wrapper {
+  width: 90%;
+}

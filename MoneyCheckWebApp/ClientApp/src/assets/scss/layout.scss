@@ -1,0 +1,18 @@
+@use "brand";
+
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100;400;700&display=swap');
+
+body {
+  background: brand.$main-light-background;
+}
+
+body, html, #root {
+  width: 100%;
+  height: 100%;
+}
+
+* {
+  //noinspection CssInvalidPropertyValue
+  font-family: "Roboto" sans-serif;
+  font-size: 24px;
+}
