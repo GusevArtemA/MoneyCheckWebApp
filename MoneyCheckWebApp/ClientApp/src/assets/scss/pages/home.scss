@@ -1,0 +1,39 @@
+@use "../brand";
+
+#balance-status-wrapper {
+  font-weight: bolder;
+}
+
+#greeter {
+  font-size: 40px;
+}
+
+.prop {
+  font-weight: 625;
+  font-size: 0.8em;
+}
+
+.prop-value {
+  font-size: 2em;
+  font-weight: bold;
+}
+
+#balance {
+  color: brand.$brand-purple;
+}
+
+#future-balance {
+  color: brand.$success;
+}
+
+#today-spent {
+  color: brand.$brand-red;
+}
+
+#inflation-router, #want-to-see-year-router {
+  font-size: 16px;
+}
+
+#balance-status-wrapper {
+  width: 400px;
+}

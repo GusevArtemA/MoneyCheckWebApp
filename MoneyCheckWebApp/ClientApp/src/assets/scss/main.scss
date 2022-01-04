@@ -2,6 +2,12 @@
 
 a {
   color: brand.$brand-purple;
+
+  transition: color 0.3s;
+}
+
+a:hover {
+  color: darken(brand.$brand-purple, 15);
 }
 
 .box {
