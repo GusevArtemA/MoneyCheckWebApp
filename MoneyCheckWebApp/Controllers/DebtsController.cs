@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using MoneyCheckWebApp.Extensions;
 using MoneyCheckWebApp.Models;
 using MoneyCheckWebApp.Types.Debts;
@@ -25,7 +25,7 @@ namespace MoneyCheckWebApp.Controllers
         [Route("add-debt")]
         public async Task<IActionResult> AddDebt([FromBody] PostDebtType debtType)
         {
-            Debt debt = new()
+            Debt  debt = new()
             {
                 DebtorId = debtType.DebtorId,
                 Description = debtType.Description,
