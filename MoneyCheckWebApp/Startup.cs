@@ -1,5 +1,7 @@
+using System.Linq;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
@@ -25,6 +27,25 @@ namespace MoneyCheckWebApp
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddResponseCompression(options =>
+            {
+                options.Providers.Add<BrotliCompressionProvider>();
+                options.Providers.Add<GzipCompressionProvider>();
+                options.MimeTypes = 
+                    ResponseCompressionDefaults.MimeTypes.Concat(
+                        new[] { "image/svg+xml" });
+            });
+            
+#if TEST
+            services.AddDbContext<MoneyCheckDbContext>(x =>
+                x.UseLazyLoadingProxies()
+                    .LogTo(System.Console.WriteLine,
+                        (eventId, logLevel) => logLevel > LogLevel.Information
+                                               || eventId == RelationalEventId.CommandExecuting)
+                    .EnableSensitiveDataLogging()
+                    .EnableDetailedErrors()
+                    .UseInMemoryDatabase("MoneyCheckCIInMemoryDatabase"));
+#else
             services.AddDbContext<MoneyCheckDbContext>(x =>
                 x.UseLazyLoadingProxies()
                  .LogTo(System.Console.WriteLine,
@@ -33,7 +54,8 @@ namespace MoneyCheckWebApp
                  .EnableSensitiveDataLogging()
                  .EnableDetailedErrors()
                  .UseSqlServer(Configuration.GetConnectionString("MoneyCheckDb")));
-
+#endif
+            
             services.AddHostedService<AuthorizationTokenLifetimeEnvironmentService>();
 
             services.AddTransient<CookieService>();
@@ -61,6 +83,7 @@ namespace MoneyCheckWebApp
                 app.UseHsts();
             }
 
+            app.UseResponseCompression();
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseSpaStaticFiles();

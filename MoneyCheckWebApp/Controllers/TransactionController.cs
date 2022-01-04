@@ -110,33 +110,12 @@ namespace MoneyCheckWebApp.Controllers
             return Ok();
         }
 
-        [HttpPost]
-        [Route("add-category")]
-        public async Task<IActionResult> AddCategoryAsync([FromBody] CategoryType category)
-        {
-            if (category.ParentCategoryId != null && _context.Categories.FirstOrDefault(x => x.Id == category.ParentCategoryId) == null)
-                return BadRequest();
-
-            Category addCategory = new()
-            {
-                CategoryName = category.CategoryName,
-                ParentCategoryId = category.ParentCategoryId
-            };
-
-            await _context.Categories.AddAsync(addCategory);
-
-            addCategory.Owner = this.ExtractUser();
-            
-            await _context.SaveChangesAsync();
-
-            return Ok(addCategory.Id);
-        }
 
         [HttpGet]
         [Route("get-purchases")]
         public IActionResult GetPurchases(string filter = "none")
         {
-            long userId = this.ExtractUser().Id;
+            var userId = this.ExtractUser().Id;
             
             var list = _context.Purchases.Where(x => x.CustomerId == userId)
                 .Select(x => new PurchaseType()
@@ -149,22 +128,21 @@ namespace MoneyCheckWebApp.Controllers
                     Latitude = x.Latitude
                 });
 
-            if (filter != "none")
+            if (filter == "none") return Ok(list);
+            
+            switch (filter)
             {
-                switch (filter)
-                {
-                    case "by_today":
-                        list = list.Where(x => x.BoughtAt.Date == DateTime.Today);
-                        break;
-                    case "by_this_month":
-                        list = list.Where(x => x.BoughtAt.Month == DateTime.Today.Month);
-                        break;
-                    case "by_this_year":
-                        list = list.Where(x => x.BoughtAt.Year == DateTime.Today.Year);
-                        break;
-                    default:
-                        return BadRequest(Statuses.UnknownFilterStatus);
-                }    
+                case "by_today":
+                    list = list.Where(x => x.BoughtAt.Date == DateTime.Today);
+                    break;
+                case "by_this_month":
+                    list = list.Where(x => x.BoughtAt.Month == DateTime.Today.Month);
+                    break;
+                case "by_this_year":
+                    list = list.Where(x => x.BoughtAt.Year == DateTime.Today.Year);
+                    break;
+                default:
+                    return BadRequest(Statuses.UnknownFilterStatus);
             }
 
             return Ok(list);

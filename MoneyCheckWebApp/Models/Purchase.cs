@@ -19,9 +19,11 @@ namespace MoneyCheckWebApp.Models
         public long CategoryId { get; set; }
         public decimal? Longitude { get; set; }
         public decimal? Latitude { get; set; }
+        public long? VerifiedCompanyId { get; set; }
 
         public virtual Category Category { get; set; }
         public virtual User Customer { get; set; }
+        public virtual VerifiedCompany VerifiedCompany { get; set; }
         public virtual ICollection<Debt> Debts { get; set; }
     }
 }
