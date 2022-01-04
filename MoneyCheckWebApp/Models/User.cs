@@ -19,7 +19,7 @@ namespace MoneyCheckWebApp.Models
         public long Id { get; set; }
         public string Username { get; set; }
         public string PasswordMd5Hash { get; set; }
-        public long Balance { get; set; }
+        public decimal Balance { get; set; }
 
         public virtual ICollection<Category> Categories { get; set; }
         public virtual ICollection<Debtor> Debtors { get; set; }

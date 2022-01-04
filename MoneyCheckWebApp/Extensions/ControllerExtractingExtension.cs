@@ -22,7 +22,7 @@ namespace MoneyCheckWebApp.Extensions
                 throw new InvalidOperationException("Extracting user from HTTP context failed");
             }
 
-            return context[userKey] as User;
+            return (context[userKey] as User)!;
         }
     }
 }

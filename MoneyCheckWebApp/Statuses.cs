@@ -11,5 +11,7 @@ namespace MoneyCheckWebApp
         /// Статус, когда HTTPS необходим 
         /// </summary>
         public const string HttpsRequiredStatus = "PROTOCOL_ERR>HTTPS_PROTO_REQUIRED";
+
+        public const string UnknownFilterStatus = "FILTER_ERR>UNKNOWN_FILTER";
     }
 }

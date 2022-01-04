@@ -9,7 +9,7 @@ namespace MoneyCheckWebApp.Models
     {
         public long DebtorId { get; set; }
         public long? PurchaseId { get; set; }
-        public long Count { get; set; }
+        public decimal Amount { get; set; }
         public string Description { get; set; }
         public long DebtId { get; set; }
         public long? InitiatorId { get; set; }

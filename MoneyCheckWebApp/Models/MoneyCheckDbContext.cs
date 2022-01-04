@@ -28,7 +28,6 @@ namespace MoneyCheckWebApp.Models
         {
             if (!optionsBuilder.IsConfigured)
             {
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
                 optionsBuilder.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=MoneyCheckDb;Trusted_Connection=True");
             }
         }
@@ -61,6 +60,8 @@ namespace MoneyCheckWebApp.Models
                     .HasName("Debts_pk")
                     .IsClustered(false);
 
+                entity.Property(e => e.Amount).HasColumnType("money");
+
                 entity.HasOne(d => d.Debtor)
                     .WithMany(p => p.Debts)
                     .HasForeignKey(d => d.DebtorId)
@@ -92,6 +93,8 @@ namespace MoneyCheckWebApp.Models
 
             modelBuilder.Entity<Purchase>(entity =>
             {
+                entity.Property(e => e.Amount).HasColumnType("money");
+
                 entity.Property(e => e.Latitude).HasColumnType("decimal(8, 6)");
 
                 entity.Property(e => e.Longitude).HasColumnType("decimal(9, 6)");
@@ -111,6 +114,8 @@ namespace MoneyCheckWebApp.Models
 
             modelBuilder.Entity<User>(entity =>
             {
+                entity.Property(e => e.Balance).HasColumnType("money");
+
                 entity.Property(e => e.PasswordMd5Hash)
                     .IsRequired()
                     .HasMaxLength(32)

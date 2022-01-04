@@ -134,10 +134,10 @@ namespace MoneyCheckWebApp.Controllers
 
         [HttpGet]
         [Route("get-purchases")]
-        public IActionResult GetPurchases()
+        public IActionResult GetPurchases(string filter = "none")
         {
             long userId = this.ExtractUser().Id;
-           
+            
             var list = _context.Purchases.Where(x => x.CustomerId == userId)
                 .Select(x => new PurchaseType()
                 {
@@ -148,6 +148,24 @@ namespace MoneyCheckWebApp.Controllers
                     Longitude = x.Longitude,
                     Latitude = x.Latitude
                 });
+
+            if (filter != "none")
+            {
+                switch (filter)
+                {
+                    case "by_today":
+                        list = list.Where(x => x.BoughtAt.Date == DateTime.Today);
+                        break;
+                    case "by_this_month":
+                        list = list.Where(x => x.BoughtAt.Month == DateTime.Today.Month);
+                        break;
+                    case "by_this_year":
+                        list = list.Where(x => x.BoughtAt.Year == DateTime.Today.Year);
+                        break;
+                    default:
+                        return BadRequest(Statuses.UnknownFilterStatus);
+                }    
+            }
 
             return Ok(list);
         }

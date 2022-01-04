@@ -87,10 +87,9 @@ namespace MoneyCheckWebApp.Controllers
                 .Where(x => x.DebtorId == debtor.Id)
                 .Select(x => new DebtType
                 {
-                    Count = x.Count,
+                    Amount = x.Amount,
                     Description = x.Description,
-                    PurchaseId = x.PurchaseId,
-                    DebtorId = x.DebtorId
+                    PurchaseId = x.PurchaseId
                 });
             
             return Ok(new DebtorCollectorType
