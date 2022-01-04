@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace MoneyCheckWebApp.Controllers
 {
@@ -29,7 +30,7 @@ namespace MoneyCheckWebApp.Controllers
                 DebtorId = debtType.DebtorId,
                 Description = debtType.Description,
                 PurchaseId = debtType.PurchaseId,
-                Count = debtType.Count,
+                Amount = debtType.Amount,
                 InitiatorId = this.ExtractUser().Id
             };
 
@@ -47,7 +48,7 @@ namespace MoneyCheckWebApp.Controllers
 
             await _context.Debts.AddAsync(debt);
 
-            this.ExtractUser().Balance -= debt.Count;
+            this.ExtractUser().Balance -= debt.Amount;
 
             await _context.SaveChangesAsync();
 
@@ -63,7 +64,7 @@ namespace MoneyCheckWebApp.Controllers
 
             if (foundDebt == null) return BadRequest("Debt was not found");
 
-            extractedUser.Balance += foundDebt.Count;
+            extractedUser.Balance += foundDebt.Amount;
 
             _context.Debts.Remove(foundDebt);
             await _context.SaveChangesAsync();
@@ -80,16 +81,11 @@ namespace MoneyCheckWebApp.Controllers
 
             if (beforeEditedDebt == null) return BadRequest("");
 
-            user.Balance += beforeEditedDebt.Count;
-            user.Balance -= debt.Count;
+            user.Balance += beforeEditedDebt.Amount;
+            user.Balance -= debt.Amount;
 
-
-            beforeEditedDebt.Count = debt.Count == default ? beforeEditedDebt.Count : debt.Count;
-            beforeEditedDebt.Description = debt.Description == default ? beforeEditedDebt.Description : debt.Description;
-
-            if (debt.PurchaseId != null && _context.Purchases.FirstOrDefault(x => x.Id == debt.PurchaseId) == null) 
-                return BadRequest("Purchase was not found");
-
+            beforeEditedDebt.Amount = debt.Amount;
+            beforeEditedDebt.Description = debt.Description;
             beforeEditedDebt.PurchaseId = debt.PurchaseId;
 
             await _context.SaveChangesAsync();
@@ -108,9 +104,9 @@ namespace MoneyCheckWebApp.Controllers
                 .Select(x => new DebtType()
                 {
                     DebtId = x.DebtId,
-                    Count = x.Count,
+                    Amount = x.Amount,
                     PurchaseId = x.PurchaseId,
-                    DebtorId = x.DebtorId,
+                    Debtor = _context.Debtors.FirstOrDefault(z => z.Id == x.DebtorId)!.GenerateApiType(),
                     Description = x.Description
                 });
 

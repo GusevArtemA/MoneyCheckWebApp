@@ -20,9 +20,11 @@ namespace MoneyCheckWebApp.Models
         public virtual DbSet<Category> Categories { get; set; }
         public virtual DbSet<Debt> Debts { get; set; }
         public virtual DbSet<Debtor> Debtors { get; set; }
+        public virtual DbSet<DefaultLogosForCategory> DefaultLogosForCategories { get; set; }
         public virtual DbSet<Purchase> Purchases { get; set; }
         public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<UserAuthToken> UserAuthTokens { get; set; }
+        public virtual DbSet<VerifiedCompany> VerifiedCompanies { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -43,10 +45,15 @@ namespace MoneyCheckWebApp.Models
                     .IsRequired()
                     .HasMaxLength(50);
 
+                entity.HasOne(d => d.Logo)
+                    .WithMany(p => p.Categories)
+                    .HasForeignKey(d => d.LogoId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK__Categorie__LogoI__55F4C372");
+
                 entity.HasOne(d => d.Owner)
                     .WithMany(p => p.Categories)
                     .HasForeignKey(d => d.OwnerId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK__Categorie__Owner__01142BA1");
 
                 entity.HasOne(d => d.ParentCategory)
@@ -60,6 +67,8 @@ namespace MoneyCheckWebApp.Models
                 entity.HasKey(e => e.DebtId)
                     .HasName("Debts_pk")
                     .IsClustered(false);
+
+                entity.Property(e => e.Amount).HasColumnType("money");
 
                 entity.HasOne(d => d.Debtor)
                     .WithMany(p => p.Debts)
@@ -90,8 +99,21 @@ namespace MoneyCheckWebApp.Models
                     .HasConstraintName("FK__Debtors__Natural__4F7CD00D");
             });
 
+            modelBuilder.Entity<DefaultLogosForCategory>(entity =>
+            {
+                entity.HasIndex(e => e.LogoName, "DefaultLogosForCategories_LogoName_uindex")
+                    .IsUnique();
+
+                entity.Property(e => e.LogoName)
+                    .IsRequired()
+                    .HasMaxLength(32)
+                    .IsUnicode(false);
+            });
+
             modelBuilder.Entity<Purchase>(entity =>
             {
+                entity.Property(e => e.Amount).HasColumnType("money");
+
                 entity.Property(e => e.Latitude).HasColumnType("decimal(8, 6)");
 
                 entity.Property(e => e.Longitude).HasColumnType("decimal(9, 6)");
@@ -107,10 +129,17 @@ namespace MoneyCheckWebApp.Models
                     .HasForeignKey(d => d.CustomerId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK__Purchases__Custo__276EDEB3");
+
+                entity.HasOne(d => d.VerifiedCompany)
+                    .WithMany(p => p.Purchases)
+                    .HasForeignKey(d => d.VerifiedCompanyId)
+                    .HasConstraintName("FK__Purchases__Verif__56E8E7AB");
             });
 
             modelBuilder.Entity<User>(entity =>
             {
+                entity.Property(e => e.Balance).HasColumnType("money");
+
                 entity.Property(e => e.PasswordMd5Hash)
                     .IsRequired()
                     .HasMaxLength(32)
@@ -136,6 +165,19 @@ namespace MoneyCheckWebApp.Models
                     .HasForeignKey(d => d.UserId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK__UserAuthT__UserI__24927208");
+            });
+
+            modelBuilder.Entity<VerifiedCompany>(entity =>
+            {
+                entity.Property(e => e.CompanyName).IsRequired();
+
+                entity.Property(e => e.LogoSvg).IsRequired();
+
+                entity.HasOne(d => d.Category)
+                    .WithMany(p => p.VerifiedCompanies)
+                    .HasForeignKey(d => d.CategoryId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK__VerifiedC__Categ__4F47C5E3");
             });
 
             OnModelCreatingPartial(modelBuilder);

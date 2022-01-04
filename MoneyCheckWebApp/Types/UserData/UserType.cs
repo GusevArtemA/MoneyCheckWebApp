@@ -6,7 +6,7 @@ namespace MoneyCheckWebApp.Types.UserData
     {
         public string Username { get; set; }
         
-        public long Balance { get; set; }
+        public decimal Balance { get; set; }
 
         public long Id { get; set; }
     }
