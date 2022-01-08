@@ -1,9 +1,11 @@
 using System;
 using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using MoneyCheckWebApp.Extensions;
 using MoneyCheckWebApp.Models;
+using MoneyCheckWebApp.PricePredicating;
+using MoneyCheckWebApp.PricePredicating.Exceptions;
+using MoneyCheckWebApp.PricePredicating.Extensions;
 using MoneyCheckWebApp.Types.UserStats;
 
 namespace MoneyCheckWebApp.Controllers
@@ -23,16 +25,16 @@ namespace MoneyCheckWebApp.Controllers
         [Route("get-future-cash")]
         public IActionResult GetFutureCashSpending()
         {
-            var invoker = this.ExtractUser();
-
-            if (invoker.Purchases.Count == 0)
+            try
             {
-                return Ok(0);
-            }
-            
-            var average = invoker.Purchases.Select(x => x.Amount).Average();
+                var predicator = new PredicationProcessor(this.ExtractUser().ConfigureArrayProvider());
 
-            return Ok(average);
+                return Ok(predicator.PredicateNext());
+            }
+            catch (NoInfoException)
+            {
+                return Ok(-1);
+            }
         }
 
         [HttpGet]
