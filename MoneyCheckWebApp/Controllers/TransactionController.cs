@@ -123,6 +123,7 @@ namespace MoneyCheckWebApp.Controllers
                     Amount = x.Amount,
                     BoughtAt = x.BoughtAt,
                     CategoryId = x.CategoryId,
+                    CategoryName = x.Category.CategoryName,
                     Id = x.Id,
                     Longitude = x.Longitude,
                     Latitude = x.Latitude
