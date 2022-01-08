@@ -80,9 +80,7 @@ namespace MoneyCheckWebApp.Controllers
 
             return Ok();
         }
-
-
-
+        
         [HttpPatch]
         [Route("edit-purchase")]
         public async Task<IActionResult> EditPurchaseAsync([FromBody] PurchaseType purchase)

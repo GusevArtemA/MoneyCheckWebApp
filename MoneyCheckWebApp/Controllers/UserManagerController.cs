@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using MoneyCheckWebApp.Extensions;
@@ -38,6 +39,43 @@ namespace MoneyCheckWebApp.Controllers
 
             await _context.SaveChangesAsync();
             
+            return Ok();
+        }
+
+        [HttpPatch]
+        [Route("update-balance")]
+        public async Task<IActionResult> UpdateBalance(decimal? actual, decimal? delta)
+        {
+            var user = this.ExtractUser();
+            if (actual == null && delta == null || actual != null && delta != null)
+            {
+                return BadRequest();
+            }
+
+            var update = new AccountBalanceUpdate()
+            {
+                Amount = actual ?? delta!.Value,
+            };
+
+            if (actual != null)
+            {
+                update.OperationType = 0;
+                user.Balance = actual.Value;
+            }
+
+            if (delta != null)
+            {
+                update.OperationType = 1;
+                user.Balance += delta.Value;
+            }
+
+            update.UpdateAt = DateTime.Now;
+            _context.AccountBalanceUpdates.Add(update);
+
+            update.User = user;
+            
+            await _context.SaveChangesAsync();
+
             return Ok();
         }
     }
