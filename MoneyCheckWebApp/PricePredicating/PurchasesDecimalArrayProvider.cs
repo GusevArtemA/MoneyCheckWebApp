@@ -1,0 +1,33 @@
+using System;
+using System.Linq;
+using MoneyCheckWebApp.Models;
+using MoneyCheckWebApp.PricePredicating.Exceptions;
+
+namespace MoneyCheckWebApp.PricePredicating
+{
+    public class PurchasesDecimalArrayProvider : IDecimalArrayProvider
+    {
+        private readonly User _target;
+
+        public PurchasesDecimalArrayProvider(User target)
+        {
+            _target = target;
+        }
+        
+        public decimal[] ProvideArray()
+        {
+            var monthStats = _target.Purchases.Where(x => x.BoughtAt.Year == DateTime.Now.Year)
+                .GroupBy(x => x.BoughtAt.Month)
+                .Select(x => x.Select(y => y.Amount)
+                    .Sum())
+                .ToArray();
+
+            if (monthStats.Length == 0)
+            {
+                throw new NoInfoException();
+            }
+
+            return monthStats;
+        }
+    }
+}
