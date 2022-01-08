@@ -66,6 +66,8 @@ namespace MoneyCheckWebApp.Controllers
 
             extractedUser.Balance += foundDebt.Amount;
 
+            _context.DebtUpdates.RemoveRange(_context.DebtUpdates.Where(x => x.DebtId == foundDebt.DebtId));
+            
             _context.Debts.Remove(foundDebt);
             await _context.SaveChangesAsync();
 
@@ -74,23 +76,37 @@ namespace MoneyCheckWebApp.Controllers
 
         [HttpPatch]
         [Route("edit-debt")]
-        public async Task<IActionResult> EditDebt([FromBody] DebtType debt)
+        public async Task<IActionResult> EditDebt([FromBody] EditDebtType debt)
         {   
             var user = this.ExtractUser();
             var beforeEditedDebt = _context.Debts.FirstOrDefault(x => x.DebtId == debt.DebtId && x.InitiatorId == user.Id);
-
             if (beforeEditedDebt == null) return BadRequest("");
 
+            var cachedAmount = beforeEditedDebt.Amount;
+            
             user.Balance += beforeEditedDebt.Amount;
             user.Balance -= debt.Amount;
-
+                
             beforeEditedDebt.Amount = debt.Amount;
             beforeEditedDebt.Description = debt.Description;
             beforeEditedDebt.PurchaseId = debt.PurchaseId;
 
             await _context.SaveChangesAsync();
 
+            if (cachedAmount == beforeEditedDebt.Amount) return Ok();
+            
+            var delta = cachedAmount - beforeEditedDebt.Amount;
+            var update = new DebtUpdate
+            {
+                UpdateAt = DateTime.Now
+            };
 
+            _context.DebtUpdates.Add(update);
+            update.Debt = beforeEditedDebt;
+            update.Amount = delta;
+
+            await _context.SaveChangesAsync();
+            
             return Ok();
         }
 

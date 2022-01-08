@@ -1,11 +1,9 @@
-using System;
-using System.Security.Cryptography;
-using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MoneyCheckWebApp.Helpers;
 using MoneyCheckWebApp.Models;
+using MoneyCheckWebApp.Pipelines;
 using MoneyCheckWebApp.Services;
 using MoneyCheckWebApp.Types.Auth;
 
@@ -18,13 +16,15 @@ namespace MoneyCheckWebApp.Controllers
     {
         private readonly MoneyCheckDbContext _context;
         private readonly CookieService _cookieService;
+        private readonly AuthorizationService _authService;
 
         private const int CookieLifetime = 259200; //Время жизни cookie файлов в секундах
 
-        public AuthController(MoneyCheckDbContext context, CookieService cookieService)
+        public AuthController(MoneyCheckDbContext context, CookieService cookieService, AuthorizationService authService)
         {
             _context = context;
             _cookieService = cookieService;
+            _authService = authService;
         }
         
         /// <summary>
@@ -53,12 +53,15 @@ namespace MoneyCheckWebApp.Controllers
                 return Unauthorized();
             }
 
-            var token = await _cookieService.GenerateAuthCookiesAsync(this, firstAssociatedUser, CookieLifetime);
+            var pipeline = new AuthorizationCookieConfigurationPipeline();
+            
+            var token = await pipeline.ExecutePipelineAsync(firstAssociatedUser, Request, Response, _cookieService, _authService,
+                CookieLifetime);
 
             return Ok(new TokenReplyType
             {
-                Token = token.Item1,
-                ExpiresAt = token.Item2
+                Token = token.Token,
+                ExpiresAt = token.ExpiresAt
             });
         }
 
@@ -125,12 +128,15 @@ namespace MoneyCheckWebApp.Controllers
 
             await _context.SaveChangesAsync();
 
-            var initialCredentials = await _cookieService.GenerateAuthCookiesAsync(this, user, CookieLifetime);
+            var pipeline = new AuthorizationCookieConfigurationPipeline();
+            
+            var token = await pipeline.ExecutePipelineAsync(user, Request, Response, _cookieService, _authService,
+                CookieLifetime);
 
             return Ok(new TokenReplyType
             {
-                Token = initialCredentials.Item1,
-                ExpiresAt = initialCredentials.Item2
+                Token = token.Token,
+                ExpiresAt = token.ExpiresAt
             });
         }
     }

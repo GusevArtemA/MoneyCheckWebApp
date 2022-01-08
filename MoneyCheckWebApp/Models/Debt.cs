@@ -7,6 +7,11 @@ namespace MoneyCheckWebApp.Models
 {
     public partial class Debt
     {
+        public Debt()
+        {
+            DebtUpdates = new HashSet<DebtUpdate>();
+        }
+
         public long DebtorId { get; set; }
         public long? PurchaseId { get; set; }
         public decimal Amount { get; set; }
@@ -17,5 +22,6 @@ namespace MoneyCheckWebApp.Models
         public virtual Debtor Debtor { get; set; }
         public virtual User Initiator { get; set; }
         public virtual Purchase Purchase { get; set; }
+        public virtual ICollection<DebtUpdate> DebtUpdates { get; set; }
     }
 }
