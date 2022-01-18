@@ -2,8 +2,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using MoneyCheckWebApp.Extensions;
 using MoneyCheckWebApp.Models;
-using MoneyCheckWebApp.Types.Debtors;
 using MoneyCheckWebApp.Types.Debts;
 
 namespace MoneyCheckWebApp.Controllers
@@ -25,18 +25,6 @@ namespace MoneyCheckWebApp.Controllers
             [FromBody]
             DebtorType debtorType)
         {
-            User? naturalMaskInstance = null; 
-            
-            if (debtorType.NaturalMaskId != null)
-            {
-                naturalMaskInstance = await _context.Users.FirstOrDefaultAsync(x => x.Id == debtorType.NaturalMaskId);
-
-                if (naturalMaskInstance == null)
-                {
-                    return BadRequest("Can't find debtor by mask");
-                }
-            }
-
             var debtor = new Debtor()
             {
                 Name = debtorType.Name
@@ -44,11 +32,8 @@ namespace MoneyCheckWebApp.Controllers
 
             _context.Debtors.Add(debtor);
 
-            if (naturalMaskInstance != null)
-            {
-                debtor.NaturalMask = naturalMaskInstance;    
-            }
-
+            debtor.Owner = this.ExtractUser();
+            
             await _context.SaveChangesAsync();
 
             return Ok();
@@ -63,6 +48,8 @@ namespace MoneyCheckWebApp.Controllers
                 return BadRequest("Can't find debtor");
             }
 
+            _context.Debts.RemoveRange(_context.Debts.Where(x => x.DebtorId == id));
+            
             _context.Debtors.Remove(new Debtor
             {
                 Id = id
@@ -95,7 +82,6 @@ namespace MoneyCheckWebApp.Controllers
             return Ok(new DebtorCollectorType
             {
                 Name = debtor.Name,
-                NaturalMaskId = debtor.NaturalMaskId,
                 Debts = connectedDebts.ToArray()
             });
         }

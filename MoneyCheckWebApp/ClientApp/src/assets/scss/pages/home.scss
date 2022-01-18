@@ -4,7 +4,7 @@
   font-weight: bolder;
 }
 
-#greeter {
+h1 {
   font-size: 40px;
 }
 
@@ -35,5 +35,128 @@
 }
 
 #balance-status-wrapper {
-  width: 400px;
+  width: 350px;
+}
+
+#transactions-filter {
+  span {
+    font-size: 25px;
+  }
+  
+  .select-box {
+    margin-left: 10px;
+  }
+}
+
+.list-container {
+  width: 650px;
+  max-height: 400px;
+  overflow-y: auto;
+  padding: 20px;
+
+  * {
+    font-weight: normal;
+    overflow-wrap: break-word;
+  }
+  
+  &::-webkit-scrollbar {
+    background: transparent;
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background: brand.$brand-purple;
+    border-radius: 50px;
+  }
+}
+
+.transactions-container {
+  .transaction-description, .transaction-date {
+    color: #888888;
+  }
+
+  .transaction-description {
+    inline-size: 40%;
+  }
+  
+  .transaction-date {
+    margin-left: 10px;
+  }
+}
+
+.none-transactions {
+  span {
+    font-weight: bold;
+  }
+}
+
+.loading-transactions {
+  height: 300px;
+}
+
+.debtor-name {
+  font-weight: bold;
+  font-size: 1.2em;
+}
+
+.under-balance-button {
+  margin-top: 20px;
+  width: 350px;
+}
+
+.fa-trash {
+  color: brand.$brand-red;
+}
+
+button[class *= 'icon-button'] {
+  margin-left: 10px;
+  .fa-angle-down {
+    transition: transform 0.3s;
+  }
+}
+ 
+div[class *= "debtor-list"] {
+  height: fit-content;
+  transition: height 0.5s;
+  
+  display: flex;
+  flex-direction: column;
+  
+  .debts-container {
+    border-radius: 0 0 10px 10px;
+    overflow-y: hidden;
+    height: 0;
+    padding: 0;
+    margin-bottom: 0;
+    background: transparent;
+    opacity: 0;
+    transition: height 0.5s, opacity 0.5s;
+  }
+}
+
+.opened-debtor-list {
+  button[class *= 'icon-button'] {
+    .fa-angle-down {
+      transform: rotate(180deg);
+    }
+  }
+  
+  .debts-container {
+    opacity: 1 !important;
+    height: 100% !important;
+    padding: 10px !important;
+    background: linear-gradient(180deg, #FFF 70%, brand.$main-light-background) !important;
+    margin-bottom: 10px !important;
+  }
+}
+
+.debtor-name {
+  font-weight: 500;
+}
+
+.def-debt-span {
+  color: brand.$brand-red;
+}
+
+.return-debt-span {
+  color: brand.$success;
 }

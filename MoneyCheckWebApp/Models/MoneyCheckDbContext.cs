@@ -17,10 +17,8 @@ namespace MoneyCheckWebApp.Models
         {
         }
 
-        public virtual DbSet<AccountBalanceUpdate> AccountBalanceUpdates { get; set; }
         public virtual DbSet<Category> Categories { get; set; }
         public virtual DbSet<Debt> Debts { get; set; }
-        public virtual DbSet<DebtUpdate> DebtUpdates { get; set; }
         public virtual DbSet<Debtor> Debtors { get; set; }
         public virtual DbSet<DefaultLogosForCategory> DefaultLogosForCategories { get; set; }
         public virtual DbSet<Purchase> Purchases { get; set; }
@@ -40,20 +38,6 @@ namespace MoneyCheckWebApp.Models
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.HasAnnotation("Relational:Collation", "SQL_Latin1_General_CP1_CI_AS");
-
-            modelBuilder.Entity<AccountBalanceUpdate>(entity =>
-            {
-                entity.HasKey(e => e.UpdateId)
-                    .HasName("PK__AccountB__7A0CF3C55DBB2950");
-
-                entity.Property(e => e.Amount).HasColumnType("money");
-
-                entity.HasOne(d => d.User)
-                    .WithMany(p => p.AccountBalanceUpdates)
-                    .HasForeignKey(d => d.UserId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__AccountBa__UserI__625A9A57");
-            });
 
             modelBuilder.Entity<Category>(entity =>
             {
@@ -103,32 +87,17 @@ namespace MoneyCheckWebApp.Models
                     .HasConstraintName("FK__Debts__PurchaseI__52593CB8");
             });
 
-            modelBuilder.Entity<DebtUpdate>(entity =>
-            {
-                entity.HasKey(e => e.UpdateId)
-                    .HasName("PK__DebtUpda__7A0CF3C5FFBF3C30");
-
-                entity.ToTable("DebtUpdate");
-
-                entity.Property(e => e.Amount).HasColumnType("money");
-
-                entity.HasOne(d => d.Debt)
-                    .WithMany(p => p.DebtUpdates)
-                    .HasForeignKey(d => d.DebtId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__DebtUpdat__DebtI__65370702");
-            });
-
             modelBuilder.Entity<Debtor>(entity =>
             {
                 entity.Property(e => e.Name)
                     .IsRequired()
                     .HasMaxLength(50);
 
-                entity.HasOne(d => d.NaturalMask)
+                entity.HasOne(d => d.Owner)
                     .WithMany(p => p.Debtors)
-                    .HasForeignKey(d => d.NaturalMaskId)
-                    .HasConstraintName("FK__Debtors__Natural__4F7CD00D");
+                    .HasForeignKey(d => d.OwnerId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK__Debtors__OwnerId__73852659");
             });
 
             modelBuilder.Entity<DefaultLogosForCategory>(entity =>

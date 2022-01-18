@@ -52,28 +52,6 @@ namespace MoneyCheckWebApp.Controllers
                 return BadRequest();
             }
 
-            var update = new AccountBalanceUpdate()
-            {
-                Amount = actual ?? delta!.Value,
-            };
-
-            if (actual != null)
-            {
-                update.OperationType = 0;
-                user.Balance = actual.Value;
-            }
-
-            if (delta != null)
-            {
-                update.OperationType = 1;
-                user.Balance += delta.Value;
-            }
-
-            update.UpdateAt = DateTime.Now;
-            _context.AccountBalanceUpdates.Add(update);
-
-            update.User = user;
-            
             await _context.SaveChangesAsync();
 
             return Ok();

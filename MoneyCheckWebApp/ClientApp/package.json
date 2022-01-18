@@ -18,7 +18,8 @@
     "react-scripts": "^3.4.4",
     "reactstrap": "^8.4.1",
     "rimraf": "^2.6.2",
-    "sass": "^1.45.1"
+    "sass": "^1.45.1",
+    "sweetalert2": "^11.3.5"
   },
   "devDependencies": {
     "ajv": "^6.9.1",

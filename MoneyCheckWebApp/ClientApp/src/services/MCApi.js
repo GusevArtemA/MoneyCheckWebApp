@@ -11,27 +11,27 @@ export class MCApi {
 
     async getUserInfo() {
         return await this._fetchJson('/api/user-data/get-data');
-        let response = await fetch('/api/user-data/get-data', {
-           method: 'GET'
-        });
-
-        if(response.ok) {
-            return await response.json();
-        } else {
-            return undefined;
-        }
     }
 
-    async getPurchases(filter = 'by_today') {
-        return await this._fetchJson('/api/transactions/get-purchases?filter=' + filter);
+    async getBalanceState() {
+        return await this._fetchJson('/api/web/user-balance-stats');
     }
-
-    async getDebts() {
-        return await this._fetchJson('/api/debts/get-bets');
+    
+    async getPurchases(filter = 'today') {
+        return await this._fetchJson('/api/user-stats/get-transactions?filter=' + filter);
     }
-
+    
+    async getDebtors() {
+        return await this._fetchJson('/api/web/get-debtors');
+    }
+    
+    async getCategories()
+    {
+        return await this._fetchJson('/api/web/get-categories');
+    }
+    
     /**
-     * Fetches json from followed url
+     * Fetches json with following url
      * @private
      */
     async _fetchJson(url, method = 'GET') {
