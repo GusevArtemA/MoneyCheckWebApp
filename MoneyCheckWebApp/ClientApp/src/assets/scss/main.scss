@@ -1,19 +1,36 @@
 @use 'brand';
 
-a {
+a, a:hover, a:visited {
   color: brand.$brand-purple;
-
-  transition: color 0.3s;
 }
 
 a:hover {
-  color: darken(brand.$brand-purple, 15);
+  text-decoration: none;
 }
 
 .box {
   background: brand.$sub-light-background;
   padding: 10px;
   border-radius: 8px;
+  position: relative;
+}
+
+.right-box-button {
+  position: absolute;
+  top: 0;
+  right: 5px;
+  color: brand.$brand-purple;
+  cursor: pointer;
+  background: transparent;
+  border: none;
+}
+
+.right-box-button:focus {
+  outline: none;
+}
+
+.colored-in-brand-purple {
+  color: brand.$brand-purple;
 }
 
 .max-width {
@@ -85,6 +102,10 @@ a:hover {
   box-shadow: 0 0 0 3px transparentize(brand.$brand-purple, 0.5);
 }
 
+.brand-button:active, .brand-button:focus {
+  outline: none;
+}
+
 $loader-step: 10px;
 
 .loader {
@@ -117,3 +138,59 @@ $loader-step: 10px;
   }
 }
 
+.select-box {
+  position: relative;
+  * {
+    font-size: 20px;  
+  }
+  
+  *[class *= "select-box-arrow"] {
+    z-index: 3;
+    margin-left: 5px;
+    color: brand.$brand-purple;
+    
+    transition: transform 0.3s;
+  }
+  
+  .closed-select-box-arrow {
+    transform: rotate(-180deg);
+  }
+
+  .opened-select-box-arrow {
+    transform: rotate(0deg);
+  }
+  
+  .closed-list-select-box {
+    display: none !important;
+  }
+
+  .opened-list-select-box {
+    display: flex;
+  }
+  
+  width: fit-content;
+  font-weight: bold;
+  cursor: pointer;
+  overflow-y: hidden;
+  padding: 8px;
+  height: fit-content;
+  user-select: none;
+}
+
+button[class *= 'icon-button'] {
+  background: transparent;
+  color: brand.$brand-purple;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  outline: none;
+  border: none;
+}
+
+.icon-button {
+  background: brand.$main-light-background !important;
+}
+
+.layout-icon-button {
+  background: #FFF !important;
+}

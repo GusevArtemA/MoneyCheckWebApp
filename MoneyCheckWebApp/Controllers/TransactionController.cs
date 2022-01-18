@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using MoneyCheckWebApp.Models;
 using MoneyCheckWebApp.Types.Purchases;
 using MoneyCheckWebApp.Extensions;
@@ -24,6 +25,7 @@ namespace MoneyCheckWebApp.Controllers
         [Route("add-purchase")]
         public async Task<IActionResult> AddPurchaseAsync([FromBody] PostPurchaseType purchase)
         {
+            //TODO Add error statuses
             if ((purchase.BoughtAt - DateTime.Now) > TimeSpan.FromDays(1))
             {
                 return BadRequest("Date error");
@@ -34,15 +36,23 @@ namespace MoneyCheckWebApp.Controllers
                 return BadRequest("Category not specified");
             }
 
-            if (_context.Categories.All(x => x.Id != purchase.CategoryId))
+            var category = await _context.Categories.FirstOrDefaultAsync(x => x.Id == purchase.CategoryId);
+            
+            if (category == null)
             {
                 return BadRequest("Category not found");
             }
-            
+
+            if (purchase.VerifiedCompanyId != null &&
+                _context.VerifiedCompanies.All(x => x.Id != purchase.VerifiedCompanyId))
+            {
+                return BadRequest("Verified company not found");
+            }
+
             var addPurchase = new Purchase()
             {
                 BoughtAt = purchase.BoughtAt ?? DateTime.Now,
-                Amount = purchase.Amount,
+                Amount = Math.Abs(purchase.Amount), 
                 CategoryId = purchase.CategoryId,
                 CustomerId = this.ExtractUser().Id
             };
@@ -54,7 +64,12 @@ namespace MoneyCheckWebApp.Controllers
 
             await _context.Purchases.AddAsync(addPurchase);
 
-            this.ExtractUser().Balance -= purchase.Amount;
+            if (purchase.VerifiedCompanyId != null)
+            {
+                addPurchase.VerifiedCompanyId = purchase.VerifiedCompanyId;    
+            }
+            
+            this.ExtractUser().Balance -= purchase.Amount  * (category.CategoryName == "Зачисление" ? -1 : 1); //Проверка на зачисление
 
             await _context.SaveChangesAsync();
 

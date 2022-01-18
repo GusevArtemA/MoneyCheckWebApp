@@ -1,5 +1,3 @@
-using MoneyCheckWebApp.Types.Debtors;
-
 namespace MoneyCheckWebApp.Types.Debts
 {
     public class DebtType

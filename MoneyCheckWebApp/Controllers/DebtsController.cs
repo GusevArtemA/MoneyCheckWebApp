@@ -25,7 +25,7 @@ namespace MoneyCheckWebApp.Controllers
         [Route("add-debt")]
         public async Task<IActionResult> AddDebt([FromBody] PostDebtType debtType)
         {
-            Debt  debt = new()
+            Debt debt = new()
             {
                 DebtorId = debtType.DebtorId,
                 Description = debtType.Description,
@@ -66,8 +66,6 @@ namespace MoneyCheckWebApp.Controllers
 
             extractedUser.Balance += foundDebt.Amount;
 
-            _context.DebtUpdates.RemoveRange(_context.DebtUpdates.Where(x => x.DebtId == foundDebt.DebtId));
-            
             _context.Debts.Remove(foundDebt);
             await _context.SaveChangesAsync();
 
@@ -96,14 +94,6 @@ namespace MoneyCheckWebApp.Controllers
             if (cachedAmount == beforeEditedDebt.Amount) return Ok();
             
             var delta = cachedAmount - beforeEditedDebt.Amount;
-            var update = new DebtUpdate
-            {
-                UpdateAt = DateTime.Now
-            };
-
-            _context.DebtUpdates.Add(update);
-            update.Debt = beforeEditedDebt;
-            update.Amount = delta;
 
             await _context.SaveChangesAsync();
             

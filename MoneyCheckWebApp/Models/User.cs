@@ -9,7 +9,6 @@ namespace MoneyCheckWebApp.Models
     {
         public User()
         {
-            AccountBalanceUpdates = new HashSet<AccountBalanceUpdate>();
             Categories = new HashSet<Category>();
             Debtors = new HashSet<Debtor>();
             Debts = new HashSet<Debt>();
@@ -22,7 +21,6 @@ namespace MoneyCheckWebApp.Models
         public string PasswordMd5Hash { get; set; }
         public decimal Balance { get; set; }
 
-        public virtual ICollection<AccountBalanceUpdate> AccountBalanceUpdates { get; set; }
         public virtual ICollection<Category> Categories { get; set; }
         public virtual ICollection<Debtor> Debtors { get; set; }
         public virtual ICollection<Debt> Debts { get; set; }

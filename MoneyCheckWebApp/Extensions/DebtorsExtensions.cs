@@ -1,5 +1,5 @@
 using MoneyCheckWebApp.Models;
-using MoneyCheckWebApp.Types.Debtors;
+using MoneyCheckWebApp.Types.Debts;
 
 namespace MoneyCheckWebApp.Extensions
 {
@@ -7,8 +7,7 @@ namespace MoneyCheckWebApp.Extensions
     {
         public static DebtorType GenerateApiType(this Debtor debtor) => new DebtorType
         {
-            Name = debtor.Name,
-            NaturalMaskId = debtor.NaturalMaskId
+            Name = debtor.Name
         };
     }
 }
