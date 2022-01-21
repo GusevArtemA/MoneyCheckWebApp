@@ -6,5 +6,6 @@ namespace MoneyCheckWebApp.Types.Purchases
     {
         public string CategoryName { get; set; }
         public long? ParentCategoryId { get; set; }
+        public long LogoId { get; set; }
     }
 }

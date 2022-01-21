@@ -26,6 +26,8 @@ namespace MoneyCheckWebApp
 
         public const string CategoryLogoFailedStatus = "CATEGORY_ERR:NOT_CLIENT_ERROR_FLAG>>FAILED_GET_CATEGORY_LOGO";
 
+        public const string CategoryLogoRequiredStatus = "CATEGORY_ERR>>LOGO_REQUIRED";
+        
 #endregion
 
 #region Companies
