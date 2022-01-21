@@ -8,7 +8,7 @@ using MoneyCheckWebApp.Types.Purchases;
 namespace MoneyCheckWebApp.Controllers
 {
     [ApiController]
-    [Route("/categories/")]
+    [Route("/api/categories/")]
     public class CategoriesController : ControllerBase
     {
         private readonly MoneyCheckDbContext _context;
@@ -22,13 +22,20 @@ namespace MoneyCheckWebApp.Controllers
         [Route("add-category")]
         public async Task<IActionResult> AddCategoryAsync([FromBody] CategoryType category)
         {
+            var invoker = this.ExtractUser();
+            
             if (category.ParentCategoryId != null &&
                 _context.Categories.FirstOrDefault(x =>
                     x.Id == category.ParentCategoryId) == null)
             {   
-                return BadRequest();
+                return BadRequest(Statuses.CategoryNotFound);
             }
 
+            if (_context.DefaultLogosForCategories.All(x => x.Id != category.LogoId))
+            {
+                return BadRequest(Statuses.CategoryLogoRequiredStatus);
+            }
+            
             Category addCategory = new()
             {
                 CategoryName = category.CategoryName,
@@ -37,7 +44,8 @@ namespace MoneyCheckWebApp.Controllers
 
             await _context.Categories.AddAsync(addCategory);
 
-            addCategory.Owner = this.ExtractUser();
+            addCategory.Owner = invoker;
+            addCategory.Logo = _context.DefaultLogosForCategories.First(x => x.Id == category.LogoId);
             
             await _context.SaveChangesAsync();
 
