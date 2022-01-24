@@ -16,6 +16,11 @@ namespace MoneyCheckWebApp.PricePredicating
         /// </summary>
         public decimal PredicateNext()
         {
+            if (_array.Length == 0)
+            {
+                return 0m;
+            }
+            
             var averageY = _array.Average();
             var averageX = (1 + _array.Length) / 2;
 
