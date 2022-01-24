@@ -16,13 +16,20 @@ namespace MoneyCheckWebApp.PricePredicating
         
         public decimal[] ProvideArray()
         {
-            var monthStats = _target.Purchases.Where(x => x.BoughtAt.Year == DateTime.Now.Year && x.Category.CategoryName != "Зачисление")
-                .GroupBy(x => x.BoughtAt.Month)
-                .Select(x => x.Select(y => y.Amount)
-                    .Sum())
-                .ToArray();
+            try
+            {
+                var monthStats = _target.Purchases.Where(x => x.BoughtAt.Year == DateTime.Now.Year && x.Category.CategoryName != "Зачисление")
+                    .GroupBy(x => x.BoughtAt.Month)
+                    .Select(x => x.Select(y => y.Amount)
+                        .Sum())
+                    .ToArray();
 
-            return monthStats.Length == 0 ? Array.Empty<decimal>() : monthStats;
+                return monthStats.Length == 0 ? Array.Empty<decimal>() : monthStats;
+            }
+            catch (InvalidOperationException)
+            {
+                return Array.Empty<decimal>();
+            }
         }
     }
 }
