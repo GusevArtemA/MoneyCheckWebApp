@@ -53,12 +53,17 @@ namespace MoneyCheckWebApp.Controllers
         [Route("remove")]
         public async Task<IActionResult> DeleteDebtor(long id)
         {
+            var invoker = this.ExtractUser();
             if (await _context.Debtors.AllAsync(x => x.Id != id))
             {
                 return BadRequest("Can't find debtor");
             }
 
-            _context.Debts.RemoveRange(_context.Debts.Where(x => x.DebtorId == id));
+            var debts = _context.Debts.Where(x => x.DebtorId == id);
+
+            invoker.Balance += debts.Select(x => x.Amount).Sum();
+            
+            _context.Debts.RemoveRange(debts);
             
             _context.Debtors.Remove(new Debtor
             {

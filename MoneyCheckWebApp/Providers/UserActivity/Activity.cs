@@ -4,6 +4,7 @@ namespace MoneyCheckWebApp.Providers.UserActivity
 {
     public class Activity
     {
+        public long Id { get; set; }
         public ActivityType ActivityType { get; set; }
         public string IconUrl { get; set; }
         public string Description { get; set; }

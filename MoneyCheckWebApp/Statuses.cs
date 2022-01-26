@@ -30,9 +30,14 @@ namespace MoneyCheckWebApp
         
 #endregion
 
-#region Companies
+#region COMPANY_ERR
 
         public const string CompanyNotFoundStatus = "COMPANY_ERR>>COMPANY_NOT_FOUND";
+#endregion
+
+#region USER_ERR
+
+        public const string UsernameAlreadyInDataBase = "USER_ERR>>USERNAME_ERROR";
 
 #endregion
     }

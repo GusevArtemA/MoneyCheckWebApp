@@ -1,6 +1,6 @@
-using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using MoneyCheckWebApp.Extensions;
 using MoneyCheckWebApp.Helpers;
 using MoneyCheckWebApp.Models;
@@ -43,14 +43,17 @@ namespace MoneyCheckWebApp.Controllers
         }
 
         [HttpPatch]
-        [Route("update-balance")]
-        public async Task<IActionResult> UpdateBalance(decimal? actual, decimal? delta)
+        [Route("edit-username")]
+        public async Task<IActionResult> EditUsername(string username)
         {
-            var user = this.ExtractUser();
-            if (actual == null && delta == null || actual != null && delta != null)
+            if (await _context.Users.AnyAsync(x => x.Username == username))
             {
-                return BadRequest();
+                return BadRequest(Statuses.UsernameAlreadyInDataBase);
             }
+
+            var user = this.ExtractUser();
+
+            user.Username = username;
 
             await _context.SaveChangesAsync();
 

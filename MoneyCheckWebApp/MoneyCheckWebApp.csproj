@@ -10,7 +10,7 @@
         <SpaRoot>ClientApp\</SpaRoot>
         <DefaultItemExcludes>$(DefaultItemExcludes);$(SpaRoot)node_modules\**</DefaultItemExcludes>
         <Nullable>enable</Nullable>
-        <Configurations>Debug;Release;Test</Configurations>
+        <Configurations>Debug;Release;Remote</Configurations>
         <Platforms>AnyCPU</Platforms>
     </PropertyGroup>
 

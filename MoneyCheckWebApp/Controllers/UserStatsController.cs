@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using MoneyCheckWebApp.Extensions;
@@ -75,6 +76,81 @@ namespace MoneyCheckWebApp.Controllers
             var parsed = ActivityProvider.ParseActivity(invoker, searchLimit);
 
             return Ok(parsed);
+        }
+
+        /// <summary>
+        /// Получает транзакции сгрппированные по категориям
+        /// </summary>
+        /// <param name="from">Начало отсчета в UNIX</param>
+        /// <param name="to">Конец отсчета в UNIX</param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("get-categories-data")]
+        public IActionResult GetCategoriesData(double? from, double? to)
+        {
+            if (from >= to && to > 0 && from > 0)
+            {
+                return BadRequest("Failed to get categories by this time span");
+            }
+
+            var invoker = this.ExtractUser();
+            var fromDate = from?.ToDateTimeUnix() ?? DateTime.Today.AddDays(-1);
+            var toDate = to?.ToDateTimeUnix() ?? DateTime.Now;
+
+            if (to == 0)
+            {
+                toDate = DateTime.Now;
+            }
+
+            if (from == 0)
+            {
+                fromDate = DateTime.Today.AddDays(-1);
+            }
+            
+            var groupedCategories = invoker.Purchases.Where(x => fromDate <= x.BoughtAt && x.BoughtAt <= toDate).ToList()
+                .GroupBy(x => x.Category).ToList();
+
+            if (groupedCategories == null)
+            {
+                throw new InvalidOperationException("GroupedCategories are null");
+            }
+
+            CategoryDataType ParseCategoryGrouping(Category grouping)
+            {
+                var contextCategory = grouping;
+
+                var allChildCategories = groupedCategories!.Where(x =>
+                        x.Key.ParentCategoryId != null &&
+                        x.Key.Id != contextCategory.Id &&
+                        contextCategory.Id == x.Key.ParentCategoryId)
+                    .Select(x => ParseCategoryGrouping(x.Key));
+
+                CategoryDataType categoryDataType = new()
+                {
+                    Id = contextCategory.Id,
+                    ChildCategories = allChildCategories
+                };
+
+                decimal GetSumRecursive(CategoryDataType category)
+                {
+                    var recursiveSum = category.ChildCategories?.Select(GetSumRecursive).Sum() ?? 0; 
+                    var sum =  contextCategory.Purchases.Where(x => fromDate <= x.BoughtAt && x.BoughtAt <= toDate).Select(x => x.Amount).Sum() + recursiveSum;
+
+                    categoryDataType.CategoryAmount = sum;
+
+                    return sum;
+                }
+
+                GetSumRecursive(categoryDataType);
+
+                return categoryDataType;
+            } 
+            
+            IEnumerable<CategoryDataType> categories = _context.Categories.Where(x =>
+                    (x.OwnerId == null || x.OwnerId == invoker.Id) && x.ParentCategoryId == null).ToList()
+                .Select(ParseCategoryGrouping);
+
+            return Ok(categories);
         }
     }
 }

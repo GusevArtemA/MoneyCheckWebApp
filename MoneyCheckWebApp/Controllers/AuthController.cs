@@ -1,5 +1,3 @@
-using System;
-using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -32,7 +30,7 @@ namespace MoneyCheckWebApp.Controllers
         }
 
         /// <summary>
-        /// Генерирует токен и отправляет его в виде cookie файлов с сроком жизни 259200 секунд 
+        /// Генерирует токен 
         /// </summary>
         [HttpPost]
         [Route("login")]
@@ -144,18 +142,5 @@ namespace MoneyCheckWebApp.Controllers
                 ExpiresAt = token.ExpiresAt
             });
         }
-    }
-
-    public class DefaultEmailVerificationTextGenerator
-    {
-        public static string Generate(string url, string name) => string.Format(@"
-<style>
-    a:visited, a {color: #FFF;}
-</style>
-<h1>Здравствуйте, {0}!</h1>
-<p>Перейдите по ссылке ниже, чтобы подтвердить Ваш запрос:</p>
-<span style='background-color: #393939; color: #FFF;padding: 1px;border-radius: 10px;'>{1}</span>
-        ", name, url);
-        
     }
 }

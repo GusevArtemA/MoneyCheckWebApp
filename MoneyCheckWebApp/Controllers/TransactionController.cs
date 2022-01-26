@@ -77,7 +77,7 @@ namespace MoneyCheckWebApp.Controllers
                 addPurchase.VerifiedCompanyId = purchase.VerifiedCompanyId;    
             }
             
-            this.ExtractUser().Balance -= purchase.Amount  * (category.CategoryName == "Зачисление" ? -1 : 1); //Проверка на зачисление
+            this.ExtractUser().Balance -= purchase.Amount  * (category.CategoryName == Resources.AddCashCategoryName ? -1 : 1); //Проверка на зачисление
 
             await _context.SaveChangesAsync();
 
@@ -97,7 +97,7 @@ namespace MoneyCheckWebApp.Controllers
             var foundPurchase = _context.Purchases.SingleOrDefault(x => x.Id == id && x.CustomerId == extractedUser.Id);
             if (foundPurchase != null)
             {
-                extractedUser.Balance += foundPurchase.Amount;
+                extractedUser.Balance += foundPurchase.Amount * (foundPurchase.Category.CategoryName == Resources.AddCashCategoryName ? -1 : 1);
                 _context.Purchases.Remove(foundPurchase);
                 await _context.SaveChangesAsync();
             }

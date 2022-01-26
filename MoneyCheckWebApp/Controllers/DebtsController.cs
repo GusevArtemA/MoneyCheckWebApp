@@ -30,13 +30,14 @@ namespace MoneyCheckWebApp.Controllers
         [Route("add-debt")]
         public async Task<IActionResult> AddDebt([FromBody] PostDebtType debtType)
         {
+            var invoker = this.ExtractUser();
             Debt debt = new()
             {
                 DebtorId = debtType.DebtorId,
                 Description = debtType.Description,
                 PurchaseId = debtType.PurchaseId,
                 Amount = debtType.Amount,
-                InitiatorId = this.ExtractUser().Id
+                InitiatorId = invoker.Id
             };
 
             if (!_context.Debtors.Any(x => x.Id == debt.DebtorId))
@@ -53,7 +54,7 @@ namespace MoneyCheckWebApp.Controllers
 
             await _context.Debts.AddAsync(debt);
 
-            this.ExtractUser().Balance -= debt.Amount;
+            invoker.Balance -= debt.Amount;
 
             await _context.SaveChangesAsync();
 
