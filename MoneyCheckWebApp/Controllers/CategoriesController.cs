@@ -18,6 +18,11 @@ namespace MoneyCheckWebApp.Controllers
             _context = context;
         }
         
+        /// <summary>
+        /// Добавляет новую категорию
+        /// </summary>
+        /// <param name="category">Объект репрезентирующий категорию</param>
+        /// <returns></returns>
         [HttpPost]
         [Route("add-category")]
         public async Task<IActionResult> AddCategoryAsync([FromBody] CategoryType category)

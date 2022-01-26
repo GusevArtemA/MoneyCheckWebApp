@@ -10,6 +10,9 @@ using MoneyCheckWebApp.Extensions;
 
 namespace MoneyCheckWebApp.Controllers
 {
+    /// <summary>
+    /// Контроллер для управления транзакциями
+    /// </summary>
     [Route("api/transactions")]
     [ApiController]
     public class TransactionController : ControllerBase
@@ -21,6 +24,11 @@ namespace MoneyCheckWebApp.Controllers
             _context = context;
         }
 
+        /// <summary>
+        /// Добавляет новую транзакцию пользователю
+        /// </summary>
+        /// <param name="purchase"></param>
+        /// <returns></returns>
         [HttpPost]
         [Route("add-purchase")]
         public async Task<IActionResult> AddPurchaseAsync([FromBody] PostPurchaseType purchase)
@@ -76,6 +84,11 @@ namespace MoneyCheckWebApp.Controllers
             return Ok();
         }
 
+        /// <summary>
+        /// Удаляет транзакцию пользователя
+        /// </summary>
+        /// <param name="id">Индефикатор транзакции</param>
+        /// <returns></returns>
         [HttpDelete]
         [Route("remove-purchase")]
         public async Task<IActionResult> RemovePurchaseAsync(long id)
@@ -96,6 +109,11 @@ namespace MoneyCheckWebApp.Controllers
             return Ok();
         }
         
+        /// <summary>
+        /// Изменяет транзакцию пользователя
+        /// </summary>
+        /// <param name="purchase">Объект, который репрезентирует транзакцию</param>
+        /// <returns></returns>
         [HttpPatch]
         [Route("edit-purchase")]
         public async Task<IActionResult> EditPurchaseAsync([FromBody] PurchaseType purchase)
@@ -123,7 +141,11 @@ namespace MoneyCheckWebApp.Controllers
             return Ok();
         }
 
-
+        /// <summary>
+        /// Получает все транзакции по фильтру
+        /// </summary>
+        /// <param name="filter">Возможные варианты фильтра: за день (day), за месяц (month), за год (year)</param>
+        /// <returns></returns>
         [HttpGet]
         [Route("get-purchases")]
         public IActionResult GetPurchases(string filter = "none")

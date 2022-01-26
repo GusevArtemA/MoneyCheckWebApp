@@ -21,6 +21,11 @@ namespace MoneyCheckWebApp.Controllers
             _context = context;
         }
 
+        /// <summary>
+        /// Записывает новый долг должнику контекстного пользователя
+        /// </summary>
+        /// <param name="debtType">Объект, который реперзентирует долг</param>
+        /// <returns></returns>
         [HttpPost]
         [Route("add-debt")]
         public async Task<IActionResult> AddDebt([FromBody] PostDebtType debtType)
@@ -55,6 +60,11 @@ namespace MoneyCheckWebApp.Controllers
             return Ok();
         }
 
+        /// <summary>
+        /// Списывает долг у должника контекстного пользователя
+        /// </summary>
+        /// <param name="id">Индефикатор долга</param>
+        /// <returns></returns>
         [HttpDelete]
         [Route("remove-debt")]
         public async Task<IActionResult> RemoveDebt(long id)
@@ -72,6 +82,11 @@ namespace MoneyCheckWebApp.Controllers
             return Ok();
         }
 
+        /// <summary>
+        /// Редактирует долг
+        /// </summary>
+        /// <param name="debt">Новое значение долга</param>
+        /// <returns></returns>
         [HttpPatch]
         [Route("edit-debt")]
         public async Task<IActionResult> EditDebt([FromBody] EditDebtType debt)
@@ -100,6 +115,10 @@ namespace MoneyCheckWebApp.Controllers
             return Ok();
         }
 
+        /// <summary>
+        /// Получает все долги должника
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         [Route("get-debts")]
         public IActionResult GetDebts()

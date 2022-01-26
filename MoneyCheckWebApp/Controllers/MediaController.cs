@@ -7,6 +7,9 @@ using MoneyCheckWebApp.Models;
 
 namespace MoneyCheckWebApp.Controllers
 {
+    /// <summary>
+    /// Котроллер, который отвечает за менеджмент медиа-ресурсов
+    /// </summary>
     [ApiController]
     [Route("api/media/")]
     public class MediaController : ControllerBase
@@ -18,6 +21,10 @@ namespace MoneyCheckWebApp.Controllers
             _context = context;
         }
 
+        /// <summary>
+        /// Получает SVG картинку дефолтной категории
+        /// </summary>
+        /// <param name="categoryId"></param>
         [HttpGet]
         [Route("get-category-media-logo")]
         public async Task GetDefaultCategoryMediaLogo(long categoryId)
@@ -53,6 +60,10 @@ namespace MoneyCheckWebApp.Controllers
             await Response.WriteAsync(logo.Svg);
         }
 
+        /// <summary>
+        /// Получает картинку верифицированной компании
+        /// </summary>
+        /// <param name="id"></param>
         [HttpGet]
         [Route("get-verified-company-logo")]
         public async Task GetVerifiedBrandLogo(long id)
