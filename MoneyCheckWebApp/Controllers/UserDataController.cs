@@ -5,17 +5,17 @@ using MoneyCheckWebApp.Types.UserData;
 
 namespace MoneyCheckWebApp.Controllers
 {
+    /// <summary>
+    /// Контроллер, который предоставляет базовые данные о пользователе
+    /// </summary>
     [ApiController]
     [Route("/api/user-data")]
     public class UserDataController : ControllerBase
     {
-        private readonly MoneyCheckDbContext _context;
-
-        public UserDataController(MoneyCheckDbContext context)
-        {
-            _context = context;
-        }
-
+        /// <summary>
+        /// Получает базовые данные
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         [Route("get-data")]
         public IActionResult GetUserInfo()

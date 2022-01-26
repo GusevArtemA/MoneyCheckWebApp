@@ -9,6 +9,9 @@ using MoneyCheckWebApp.Types.Stats;
 
 namespace MoneyCheckWebApp.Controllers
 {
+    /// <summary>
+    /// Контроллер, который отвечает за общую статистику сервиса
+    /// </summary>
     [Route("/stats/")]
     [ApiController]
     public class StatsController : ControllerBase
@@ -20,6 +23,10 @@ namespace MoneyCheckWebApp.Controllers
             _context = context;
         }
 
+        /// <summary>
+        /// Получает общую стаистику сервиса
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         [Route("get")]
         public IActionResult GetStats()

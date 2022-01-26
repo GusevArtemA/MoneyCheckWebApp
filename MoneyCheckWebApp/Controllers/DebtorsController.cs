@@ -19,6 +19,11 @@ namespace MoneyCheckWebApp.Controllers
             _context = context;
         }
 
+        /// <summary>
+        /// Добавлет нового должника контекстному пользователю
+        /// </summary>
+        /// <param name="debtorType">Объект, репрезентирующий должника</param>
+        /// <returns></returns>
         [HttpPost]
         [Route("add")]
         public async Task<IActionResult> PostDebtor(
@@ -39,6 +44,11 @@ namespace MoneyCheckWebApp.Controllers
             return Ok();
         }
 
+        /// <summary>
+        /// Убирает должника у контекстного пользователя
+        /// </summary>
+        /// <param name="id">Индефикатор</param>
+        /// <returns></returns>
         [HttpDelete]
         [Route("remove")]
         public async Task<IActionResult> DeleteDebtor(long id)
@@ -59,6 +69,11 @@ namespace MoneyCheckWebApp.Controllers
             return Ok();
         }
 
+        /// <summary>
+        /// Получает должника контекстного пользователя
+        /// </summary>
+        /// <param name="id">Индефикатор должника</param>
+        /// <returns></returns>
         [HttpGet]
         [Route("get")]
         public async Task<IActionResult> GetDebtor(long id)
@@ -86,6 +101,12 @@ namespace MoneyCheckWebApp.Controllers
             });
         }
 
+        /// <summary>
+        /// Меняет имя должника
+        /// </summary>
+        /// <param name="name">Новое имя должника</param>
+        /// <param name="id">Индефикатор должника</param>
+        /// <returns></returns>
         [HttpPatch]
         [Route("change-name")]
         public async Task<IActionResult> EditDebtorName(string name, long id)
