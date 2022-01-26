@@ -1,4 +1,7 @@
+using System;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.ResponseCompression;
@@ -36,7 +39,7 @@ namespace MoneyCheckWebApp
                         new[] { "image/svg+xml" });
             });
             
-#if TEST
+#if !REMOTE
             services.AddDbContext<MoneyCheckDbContext>(x =>
                 x.UseLazyLoadingProxies()
                     .LogTo(System.Console.WriteLine,
@@ -44,7 +47,7 @@ namespace MoneyCheckWebApp
                                                || eventId == RelationalEventId.CommandExecuting)
                     .EnableSensitiveDataLogging()
                     .EnableDetailedErrors()
-                    .UseInMemoryDatabase("MoneyCheckCIInMemoryDatabase"));
+                    .UseSqlServer(Configuration.GetConnectionString("MoneyCheckDb")));
 #else
             services.AddDbContext<MoneyCheckDbContext>(x =>
                 x.UseLazyLoadingProxies()
@@ -53,7 +56,7 @@ namespace MoneyCheckWebApp
                                               || eventId == RelationalEventId.CommandExecuting)
                  .EnableSensitiveDataLogging()
                  .EnableDetailedErrors()
-                 .UseSqlServer(Configuration.GetConnectionString("MoneyCheckDb")));
+                 .UseSqlServer(Configuration.GetConnectionString("MoneyCheckDbRemote")));
 #endif
             
             services.AddHostedService<AuthorizationTokenLifetimeEnvironmentService>();
@@ -61,7 +64,11 @@ namespace MoneyCheckWebApp
             services.AddTransient<AuthorizationService>();
             services.AddTransient<CookieService>();
             services.AddControllersWithViews();
-            services.AddSwaggerGen();
+            services.AddSwaggerGen(options =>
+            {
+                var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
+            });
 
             services.AddSpaStaticFiles(configuration => { configuration.RootPath = "ClientApp/build"; });
         }
