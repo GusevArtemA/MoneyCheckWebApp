@@ -86,28 +86,16 @@ namespace MoneyCheckWebApp.Controllers
         /// <returns></returns>
         [HttpGet]
         [Route("get-categories-data")]
-        public IActionResult GetCategoriesData(double? from, double? to)
+        public IActionResult GetCategoriesData(DateTime from, DateTime to)
         {
-            if (from >= to && to > 0 && from > 0)
+            if (from >= to)
             {
                 return BadRequest("Failed to get categories by this time span");
             }
 
             var invoker = this.ExtractUser();
-            var fromDate = from?.ToDateTimeUnix() ?? DateTime.Today.AddDays(-1);
-            var toDate = to?.ToDateTimeUnix() ?? DateTime.Now;
 
-            if (to == 0)
-            {
-                toDate = DateTime.Now;
-            }
-
-            if (from == 0)
-            {
-                fromDate = DateTime.Today.AddDays(-1);
-            }
-            
-            var groupedCategories = invoker.Purchases.Where(x => fromDate <= x.BoughtAt && x.BoughtAt <= toDate).ToList()
+            var groupedCategories = invoker.Purchases.Where(x => from <= x.BoughtAt && x.BoughtAt <= to).ToList()
                 .GroupBy(x => x.Category).ToList();
 
             if (groupedCategories == null)
@@ -134,7 +122,7 @@ namespace MoneyCheckWebApp.Controllers
                 decimal GetSumRecursive(CategoryDataType category)
                 {
                     var recursiveSum = category.ChildCategories?.Select(GetSumRecursive).Sum() ?? 0; 
-                    var sum =  contextCategory.Purchases.Where(x => fromDate <= x.BoughtAt && x.BoughtAt <= toDate).Select(x => x.Amount).Sum() + recursiveSum;
+                    var sum =  contextCategory.Purchases.Where(x => from <= x.BoughtAt && x.BoughtAt <= to).Select(x => x.Amount).Sum() + recursiveSum;
 
                     categoryDataType.CategoryAmount = sum;
 
