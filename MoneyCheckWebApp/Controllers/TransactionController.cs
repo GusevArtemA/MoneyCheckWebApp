@@ -116,19 +116,19 @@ namespace MoneyCheckWebApp.Controllers
         /// <returns></returns>
         [HttpPatch]
         [Route("edit-purchase")]
-        public async Task<IActionResult> EditPurchaseAsync([FromBody] PurchaseType purchase)
+        public async Task<IActionResult> EditPurchaseAsync([FromBody] EditPurchaseType purchase)
         {
             var user = this.ExtractUser();
             var beforeEditedPurchase = _context.Purchases.FirstOrDefault(x => x.Id == purchase.Id && x.CustomerId == user.Id);
             
             if (beforeEditedPurchase != null)
             {
-                user.Balance += beforeEditedPurchase.Amount;
-                user.Balance -= purchase.Amount;
-
-                beforeEditedPurchase.Id = purchase.Id;
-                beforeEditedPurchase.Amount = purchase.Amount;
-                beforeEditedPurchase.CategoryId = purchase.CategoryId;
+                user.Balance += purchase.Amount != null ? beforeEditedPurchase.Amount : 0;
+                user.Balance -= purchase.Amount ?? 0;
+                
+                beforeEditedPurchase.Amount = purchase.Amount ?? 0;
+                
+                if(purchase.CategoryId != null) beforeEditedPurchase.CategoryId = purchase.CategoryId.Value;
 
 
                 await _context.SaveChangesAsync();

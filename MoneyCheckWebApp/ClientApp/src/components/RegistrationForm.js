@@ -1,11 +1,8 @@
 import React from "react";
-import {CookieHelper} from "../services/CookieHelper";
 import {Redirect} from "react-router-dom";
 import {Loader} from "../ui/Loader";
-import {ReactComponent as Logo} from "../assets/images/logo.svg";
 import {TextInput} from "../ui/TextInput";
 import {SubmitButton} from "../ui/Button";
-import md5 from "crypto-js/md5";
 
 export class RegistrationForm extends React.Component {
     constructor(props) {

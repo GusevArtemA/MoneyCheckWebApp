@@ -3,6 +3,8 @@ import React from "react";
 import {faAngleUp} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {Box} from "./Box";
+const classNames = require('classnames');
+
 
 export class SelectBox extends React.Component {
     constructor(props) {
@@ -15,7 +17,7 @@ export class SelectBox extends React.Component {
     }
     
     render() {
-        return <Box className="d-flex flex-column select-box">
+        return <Box className={classNames("d-flex flex-column select-box", this.props.className)}>
             <div className="d-flex flex-row align-items-center justify-content-center" onClick={() => this.setState({ isOpened: !this.state.isOpened })}>
                 <span>{this.state.context}</span>
                 <FontAwesomeIcon icon={faAngleUp} className={!this.state.isOpened ? 'closed-select-box-arrow' : 'opened-select-box-arrow'}/>    

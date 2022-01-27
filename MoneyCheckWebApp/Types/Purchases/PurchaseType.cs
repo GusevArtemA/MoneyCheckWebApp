@@ -15,4 +15,11 @@ namespace MoneyCheckWebApp.Types.Purchases
         public decimal? Longitude { get; set; }
         public decimal? Latitude { get; set; }
     }
+    
+    public class EditPurchaseType
+    {
+        public long Id { get; set; }
+        public decimal? Amount { get; set; }
+        public long? CategoryId { get; set; }
+    }
 }

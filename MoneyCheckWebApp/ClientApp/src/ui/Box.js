@@ -1,13 +1,14 @@
 import React from "react";
 
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import classNames from "classnames";
 
 export class Box extends React.Component {
     render() {
         return (
-            <div {...this.props} className={`box${this.props.className == null ?  '' : ' ' + this.props.className}`}>
+            <div className={classNames('box', this.props.className)}>
                 {
-                    this.props.rightButton != null ? <button className="right-box-button" onClick={this.props.rightButtonClick}> 
+                    this.props.rightButton != null ? <button className="right-box-button" onClick={this.props.onRightButtonClick}> 
                         <FontAwesomeIcon icon={this.props.rightButton}/>
                     </button> : null
                 }

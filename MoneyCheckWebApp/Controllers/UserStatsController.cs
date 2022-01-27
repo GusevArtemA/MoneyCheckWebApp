@@ -1,6 +1,8 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using Microsoft.AspNetCore.Mvc;
 using MoneyCheckWebApp.Extensions;
 using MoneyCheckWebApp.Models;
@@ -40,24 +42,68 @@ namespace MoneyCheckWebApp.Controllers
         }
 
         [HttpGet]
-        [Route("get-for-year")]
-        public IActionResult GetYearStats()
+        [Route("get-trace")]
+        public IActionResult GetTraceStats(int? index, string? filter = "year")
         {
             var invoker = this.ExtractUser();
-            var now = DateTime.Now;
-            
-            return Ok(new StatsForYear()
+            try
             {
-                Months = invoker.Purchases.Where(x => x.BoughtAt.Year != now.Year)
-                    .GroupBy(x => x.BoughtAt.Month)
-                    .Select(x => new Tuple<int, Purchase?>(x.Key,
-                        x.FirstOrDefault()))
-                    .Select(x => new StatForMonth
-                    {
-                        Number = x.Item1,
-                        Amount = x.Item2?.Amount ?? -1
-                    }) 
-            });
+                return Ok(filter switch
+                {
+                    "year" => invoker.Purchases.Where(x => x.BoughtAt.Year == (index ?? DateTime.Today.Year))
+                        .GroupBy(x => x.BoughtAt.Month)
+                        .Select(x => new Tuple<int, decimal?>(x.Key,
+                            x.Select(z => z.Amount).Sum()))
+                        .OrderBy(x => x.Item1)
+                        .Select(x => new StatTrace
+                        {
+                            Index = x.Item1 switch
+                            {
+                                1 => "Янв",
+                                2 => "Фев",
+                                3 => "Март",
+                                4 => "Апр", 
+                                5 => "Май",
+                                6 => "Июнь",
+                                7 => "Июль",
+                                8 => "Авг",
+                                9 => "Сен",
+                                10 => "Окт",
+                                11 => "Нояб",
+                                12 => "Дек",
+                                _ => "?"
+                            },
+                            Amount = x.Item2
+                        }),
+                    "month" => invoker.Purchases.Where(x => x.BoughtAt.Year == DateTime.Now.Year &&
+                                                            x.BoughtAt.Month == (index ?? DateTime.Today.Month))
+                        .GroupBy(x => x.BoughtAt.Month)
+                        .Select(x => new Tuple<int, IEnumerable<StatTrace>>(x.Key, x.Select(z => new StatTrace()
+                        {
+                            Index = z.BoughtAt.Day.ToString(),
+                            Amount = z.Amount
+                        })))
+                        .First(x => x.Item1 == index).Item2
+                        .GroupBy(x => x.Index)
+                        .Select(x => new StatTrace()
+                        {
+                            Index = x.Key,
+                            Amount = x.Select(z => z.Amount).Sum()
+                        }).OrderBy(x => int.Parse(x.Index)),
+                    "years" => invoker.Purchases.GroupBy(x => x.BoughtAt.Year)
+                        .OrderBy(x => x.Key)
+                        .Select(x => new StatTrace()
+                        {
+                            Index = x.Key.ToString(),
+                            Amount = x.Select(z => z.Amount).Sum()
+                        }),
+                    _ => Array.Empty<StatTrace>()
+                });
+            }
+            catch (Exception)
+            {
+                return BadRequest("Failed get trace");
+            }
         }
 
         [HttpGet]
