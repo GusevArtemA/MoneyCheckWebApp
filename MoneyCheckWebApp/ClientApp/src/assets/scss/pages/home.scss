@@ -51,7 +51,8 @@ h1 {
 .list-container {
   width: 650px;
   max-height: 400px;
-  overflow-y: auto;
+  overflow-y: scroll;
+  overflow-x: visible !important;
   padding: 20px;
 
   * {
@@ -159,4 +160,20 @@ div[class *= "debtor-list"] {
 
 .return-debt-span {
   color: brand.$success;
+}
+ 
+.fa-pen {
+  color: #26d7ff;;
+}
+
+.can-hide {
+  transition: opacity 0.3s;
+}
+
+.shown {
+  opacity: 1;
+}
+
+.hidden {
+  opacity: 0;
 }

@@ -30,6 +30,10 @@ export class MCApi {
         return await this._fetchJson('/api/web/get-categories');
     }
     
+    async getStatsForYearAnalytics(filter = "year", index = null) {
+        return await this._fetchJson(`/api/user-stats/get-trace?filter=${filter}&index=${index ?? ''}`);
+    }
+    
     /**
      * Fetches json with following url
      * @private

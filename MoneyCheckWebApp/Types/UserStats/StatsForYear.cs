@@ -5,13 +5,13 @@ namespace MoneyCheckWebApp.Types.UserStats
 {
     public class StatsForYear
     {
-        public IEnumerable<StatForMonth> Months { get; set; }
+        public IEnumerable<StatTrace> Months { get; set; }
     }
 
-    public class StatForMonth
+    public class StatTrace
     {
-        public int Number { get; set; }
+        public string Index { get; set; }
         
-        public decimal Amount { get; set; }
+        public decimal? Amount { get; set; }
     }
 }

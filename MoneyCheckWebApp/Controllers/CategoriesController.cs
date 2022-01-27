@@ -1,6 +1,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using MoneyCheckWebApp.Extensions;
 using MoneyCheckWebApp.Models;
 using MoneyCheckWebApp.Types.Purchases;
@@ -40,6 +41,12 @@ namespace MoneyCheckWebApp.Controllers
             {
                 return BadRequest(Statuses.CategoryLogoRequiredStatus);
             }
+
+            if (_context.Categories.Any(x =>
+                    (x.OwnerId == null || x.OwnerId == invoker.Id) && x.CategoryName == category.CategoryName))
+            {
+                return BadRequest(); //Category already exists
+            }
             
             Category addCategory = new()
             {
@@ -55,6 +62,23 @@ namespace MoneyCheckWebApp.Controllers
             await _context.SaveChangesAsync();
 
             return Ok(addCategory.Id);
+        }
+
+        [HttpDelete]
+        [Route("delete-category")]
+        public async Task<IActionResult> DeleteCategory(long id)
+        {
+            if (await _context.Categories.AnyAsync(x => x.OwnerId == null && x.Id == id) ||
+                await _context.Categories.AllAsync(x => x.Id != id))
+            {
+                return BadRequest();//Delete system category
+            }
+
+            _context.Categories.Remove(new Category() {Id = id});
+
+            await _context.SaveChangesAsync();
+
+            return Ok();
         }
     }
 }

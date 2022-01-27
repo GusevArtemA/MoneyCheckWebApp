@@ -9,16 +9,16 @@ a:hover {
 }
 
 .box {
+  position: relative;
   background: brand.$sub-light-background;
   padding: 10px;
   border-radius: 8px;
-  position: relative;
 }
 
 .right-box-button {
   position: absolute;
   top: 0;
-  right: 5px;
+  right: 0;
   color: brand.$brand-purple;
   cursor: pointer;
   background: transparent;
@@ -193,4 +193,122 @@ button[class *= 'icon-button'] {
 
 .layout-icon-button {
   background: #FFF !important;
+}
+
+.box-dialog {
+  z-index: 3000000000000000;
+  min-width: 10%;
+  cursor: pointer;
+  user-select: none;
+  font-weight: 600;
+  
+  .dialog-item {
+    transition: background-color 0.3s;
+    padding: 5px;
+    border-radius: 8px;
+    
+    &:hover {
+      background: darken(brand.$main-light-background, 2);
+    }
+  }
+}
+
+.menu {
+  background: lighten(brand.$main-light-background, 2);
+  color: #000;
+  padding: 10px;
+  border-radius: 10px;
+  
+  .menu-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+  }
+  
+  .menu-item * {
+    font-weight: 700;  
+  }
+  
+  .menu-item svg[class *= 'fa'] {
+    margin-left: 10px;
+  }
+  
+  .fa-plus {
+    color: brand.$brand-purple;
+  }
+}
+
+.deletable-container {
+  position: relative;
+  overflow-x: visible;
+  
+  .delete-dialog {
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    top: 0;
+    left: 0;
+    transition: opacity 0.3s;
+    background: brand.$brand-red;
+    
+    border-radius: 8px;
+
+    cursor: pointer;
+    
+    .fa-trash {
+      color: #FFF;
+    }
+  }
+  
+  .delete-dialog-show {
+    cursor: pointer;
+    opacity: 1;
+  }
+  
+  .hidden {
+    z-index: -1;
+  }
+}
+
+.transaction-icon {
+  width: 66px;
+  height: 66px;
+}
+
+.modal-select-box {
+  background: brand.$main-light-background;
+}
+
+.auto-complete-input {
+  width: 100%;
+  border: none;
+  outline: none;
+}
+
+.auto-complete-input, .auto-complete-options-container {
+  padding: 8px;
+}
+
+.auto-complete-options-container {
+  width: 100%;
+  background: #FFF;
+  border-radius: 0 0 8px 8px;
+}
+
+.shown-state {
+  .auto-complete-input {
+    border-radius: 8px 8px 0 0;
+  }
+}
+
+.hidden-state {
+  .auto-complete-input {
+    border-radius: 8px;
+  }
+}
+
+.auto-complete-wrapper {
+  width: 300px;
 }

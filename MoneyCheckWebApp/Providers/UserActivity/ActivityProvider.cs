@@ -29,7 +29,8 @@ namespace MoneyCheckWebApp.Providers.UserActivity
                     : "get-verified-company-logo?id=" + x.VerifiedCompany!.Id),
                 Description = x.VerifiedCompany?.CompanyName ?? x.Category.CategoryName,
                 TimeStamp = x.BoughtAt,
-                Amount = x.Amount
+                Amount = x.Amount,
+                Id = x.Id
             });
         }
 

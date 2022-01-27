@@ -77,7 +77,7 @@ namespace MoneyCheckWebApp.Controllers
                 addPurchase.VerifiedCompanyId = purchase.VerifiedCompanyId;    
             }
             
-            this.ExtractUser().Balance -= purchase.Amount  * (category.CategoryName == "Зачисление" ? -1 : 1); //Проверка на зачисление
+            this.ExtractUser().Balance -= purchase.Amount  * (category.CategoryName == Resources.AddCashCategoryName ? -1 : 1); //Проверка на зачисление
 
             await _context.SaveChangesAsync();
 
@@ -97,7 +97,7 @@ namespace MoneyCheckWebApp.Controllers
             var foundPurchase = _context.Purchases.SingleOrDefault(x => x.Id == id && x.CustomerId == extractedUser.Id);
             if (foundPurchase != null)
             {
-                extractedUser.Balance += foundPurchase.Amount;
+                extractedUser.Balance += foundPurchase.Amount * (foundPurchase.Category.CategoryName == Resources.AddCashCategoryName ? -1 : 1);
                 _context.Purchases.Remove(foundPurchase);
                 await _context.SaveChangesAsync();
             }
@@ -116,19 +116,19 @@ namespace MoneyCheckWebApp.Controllers
         /// <returns></returns>
         [HttpPatch]
         [Route("edit-purchase")]
-        public async Task<IActionResult> EditPurchaseAsync([FromBody] PurchaseType purchase)
+        public async Task<IActionResult> EditPurchaseAsync([FromBody] EditPurchaseType purchase)
         {
             var user = this.ExtractUser();
             var beforeEditedPurchase = _context.Purchases.FirstOrDefault(x => x.Id == purchase.Id && x.CustomerId == user.Id);
             
             if (beforeEditedPurchase != null)
             {
-                user.Balance += beforeEditedPurchase.Amount;
-                user.Balance -= purchase.Amount;
-
-                beforeEditedPurchase.Id = purchase.Id;
-                beforeEditedPurchase.Amount = purchase.Amount;
-                beforeEditedPurchase.CategoryId = purchase.CategoryId;
+                user.Balance += purchase.Amount != null ? beforeEditedPurchase.Amount : 0;
+                user.Balance -= purchase.Amount ?? 0;
+                
+                beforeEditedPurchase.Amount = purchase.Amount ?? 0;
+                
+                if(purchase.CategoryId != null) beforeEditedPurchase.CategoryId = purchase.CategoryId.Value;
 
 
                 await _context.SaveChangesAsync();
