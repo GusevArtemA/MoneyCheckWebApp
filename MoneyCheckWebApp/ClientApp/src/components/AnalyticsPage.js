@@ -1,11 +1,15 @@
 import React, {useEffect, useState} from "react";
-import {ChartComponent, Inject, LineSeries, Category, SplineSeries} from "@syncfusion/ej2-react-charts";
+import {ChartComponent, Inject, Category,
+        Legend, SplineSeries, ColumnSeries,
+        Tooltip, DataLabel} from "@syncfusion/ej2-react-charts";
 import {SeriesCollectionDirective, SeriesDirective} from "@syncfusion/ej2-react-charts/src/chart/series-directive";
 import {Loader} from "../ui/Loader";
 import {MCApi} from "../services/MCApi";
 import {Box} from "../ui/Box";
 
 import "../assets/scss/pages/analytics.scss";
+import {Container} from "reactstrap";
+import Logo from "../assets/images/logo.svg";
 
 export function AnalyticsPage() {
     const [splineDiagramData, setSplineDiagram] = useState(null);
@@ -20,35 +24,30 @@ export function AnalyticsPage() {
         </div>
     }
     
-    return <SplineDiagramContainer data={splineDiagramData}/>
+    return <Container>
+        <div className="d-flex justify-content-between align-items-center mb-2 mt-2">
+            <h1>Как я тратил деньги в этом году</h1>
+            <img src={Logo} alt="Logotype" width="75"/>
+        </div>
+        <SplineDiagramContainer data={splineDiagramData}/>
+    </Container>
 }
 
 function SplineDiagramContainer(props) {
-    const [janData, setJanData] = useState();
-    
-    useEffect(() => {
-        setJanData(new MCApi().getStatsForYearAnalytics("month", 1).then(res => setJanData(res)));
-    }, []);
-    
-    if(props.data.length === 1) {
-        return <Box className="diagram-container">
-            <p className="font-weight-bold">Ваши траты за январь</p>
-            <ChartComponent title={props.title}
-                            primaryXAxis={{valueType: "Category"}}>
-                <Inject services={[LineSeries, Category, SplineSeries]}/>
-                <SeriesCollectionDirective>
-                    <SeriesDirective fill="#B122F4" type="Spline" dataSource={janData} xName="index" yName="amount"/>
-                </SeriesCollectionDirective>
-            </ChartComponent>
-        </Box>
-    }
-    
     return <Box className="diagram-container">
-        <ChartComponent title={props.title}
-            primaryXAxis={{valueType: "Category"}}>
-            <Inject services={[LineSeries, Category, SplineSeries]}/>
+        <ChartComponent
+            primaryXAxis={{valueType: "Category"}}
+            tooltip={{ enable: true }}>
+            <Inject services={[Category, SplineSeries, ColumnSeries, Tooltip, DataLabel, Legend]}/>
             <SeriesCollectionDirective>
-                <SeriesDirective fill="#B122F4" type="Spline" dataSource={props.data} xName="index" yName="amount"/>
+                <SeriesDirective fill="#B122F4"
+                                 type="Spline"
+                                 dataSource={props.data}
+                                 xName="index"
+                                 yName="amount"
+                                 name="Сумма трат"
+                                 marker={{ visible: true, width: 10, height: 10 }}
+                                animation={{enable: true, duration: 1200}}/>
             </SeriesCollectionDirective>
         </ChartComponent>
     </Box>;
