@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using MoneyCheckWebApp.Extensions;
 using MoneyCheckWebApp.Models;
@@ -105,6 +106,22 @@ namespace MoneyCheckWebApp.Controllers
                 return BadRequest("Failed get trace");
             }
         }
+
+        /// <summary>
+        /// Получает сводку по категориям за данный год
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("get-categories-stats")]
+        public IActionResult GetCategoriesStats() => 
+            Ok(this.ExtractUser().Purchases.Where(x => x.BoughtAt.Year == DateTime.Now.Year)
+                .GroupBy(x => x.Category)
+                .Select(x => new CategoryDataType()
+                {
+                    Id = x.Key.Id,
+                    CategoryName = x.Key.CategoryName,
+                    CategoryAmount = x.Select(z => z.Amount).Sum()
+                }));
 
         [HttpGet]
         [Route("get-transactions")]
