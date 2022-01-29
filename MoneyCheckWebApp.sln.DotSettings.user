@@ -1,33 +1,13 @@
 ﻿<wpf:ResourceDictionary xml:space="preserve" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:ss="urn:shemas-jetbrains-com:settings-storage-xaml" xmlns:wpf="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
 	<s:String x:Key="/Default/CodeInspection/PencilsConfiguration/ActualSeverity/@EntryValue">INFO</s:String>
 	<s:String x:Key="/Default/CodeInspection/PencilsConfiguration/FiltersState/=SpellingFilter/@EntryIndexedValue">Off</s:String>
-	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=3538306d_002D8ef1_002D4e71_002D8a04_002D35040cae64de/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="DefaultPredicationTest #2" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
-  &lt;TestAncestor&gt;&#xD;
-    &lt;TestId&gt;xUnit::C15CB143-7967-460B-AE3B-A2929EDDB541::net5.0::MoneyCheckWebAppTest.PredicationsTests.DefaultPredicationTest&lt;/TestId&gt;&#xD;
-    &lt;TestId&gt;xUnit::C15CB143-7967-460B-AE3B-A2929EDDB541::net5.0::MoneyCheckWebAppTest.PredicationsTests.PredicationWithNoiseTest&lt;/TestId&gt;&#xD;
-    &lt;TestId&gt;xUnit::C15CB143-7967-460B-AE3B-A2929EDDB541::net5.0::MoneyCheckWebAppTest.PredicationsTests.PredicationWithAverageNoiseTest&lt;/TestId&gt;&#xD;
-    &lt;TestId&gt;xUnit::C15CB143-7967-460B-AE3B-A2929EDDB541::net5.0::MoneyCheckWebAppTest.PredicationsTests.LinearRegressionTest&lt;/TestId&gt;&#xD;
-  &lt;/TestAncestor&gt;&#xD;
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=5dcf8085_002D5637_002D446d_002Dad4c_002D18353a1b9b9b/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="All tests from Solution" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
+  &lt;Solution /&gt;
 &lt;/SessionState&gt;</s:String>
-	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=55fb7f5c_002D2604_002D4b5c_002D984e_002D515584ef2fe9/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="DefaultTest" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
-  &lt;TestAncestor&gt;&#xD;
-    &lt;TestId&gt;MSTest::7280C0C7-B4FE-44F6-B733-2403EFD6BD2D::net5.0::MoneyCheckWebAppTest.PredicationTests.DefaultTest&lt;/TestId&gt;&#xD;
-  &lt;/TestAncestor&gt;&#xD;
-&lt;/SessionState&gt;</s:String>
-	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=71b57500_002Ddc70_002D4a51_002D85d7_002D03c829487223/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="PredicationsTests #2" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
-  &lt;TestAncestor&gt;&#xD;
-    &lt;TestId&gt;xUnit::C15CB143-7967-460B-AE3B-A2929EDDB541::net5.0::MoneyCheckWebAppTest.PredicationsTests&lt;/TestId&gt;&#xD;
-  &lt;/TestAncestor&gt;&#xD;
-&lt;/SessionState&gt;</s:String>
-	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=8bb242e5_002D6f10_002D463a_002D9889_002D8d8a1aa2ced0/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="DefaultPredicationTest" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
-  &lt;TestAncestor&gt;&#xD;
-    &lt;TestId&gt;xUnit::C15CB143-7967-460B-AE3B-A2929EDDB541::net5.0::MoneyCheckWebAppTest.PredicationsTests.DefaultPredicationTest&lt;/TestId&gt;&#xD;
-  &lt;/TestAncestor&gt;&#xD;
-&lt;/SessionState&gt;</s:String>
-	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=96c4a5ab_002Dfd52_002D4738_002Da8e0_002D2c2cd56d842f/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="PredicationsTests" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
-  &lt;TestAncestor&gt;&#xD;
-    &lt;TestId&gt;xUnit::C15CB143-7967-460B-AE3B-A2929EDDB541::net5.0::MoneyCheckWebAppTest.PredicationsTests&lt;/TestId&gt;&#xD;
-  &lt;/TestAncestor&gt;&#xD;
-&lt;/SessionState&gt;</s:String>
+	
+	
+	
+	
+	
 	
 	</wpf:ResourceDictionary>
