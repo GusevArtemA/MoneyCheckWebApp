@@ -16,13 +16,17 @@ import {Button} from "../ui/Button";
 
 export function AnalyticsPage() {
     const [splineDiagramData, setSplineDiagram] = useState(null);
+    const [pieData, setPieData] = useState(null);
     
     useEffect(() => {
-        new MCApi().getStatsForYearAnalytics().then(data => setSplineDiagram(data));
+        const api = new MCApi();
+        
+        api.getStatsForYearAnalytics().then(data => setSplineDiagram(data));
+        api.getCategoriesData().then(data => setPieData(data));
     }, []);
     
-    if(splineDiagramData == null) {
-        return <div className="max justify-content-center align-items-center">
+    if(splineDiagramData == null || pieData == null) {
+        return <div className="max d-flex justify-content-center align-items-center">
             <Loader/>
         </div>
     }
@@ -35,40 +39,7 @@ export function AnalyticsPage() {
         <SplineDiagramContainer data={splineDiagramData}/>
         <div className="d-flex flex-row mt-2 justify-content-between align-items-center">
             <Box className="half-fill-x">
-                <PieDiagram data={
-                    [
-                        {
-                            "id": 8,
-                            "categoryName": "Развлечения",
-                            "categoryAmount": 1300.0000
-                        },
-                        {
-                            "id": 1,
-                            "categoryName": "Одежда",
-                            "categoryAmount": 16100.0000
-                        },
-                        {
-                            "id": 2,
-                            "categoryName": "Товары для дома",
-                            "categoryAmount": 2100.0000
-                        },
-                        {
-                            "id": 3,
-                            "categoryName": "Зачисление",
-                            "categoryAmount": 1000.0000
-                        },
-                        {
-                            "id": 4,
-                            "categoryName": "Отчисление",
-                            "categoryAmount": 1000.0000
-                        },
-                        {
-                            "id": 5,
-                            "categoryName": "Фастфуд",
-                            "categoryAmount": 1100.0000
-                        }
-                    ]
-                }/>
+                <PieDiagram data={pieData}/>
             </Box>
             <Box className="d-flex flex-column half-fill-x export-container">
                 <ExportAsExcelFileBlock/>
