@@ -2,9 +2,9 @@ using System;
 using System.Reflection;
 using System.Text;
 
-namespace MoneyCheckWebApp.ExportingServices.Csv
+namespace MoneyCheckWebApp.ExportingServices.Csv.Movers
 {
-    public class CsvObjectPropertiesCursorMover
+    public class CsvObjectPropertiesCursorMover : ICursorMover
     {
         private readonly object _obj;
         private PropertyInfo[] _props;

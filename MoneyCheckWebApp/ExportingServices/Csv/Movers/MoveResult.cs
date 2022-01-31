@@ -1,4 +1,4 @@
-namespace MoneyCheckWebApp.ExportingServices.Csv
+namespace MoneyCheckWebApp.ExportingServices.Csv.Movers
 {
     public class MoveResult
     {
