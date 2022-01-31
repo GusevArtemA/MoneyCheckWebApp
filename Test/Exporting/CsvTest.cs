@@ -24,7 +24,7 @@ namespace Test.Exporting
         [Fact]
         public void TestObjectsConvertation()
         {
-            const string expectedCsv = "Tom,0,True\nKate,1,False\nDenis,2,True";
+            const string expectedCsv = "Name,Id,IsAdmin\nTom,0,True\nKate,1,False\nDenis,2,True\n";
             var users = new[] {  
                 new User()
                 {
