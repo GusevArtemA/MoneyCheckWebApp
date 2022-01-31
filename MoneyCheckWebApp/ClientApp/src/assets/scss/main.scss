@@ -96,10 +96,12 @@ a:hover {
   border-radius: 8px;
   transition: box-shadow 0.3s;
   box-shadow: 0 0 0 0 transparentize(brand.$brand-purple, 0.5);
+  text-align: center;
 }
 
 .brand-button:hover {
   box-shadow: 0 0 0 3px transparentize(brand.$brand-purple, 0.5);
+  color: #FFF;
 }
 
 .brand-button:active, .brand-button:focus {

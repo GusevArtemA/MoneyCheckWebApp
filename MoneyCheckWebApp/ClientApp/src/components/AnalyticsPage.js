@@ -12,7 +12,7 @@ import {Box} from "../ui/Box";
 import "../assets/scss/pages/analytics.scss";
 import {Container} from "reactstrap";
 import Logo from "../assets/images/logo.svg";
-import {Button} from "../ui/Button";
+import {Button, LinkButton} from "../ui/Button";
 
 export function AnalyticsPage() {
     const [splineDiagramData, setSplineDiagram] = useState(null);
@@ -76,9 +76,9 @@ function ExportAsExcelFileBlock() {
 }
 
 function ExportAsCSVBlock() {
-    return <Button>
+    return <a href="/api/exports/csv-purchases" className="brand-button" download>
         Экспорт в CSV
-    </Button>;
+    </a>
 }
 
 function PieDiagram(props) {
