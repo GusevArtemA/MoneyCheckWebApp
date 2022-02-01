@@ -179,6 +179,26 @@ $loader-step: 10px;
   user-select: none;
 }
 
+@media screen and (max-width: 550px) {
+  h1 {
+    font-size: 30px !important;
+  }
+  
+  .select-box {
+    * {
+      font-size: 20px !important;  
+    }
+  }
+}
+
+@media screen and (max-width: 450px) {
+  .select-box {
+    * {
+      font-size: 16px !important;
+    }
+  }
+}
+
 button[class *= 'icon-button'] {
   background: transparent;
   color: brand.$brand-purple;
