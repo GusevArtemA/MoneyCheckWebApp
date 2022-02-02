@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 
 namespace MoneyCheckWebApp.PricePredicating
@@ -41,7 +42,7 @@ namespace MoneyCheckWebApp.PricePredicating
             var tan = highSum / lowSum;
             var bParam = averageY - tan * averageX;
 
-            return tan * (_array.Length + 1) + bParam;
+            return Math.Round(tan * (_array.Length + 1) + bParam);
         }
     }
 }
