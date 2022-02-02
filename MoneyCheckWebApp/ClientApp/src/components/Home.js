@@ -56,8 +56,6 @@ export function Home(props) {
             <Loader/>
         </div>
     }
-
-    
     
     return <div className="max container">
         <Greeter username={userInfo.username}/>
@@ -302,17 +300,19 @@ function TransactionContainer(props) {
                 <div>
                     <img src={props.transaction.iconUrl} width='65' alt="*Иконка*" className="transaction-icon"/>
                 </div>
-                <div className='transaction-description'>
-                    {props.transaction.description}
-                </div>
-                <div className="d-flex flex-row justify-content-end">
-                    <IconButton
-                        onClick={editTransaction}
-                        className={classNames("can-hide", canBeEdit ? "shown" : "hidden")}
-                        icon={faPen}/>
-                    <div>
-                        <span className='transaction-cost'>{props.transaction.amount} руб</span>
+                <div className="d-flex justify-content-between cat-cost-combo">
+                    <div className='transaction-description'>
+                        {props.transaction.description}
                     </div>
+                    <div className="d-flex flex-row justify-content-end">
+                        <IconButton
+                            onClick={editTransaction}
+                            className={classNames("can-hide", canBeEdit ? "shown" : "hidden")}
+                            icon={faPen}/>
+                        <div>
+                            <span className='transaction-cost'>{props.transaction.amount} руб</span>
+                        </div>
+                    </div>    
                 </div>
             </div>
         </DeletableContainer>
