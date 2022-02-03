@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using MoneyCheckWebApp.Predications.InflationPredicating;
@@ -21,7 +22,7 @@ namespace MoneyCheckWebApp.Controllers
         {
             var predication = await _inflationPredicationProcessor.PredicateAsync(index);
 
-            return Ok((1 + predication) * priceNow);
+            return Ok(Math.Round((1 + predication / 100) * priceNow));
         }
     }
 }
