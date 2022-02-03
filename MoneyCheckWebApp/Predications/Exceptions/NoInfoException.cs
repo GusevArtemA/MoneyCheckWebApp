@@ -1,6 +1,6 @@
 using System;
 
-namespace MoneyCheckWebApp.PricePredicating.Exceptions
+namespace MoneyCheckWebApp.Predications.Exceptions
 {
     public class NoInfoException : Exception
     {

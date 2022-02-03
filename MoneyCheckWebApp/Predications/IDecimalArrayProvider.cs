@@ -1,4 +1,4 @@
-namespace MoneyCheckWebApp.PricePredicating
+namespace MoneyCheckWebApp.Predications
 {
     public interface IDecimalArrayProvider
     {

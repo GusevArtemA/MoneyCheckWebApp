@@ -1,9 +1,8 @@
 using System;
 using System.Linq;
 using MoneyCheckWebApp.Models;
-using MoneyCheckWebApp.PricePredicating.Exceptions;
 
-namespace MoneyCheckWebApp.PricePredicating
+namespace MoneyCheckWebApp.Predications.LinearRegression
 {
     public class PurchasesDecimalArrayProvider : IDecimalArrayProvider
     {

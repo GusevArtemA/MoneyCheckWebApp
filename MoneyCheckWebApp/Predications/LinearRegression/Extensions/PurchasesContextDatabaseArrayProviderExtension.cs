@@ -1,6 +1,6 @@
 using MoneyCheckWebApp.Models;
 
-namespace MoneyCheckWebApp.PricePredicating.Extensions
+namespace MoneyCheckWebApp.Predications.LinearRegression.Extensions
 {
     public static class PurchasesContextDatabaseArrayProviderExtension
     {

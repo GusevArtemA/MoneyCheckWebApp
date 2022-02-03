@@ -1,7 +1,7 @@
 using System;
 using System.Linq;
 
-namespace MoneyCheckWebApp.PricePredicating
+namespace MoneyCheckWebApp.Predications.LinearRegression
 {
     public class PredicationProcessor
     {
