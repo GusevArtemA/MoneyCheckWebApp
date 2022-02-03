@@ -59,7 +59,7 @@ namespace MoneyCheckWebApp.Predications.InflationPredicating.NeuralNetwork
                 
                 Array.Copy(inflationIndexesBuffer, 1, inflationIndexesBuffer, 0, inflationIndexesBuffer.Length - 1);
                 inflationIndexesBuffer[_config.NumInputsNeurons - 1] = outputs[0];
-                mult *= outputs[0];
+                mult *= outputs[0] / 100 + 1;
             }
 
             return mult;

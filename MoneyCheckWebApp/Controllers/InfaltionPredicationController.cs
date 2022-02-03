@@ -22,7 +22,7 @@ namespace MoneyCheckWebApp.Controllers
         {
             var predication = await _inflationPredicationProcessor.PredicateAsync(index);
 
-            return Ok(Math.Round((1 + predication / 100) * priceNow));
+            return Ok(Math.Round(predication* priceNow));
         }
     }
 }
