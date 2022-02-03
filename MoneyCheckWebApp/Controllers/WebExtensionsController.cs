@@ -1,13 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using MoneyCheckWebApp.Extensions;
 using MoneyCheckWebApp.Models;
-using MoneyCheckWebApp.PricePredicating;
-using MoneyCheckWebApp.PricePredicating.Exceptions;
-using MoneyCheckWebApp.PricePredicating.Extensions;
+using MoneyCheckWebApp.Predications.Exceptions;
+using MoneyCheckWebApp.Predications.LinearRegression;
+using MoneyCheckWebApp.Predications.LinearRegression.Extensions;
 using MoneyCheckWebApp.Types.Debts;
 using MoneyCheckWebApp.Types.WebExtensions;
 
