@@ -43,6 +43,7 @@ namespace MoneyCheckWebApp.Predications.InflationPredicating.NeuralNetwork
         {
             var weights = weightsProvider.ProvideWeights();
             var inflationIndexes = await asyncInfliationProvider.ProvideInflationArrayAsync();
+            var mult = 1d;
             
             if (weights.Length != _config.NumInputsNeurons)
             {
@@ -57,9 +58,10 @@ namespace MoneyCheckWebApp.Predications.InflationPredicating.NeuralNetwork
                 
                 Array.Copy(inflationIndexes, 1, inflationIndexes, 0, inflationIndexes.Length - 1);
                 inflationIndexes[_config.NumInputsNeurons - 1] = outputs[0];
+                mult *= outputs[0];
             }
 
-            return inflationIndexes.Last();
+            return mult;
         }
     }
 
