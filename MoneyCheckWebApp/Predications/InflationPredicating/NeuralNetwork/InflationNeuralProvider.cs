@@ -28,8 +28,10 @@ namespace MoneyCheckWebApp.Predications.InflationPredicating.NeuralNetwork
         {
             var matrix = new double[dataToFormat.Length - _config.NumInputsNeurons][];
             
-            for (var i = 0; i < dataToFormat.Length; i++)
+            for (var i = 0; i < dataToFormat.Length - _config.NumInputsNeurons; i++)
             {
+                matrix[i] = new double[_config.NumInputsNeurons + 1];
+
                 for (var j = 0; j < _config.NumInputsNeurons + 1; j++)
                 {
                     matrix[i][j] = dataToFormat[i + j];
@@ -44,20 +46,19 @@ namespace MoneyCheckWebApp.Predications.InflationPredicating.NeuralNetwork
             var weights = weightsProvider.ProvideWeights();
             var inflationIndexes = await asyncInfliationProvider.ProvideInflationArrayAsync();
             var mult = 1d;
+
+            double[] inflationIndexesBuffer = new double[_config.NumInputsNeurons];
             
-            if (weights.Length != _config.NumInputsNeurons)
-            {
-                throw new ArgumentException($"Array might has {_config.NumInputsNeurons} neurons");
-            }
+            Array.Copy(inflationIndexes, inflationIndexes, _config.NumInputsNeurons);
 
             _nn.SetWeights(weights);
             
             for (int i = 0; i < index; i++)
             {
-                var outputs = _nn.ComputeOutputs(inflationIndexes);
+                var outputs = _nn.ComputeOutputs(inflationIndexesBuffer);
                 
-                Array.Copy(inflationIndexes, 1, inflationIndexes, 0, inflationIndexes.Length - 1);
-                inflationIndexes[_config.NumInputsNeurons - 1] = outputs[0];
+                Array.Copy(inflationIndexesBuffer, 1, inflationIndexesBuffer, 0, inflationIndexesBuffer.Length - 1);
+                inflationIndexesBuffer[_config.NumInputsNeurons - 1] = outputs[0];
                 mult *= outputs[0];
             }
 

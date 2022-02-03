@@ -6,7 +6,7 @@ namespace MoneyCheckWebApp.Predications.InflationPredicating
 {
     public class InflationPredicationProcessor
     {
-        private readonly InflationNeuralProvider _nnProvider = new InflationNeuralProvider(
+        private readonly InflationNeuralProvider _nnProvider = new(
             new InflationNeuralNetworkProviderConfiguration()
             {
                 NumHiddenNeurons = 12,
