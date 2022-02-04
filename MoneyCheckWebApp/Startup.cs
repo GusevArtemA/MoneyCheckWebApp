@@ -15,6 +15,7 @@ using Microsoft.Extensions.Logging;
 using MoneyCheckWebApp.Extensions;
 using MoneyCheckWebApp.HostedServices;
 using MoneyCheckWebApp.Models;
+using MoneyCheckWebApp.Predications.InflationPredicating;
 using MoneyCheckWebApp.Services;
 
 namespace MoneyCheckWebApp
@@ -60,8 +61,10 @@ namespace MoneyCheckWebApp
 #endif
             
             services.AddHostedService<AuthorizationTokenLifetimeEnvironmentService>();
+            services.AddHostedService<NeuralNetworkWeightsActualizerHostedService>();
 
             services.AddTransient<AuthorizationService>();
+            services.AddTransient<InflationPredicationProcessor>();
             services.AddTransient<CookieService>();
             services.AddControllersWithViews();
             services.AddSwaggerGen(options =>

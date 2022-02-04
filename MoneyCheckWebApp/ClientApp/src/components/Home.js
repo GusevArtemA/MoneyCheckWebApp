@@ -56,13 +56,11 @@ export function Home(props) {
             <Loader/>
         </div>
     }
-
-    
     
     return <div className="max container">
         <Greeter username={userInfo.username}/>
-        <div className="d-flex flex-row justify-content-around">
-            <div className='d-flex flex-column align-items-center justify-content-around'>
+        <div className="main-wrapper d-flex flex-row justify-content-around">
+            <div className='trans-debtors-wrapper d-flex flex-column align-items-center justify-content-around'>
                 <TransactionsHandler
                     transactions={transactions}
                     categories={categories}
@@ -84,7 +82,7 @@ export function Home(props) {
                     })}
                 />
             </div>
-            <div>
+            <div className="balance-info-wrapper">
                 <BalanceInfo balanceInfo={balanceInfo}/>
             </div>
         </div>
@@ -145,7 +143,7 @@ function TransactionsHandler(props) {
         }
     }
     
-    return <div>
+    return <div className="max-width">
         <div className="d-flex flex-row align-items-start" id="transactions-filter">
             <h1>Ваши транзакции за этот </h1>
             <SelectBox items={['день', 'месяц', 'год']} onValueChanged={selectBoxValueChangedHandler}/>
@@ -216,7 +214,7 @@ function TransactionsContainer(props) {
     }
     
     if(props.transactions == null) {
-        return <Box className="d-flex flex-column transactions-container justify-content-center align-items-center loading-transactions list-container">
+        return <Box className="max-width d-flex flex-column transactions-container justify-content-center align-items-center loading-transactions list-container">
             <Loader/>
         </Box>;
     }
@@ -225,7 +223,7 @@ function TransactionsContainer(props) {
         return <EmptyBox rightButton={faPlus} onRightButtonClick={formAlertToAddTransaction}/>
     }
 
-    return <Box className="d-flex flex-column transactions-container list-container"
+    return <Box className="max-width d-flex flex-column transactions-container list-container"
                 rightButton={faPlus}
                 onRightButtonClick={formAlertToAddTransaction}>
         {props.transactions.map(x => <TransactionContainer key={x.id} onDelete={props.itemAdded} transaction={x}/>)}
@@ -302,17 +300,19 @@ function TransactionContainer(props) {
                 <div>
                     <img src={props.transaction.iconUrl} width='65' alt="*Иконка*" className="transaction-icon"/>
                 </div>
-                <div className='transaction-description'>
-                    {props.transaction.description}
-                </div>
-                <div className="d-flex flex-row justify-content-end">
-                    <IconButton
-                        onClick={editTransaction}
-                        className={classNames("can-hide", canBeEdit ? "shown" : "hidden")}
-                        icon={faPen}/>
-                    <div>
-                        <span className='transaction-cost'>{props.transaction.amount} руб</span>
+                <div className="d-flex justify-content-between cat-cost-combo">
+                    <div className='transaction-description'>
+                        {props.transaction.description}
                     </div>
+                    <div className="d-flex flex-row justify-content-end">
+                        <IconButton
+                            onClick={editTransaction}
+                            className={classNames("can-hide", canBeEdit ? "shown" : "hidden")}
+                            icon={faPen}/>
+                        <div>
+                            <span className='transaction-cost'>{props.transaction.amount} руб</span>
+                        </div>
+                    </div>    
                 </div>
             </div>
         </DeletableContainer>
@@ -354,14 +354,14 @@ function DebtorsHandler(props) {
     }
     
     if(props.debtors.length === 0) {
-        return <div className="mt-3">
+        return <div className="mt-3 max-width">
             <h1>Ваши должники</h1>
             <EmptyBox rightButton={faPlus}
                       onRightButtonClick={formAlertToAddDebtor}/>
         </div>;  
     }
     
-    return <div className="mt-3">
+    return <div className="mt-3 max-width">
         <h1>Ваши должники</h1>
         <Box className="d-flex flex-column transactions-container list-container"
              rightButton={faPlus}
@@ -451,7 +451,7 @@ function DebtorContainer(props) {
         <DeletableContainer onDelete={removeDebtor}>
             <Box className="d-flex flex-row justify-content-between align-items-center">
                 <span className="font-weight-bolder debtor-name">{props.debtor.name}</span>
-                <div>
+                <div className="d-flex flex-row">
                     <span>{debtorSum} руб</span>
                     <IconButton onClick={addDebt} icon={faPlus}/>
                     <IconButton icon={faAngleDown}
