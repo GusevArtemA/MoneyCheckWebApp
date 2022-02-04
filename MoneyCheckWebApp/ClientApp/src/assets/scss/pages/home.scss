@@ -192,6 +192,12 @@ div[class *= "debtor-list"] {
   }
 }
 
+@media screen and (max-width: 700px) {
+  .transaction-container * {
+    font-size: 18px;
+  }
+}
+
 .transaction-cost {
   width: 200px;
 }

@@ -37,8 +37,8 @@ export function AnalyticsPage() {
             <img src={Logo} alt="Logotype" width="75"/>
         </div>
         <SplineDiagramContainer data={splineDiagramData}/>
-        <div className="d-flex flex-row mt-2 justify-content-between align-items-center">
-            <Box className="half-fill-x">
+        <div className="d-flex flex-row mt-2 justify-content-between align-items-center pie-and-export-block">
+            <Box className="half-fill-x pie-chart-wrapper">
                 <PieDiagram data={pieData}/>
             </Box>
             <Box className="d-flex flex-column half-fill-x export-container">

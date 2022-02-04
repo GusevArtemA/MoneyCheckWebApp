@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import {MCApi} from "../services/MCApi";
 import {Loader} from "../ui/Loader";
 
@@ -59,16 +59,16 @@ export function Home(props) {
     
     return <div className="max container">
         <Greeter username={userInfo.username}/>
-        <div className="main-wrapper d-flex flex-row justify-content-around">
-            <div className='trans-debtors-wrapper d-flex flex-column align-items-center justify-content-around'>
+        <div className="main-wrapper d-flex flex-row justify-content-around max-height align-items-center">
+            <div className='trans-debtors-wrapper d-flex flex-column align-items-center'>
                 <TransactionsHandler
                     transactions={transactions}
                     categories={categories}
                     refresh={() => {setRefreshing(true)}}
                     filterValueChanged={(filter) => api.getPurchases(filter).then(data =>
                         setTransactions(data))}
-                    itemAdded={() =>
-                        api.getPurchases().then(data => {
+                    itemAdded={(filter) =>
+                        api.getPurchases(filter).then(data => {
                             setTransactions(data);
                             api.getBalanceState().then(data =>
                                 setBalanceInfo(data));
@@ -129,18 +129,25 @@ function BalanceInfo(props) {
 }
 
 function TransactionsHandler(props) {
+    const [filter, setFilter] = useState("день");
+    
     const selectBoxValueChangedHandler = function (value) {
+        let f = 'ERR';
+        
         switch (value) {
             case 'день':
-                props.filterValueChanged('day');
+                f = 'day';
                 break;
             case 'месяц':
-                props.filterValueChanged('month');
+                f = 'month';
                 break;
             case 'год':
-                props.filterValueChanged('year');
+                f = 'year';
                 break;
         }
+
+        setFilter(f);
+        props.filterValueChanged(f);
     }
     
     return <div className="max-width">
@@ -150,7 +157,7 @@ function TransactionsHandler(props) {
         </div>
         <TransactionsContainer transactions={props.transactions}
                                categories={props.categories}
-                               itemAdded={() => {props.itemAdded();}}/>
+                               itemAdded={() => {props.itemAdded(filter);}}/>
     </div>
 }
 
@@ -158,22 +165,18 @@ function TransactionsContainer(props) {
     const formAlertToAddTransaction = function() {
         const itemAdded = props.itemAdded;
         
-        let selectBoxValue = props.categories[0];
-        
         MySwal.fire({
             title: 'Добавление транзакции',
             confirmButtonColor: '#2EC321',
-            html: (<form>
+            html: (<form className="swal-form d-flex justify-content-center flex-column align-items-center">
                 <input type="number" placeholder="Сумма в рублях" className="swal2-input" id="amount"/>
-                <SelectBox items={props.categories.map(a => a.name)}
-                           className="modal-select-box"
-                           onValueChanged={(a) => selectBoxValue = a}
-                />
+                <AutoComplete items={props.categories.map(a => a.name)} id="category-name"/>
             </form>),
             async preConfirm(inputValue) {
                 Swal.showLoading();
                 let amount = document.getElementById('amount');
-
+                let selectBoxValue = document.getElementById('category-name').value;
+                
                 if(amount.value === 0) {
                     Swal.showValidationMessage('Сумма обязательна');
                     return null;
@@ -293,26 +296,26 @@ function TransactionContainer(props) {
     }
     
     return (
-        <DeletableContainer onDelete={deleteTransaction}>
-            <div onMouseEnter={() => setEdit(true)}
-                 onMouseLeave={() => setEdit(false)}
-                 className="d-flex flex-row justify-content-between align-items-center p-1 position-relative">
-                <div>
-                    <img src={props.transaction.iconUrl} width='65' alt="*Иконка*" className="transaction-icon"/>
+        <DeletableContainer
+            onMouseEnter={() => setEdit(true)}
+            onMouseLeave={() => setEdit(false)}
+            className="d-flex flex-row justify-content-between align-items-center p-1 position-relative ч"
+            onDelete={deleteTransaction}>
+            <div>
+                <img src={props.transaction.iconUrl} width='65' alt="*Иконка*" className="transaction-icon"/>
+            </div>
+            <div className="d-flex justify-content-between cat-cost-combo">
+                <div className='transaction-description'>
+                    {props.transaction.description}
                 </div>
-                <div className="d-flex justify-content-between cat-cost-combo">
-                    <div className='transaction-description'>
-                        {props.transaction.description}
+                <div className="d-flex flex-row justify-content-end">
+                    <IconButton
+                        onClick={editTransaction}
+                        className={classNames("can-hide", canBeEdit ? "shown" : "hidden")}
+                        icon={faPen}/>
+                    <div>
+                        <span className='transaction-cost'>{props.transaction.amount} руб</span>
                     </div>
-                    <div className="d-flex flex-row justify-content-end">
-                        <IconButton
-                            onClick={editTransaction}
-                            className={classNames("can-hide", canBeEdit ? "shown" : "hidden")}
-                            icon={faPen}/>
-                        <div>
-                            <span className='transaction-cost'>{props.transaction.amount} руб</span>
-                        </div>
-                    </div>    
                 </div>
             </div>
         </DeletableContainer>
@@ -433,7 +436,6 @@ function DebtorContainer(props) {
     }
     
     const removeDebtor =  function() {
-
         fetch(`/api/debtors/remove?id=${props.debtor.id}`, {
             method: 'DELETE'
         }).then(result => {
@@ -448,16 +450,14 @@ function DebtorContainer(props) {
     
     
     return <div className={(isOpened ? 'opened-debtor-list' : "debtor-list") + ' p-1'}>
-        <DeletableContainer onDelete={removeDebtor}>
-            <Box className="d-flex flex-row justify-content-between align-items-center">
-                <span className="font-weight-bolder debtor-name">{props.debtor.name}</span>
-                <div className="d-flex flex-row">
-                    <span>{debtorSum} руб</span>
-                    <IconButton onClick={addDebt} icon={faPlus}/>
-                    <IconButton icon={faAngleDown}
-                                onClick={() => setOpened(!isOpened)}/>
-                </div>
-            </Box>    
+        <DeletableContainer onDelete={removeDebtor} className="d-flex flex-row justify-content-between align-items-center">
+            <span className="font-weight-bolder debtor-name">{props.debtor.name}</span>
+            <div className="d-flex flex-row">
+                <span>{debtorSum} руб</span>
+                <IconButton onClick={addDebt} icon={faPlus}/>
+                <IconButton icon={faAngleDown}
+                            onClick={() => setOpened(!isOpened)}/>
+            </div>
         </DeletableContainer>
         <div className="debts-container">
             {
@@ -485,27 +485,37 @@ function DebtContainer(props) {
         });
     }
     
-    return <DeletableContainer onDelete={removeDebt}>
-        <div key={props.debt.id} className="d-flex flex-row justify-content-between mt-1">
-            <span className={props.debt.amount > 0 ? 'def-debt-span' : 'return-debt-span'}>{props.debt.description}</span>
-            <div>
-                <span className="font-weight-bolder">
-                    {Math.abs(props.debt.amount)} руб
-                </span>
-            </div>
+    return <DeletableContainer onDelete={removeDebt} key={props.debt.id} className="d-flex flex-row justify-content-between mt-1">
+        <span className={props.debt.amount > 0 ? 'def-debt-span' : 'return-debt-span'}>{props.debt.description}</span>
+        <div>
+            <span className="font-weight-bolder">
+                {Math.abs(props.debt.amount)} руб
+            </span>
         </div>
     </DeletableContainer>;
 }
 
 function DeletableContainer(props) {
     const [deleteDialogTime, setDialog] = useState(false)
+    const containerRef = useRef();
     
     return <div
-            className="deletable-container"
-            onDoubleClick={() => setDialog(true)}
-            onMouseLeave={() => {setDialog(false)}}
+            {...props}
+            ref={containerRef}
+            className={classNames("deletable-container", props.className)}
+            onDoubleClick={(e) => {
+                if(e.target === containerRef.current || e.target.tagName === 'DIV') {
+                    setDialog(true);
+                }       
+            }}
+            onMouseLeave={(e) => {
+                setDialog(false); 
+                if(props.onMouseLeave) {
+                    props.onMouseLeave(e);
+                }
+            }}
             onClick={(e) => {
-                if(deleteDialogTime) {
+                if(deleteDialogTime && e.target === containerRef.current.querySelector('.delete-dialog')) {
                     Swal.fire({
                         title: "Вы точно хотите удалить?",
                         icon: "question",

@@ -5,3 +5,20 @@
 .export-container {
   width: 25%;
 }
+@media screen and (max-width: 750px) {
+  .pie-and-export-block {
+    flex-direction: column !important;
+  }
+  
+  .export-container, .pie-chart-wrapper {
+    width: 100%;
+  }
+  
+  .export-container {
+    border-radius: 0 0 8px 8px;
+  }
+  
+  .pie-chart-wrapper {
+    border-radius: 8px 8px 0 0;
+  }
+}

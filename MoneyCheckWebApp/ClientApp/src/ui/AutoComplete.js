@@ -17,6 +17,10 @@ export function AutoComplete(props) {
         }
         
         setItems(props.items.filter(a => a.startsWith(value)));
+        
+        if(props.onInputValueCanged) {
+            props.onInputValueCanged(value);    
+        }
     }
     
     const onValueSelectedHandler = function () {
@@ -51,10 +55,12 @@ export function AutoComplete(props) {
             ref={contextRef}
             className={classNames("auto-complete-wrapper", !blurInput ? "shown-state" : "hidden-state")}>
         <input type="text"
+                id={props.id}
                 onKeyUp={inputRefreshHandler}
                 ref={inputRef}
                 className="auto-complete-input"
-                onFocus={onFocusInput}/>
+                onFocus={onFocusInput}
+                placeholder="Начинайте вводить"/>
         <div className={!blurInput ? 'd-block' : 'd-none'}>
             <div className={"can-hide d-flex flex-column auto-complete-options-container"}>
                 {items.map(x => <OptionContainer item={x} inputRef={inputRef} onValueSelected={onValueSelectedHandler}/>)}
@@ -69,7 +75,7 @@ function OptionContainer (props) {
         props.onValueSelected();
     }
     
-    return <div onClick={clickHandler}>
+    return <div onClick={clickHandler} className="autocomplete-option">
         <span>{props.item}</span>
     </div>
 }
