@@ -127,10 +127,10 @@ namespace MoneyCheckWebApp.Controllers
             var invoker = this.ExtractUser();
             var searchLimit = filter switch
             {
-                "today" => TimeSpan.FromDays(1),
-                "month" => DateTime.Today - DateTime.Today.AddMonths(-1),
-                "year" => TimeSpan.FromDays(365),
-                _ => TimeSpan.FromDays(1)
+                "today" => SearchSpan.ByDay,
+                "month" => SearchSpan.ByMonth,
+                "year" => SearchSpan.ByYear,
+                _ => SearchSpan.ByDay
             };
 
             var parsed = ActivityProvider.ParseActivity(invoker, searchLimit);
