@@ -1,5 +1,7 @@
 using System;
+using System.IO;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 using MoneyCheckWebApp.Extensions;
 using MoneyCheckWebApp.Predications.InflationPredicating.NeuralNetwork;
@@ -11,8 +13,25 @@ namespace MoneyCheckWebApp.Predications.InflationPredicating.StatBerauApi
     {
         public async Task<double[]> ProvideInflationArrayAsync()
         {
-            var apiProvider = new StatBerauApiProvider();
+            const string statBerauCachePath = "stat-berau-cache.cache.json";
+            var cacheFileInfo = new FileInfo(statBerauCachePath);
+                
+            if (cacheFileInfo.Exists && DateTime.UtcNow - cacheFileInfo.LastAccessTimeUtc <= TimeSpan.FromDays(3))
+            {
+                var fileText = await File.ReadAllTextAsync(statBerauCachePath);
+
+                if (!string.IsNullOrEmpty(fileText))
+                {
+                    var deserializedArray = JsonSerializer.Deserialize<double[]>(fileText);
+
+                    if (deserializedArray != null)
+                    {
+                        return deserializedArray;
+                    }
+                }
+            }
             
+            var apiProvider = new StatBerauApiProvider();
             var infl = await apiProvider.GetInflationAsync();
 
             var arrayedInfaltions = infl as Inflation[] ?? infl.ToArray();
@@ -21,7 +40,11 @@ namespace MoneyCheckWebApp.Predications.InflationPredicating.StatBerauApi
                 throw new InvalidOperationException("Failed to fetch non-empty array from statberau.com");
             }
 
-            return arrayedInfaltions.Select(x => x.InflationRate).ToArray().GetLastElements(120);
+            var doubleArrayed = arrayedInfaltions.Select(x => x.InflationRate).ToArray().GetLastElements(120);
+            
+            await File.WriteAllTextAsync(statBerauCachePath, JsonSerializer.Serialize(doubleArrayed));
+
+            return doubleArrayed;
         }
     }
 }
