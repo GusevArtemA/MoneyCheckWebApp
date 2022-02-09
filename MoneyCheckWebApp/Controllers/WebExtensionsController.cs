@@ -1,12 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using MoneyCheckWebApp.Extensions;
 using MoneyCheckWebApp.Models;
-using MoneyCheckWebApp.Predications.Exceptions;
-using MoneyCheckWebApp.Predications.LinearRegression;
-using MoneyCheckWebApp.Predications.LinearRegression.Extensions;
+using MoneyCheckWebApp.Predications.InflationPredicating;
+using MoneyCheckWebApp.Predications.Wrappers;
 using MoneyCheckWebApp.Types.Debts;
 using MoneyCheckWebApp.Types.WebExtensions;
 
@@ -20,10 +20,12 @@ namespace MoneyCheckWebApp.Controllers
     public class WebExtensionsController : ControllerBase
     {
         private readonly MoneyCheckDbContext _context;
+        private readonly InflationPredicationProcessor _inflationPredicationProcessor;
 
-        public WebExtensionsController(MoneyCheckDbContext context)
+        public WebExtensionsController(MoneyCheckDbContext context, InflationPredicationProcessor inflationPredicationProcessor)
         {
             _context = context;
+            _inflationPredicationProcessor = inflationPredicationProcessor;
         }
 
         /// <summary>
@@ -34,23 +36,13 @@ namespace MoneyCheckWebApp.Controllers
         public IActionResult GetUserBalanceStats()
         {
             var invoker = this.ExtractUser();
-            var predicationProcessor = new PredicationProcessor(invoker.ConfigureArrayProvider());
 
             var todaySpent = invoker.Purchases.Where(x => 
                     x.BoughtAt.Date == DateTime.Today && x.Category.CategoryName != "Зачисление")
                 .Select(x => x.Amount)
                 .Sum();
 
-            var futureSpend = 0m;
-
-            try
-            {
-                futureSpend = predicationProcessor.PredicateNext();
-            }
-            catch (NoInfoException)
-            {
-                // ignored
-            }
+            var futureSpend = invoker.PredicateToEndOfMonth();;
 
             return Ok(new UserStatsBalanceType()
             {
@@ -62,18 +54,21 @@ namespace MoneyCheckWebApp.Controllers
 
         [HttpGet]
         [Route("get-categories")]
-        public IActionResult GetCategories()
+        public IActionResult GetCategories(bool includeDefaultCategories = true)
         {
             var invoker = this.ExtractUser();
 
-            List<CategoryType> categories = new List<CategoryType>();
+            List<CategoryType> categories = new();
 
-            categories.AddRange(_context.Categories.Where(x => x.OwnerId == null)
-                .Select(x => new CategoryType
+            if (includeDefaultCategories)
             {
-                Id = x.Id,
-                Name = x.CategoryName
-            }));
+                categories.AddRange(_context.Categories.Where(x => x.OwnerId == null)
+                    .Select(x => new CategoryType
+                    {
+                        Id = x.Id,
+                        Name = x.CategoryName
+                    }));    
+            }
 
             categories.AddRange(invoker.Categories.Where(x => x.OwnerId != null && x.OwnerId == invoker.Id)
                 .Select(x => new CategoryType()
@@ -104,5 +99,34 @@ namespace MoneyCheckWebApp.Controllers
                 })
             }));
         }
+
+        [HttpGet]
+        [Route("get-inflation-for-year")]
+        public async Task<IActionResult> GetInflationForYear()
+        {
+            InflationChunkType[] chunks = new InflationChunkType[12];
+            
+            for (int i = 0; i < 12; i++)
+            {
+                var predication = await _inflationPredicationProcessor.PredicateAsync(i + 1);
+                var monthIndex = i + 1;
+                chunks[i] = new InflationChunkType()
+                {
+                    Index =
+                        $"{monthIndex}{monthIndex switch {1 or 4 or 5 or 9 or 10 or 11 or 12 => "-ый", 2 or 6 or 7 or 8 => "-ой", _ => "-ий"}} месяц",
+                    Value = (predication - 1) * 100
+                };
+            }
+
+            return Ok(chunks);
+        }
+        
+        [HttpGet]
+        [Route("get-def-logos")]
+        public IActionResult GetAllDefaultLogos() => Ok(_context.DefaultLogosForCategories.Select(x => new CategoryLogo()
+        {
+            Id = x.Id,
+            Url = "/api/media/get-category-media-logo?categoryId=" + x.Id
+        }));
     }
 }

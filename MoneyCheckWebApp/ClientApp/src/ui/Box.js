@@ -8,9 +8,9 @@ export class Box extends React.Component {
         return (
             <div className={classNames('box', this.props.className)}>
                 {
-                    this.props.rightButton != null ? <button className="right-box-button" onClick={this.props.onRightButtonClick}> 
+                    this.props.rightButton != null && <button className="right-box-button" onClick={this.props.onRightButtonClick}> 
                         <FontAwesomeIcon icon={this.props.rightButton}/>
-                    </button> : null
+                    </button>
                 }
                 {this.props.children}
             </div>

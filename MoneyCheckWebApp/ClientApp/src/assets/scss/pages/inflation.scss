@@ -1,0 +1,17 @@
+@use "../brand";
+
+.amount-label {
+  color: brand.$brand-purple;
+  font-size: 3em;
+  font-weight: bold;
+}
+
+@media screen and (max-width: 800px){
+  .inflation-form-container {
+    flex-direction: column !important;
+  }
+}
+
+.money-check-infl-label {
+  font-size: 2rem;
+}

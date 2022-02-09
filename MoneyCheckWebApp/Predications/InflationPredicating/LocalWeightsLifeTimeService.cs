@@ -5,7 +5,7 @@ namespace MoneyCheckWebApp.Predications.InflationPredicating
 {
     public static class LocalWeightsLifeTimeService
     {
-        private const string WeightsPath = "nn-weights.json";
+        private const string WeightsPath = "nn-weights.cache.json";
         
         public static bool CheckIfUpdateRequired()
         {

@@ -7,21 +7,30 @@ namespace MoneyCheckWebApp.Providers.UserActivity
 {
     public static class ActivityProvider
     {
-        public static IEnumerable<Activity> ParseActivity(User user, TimeSpan searchSpan)
+        public static IEnumerable<Activity> ParseActivity(User user, SearchSpan span)
         {
-            var maxDate = DateTime.Now - searchSpan;
             var list = new List<Activity>();
             
-            var purchases = ParsePurchases(user, maxDate);
+            var purchases = ParsePurchases(user, span);
 
             list.AddRange(purchases);
 
             return list.OrderByDescending(x => x.TimeStamp);
         }
 
-        private static IEnumerable<Activity> ParsePurchases(User user, DateTime maxDate)
+        private static IEnumerable<Activity> ParsePurchases(User user, SearchSpan searchSpan)
         {
-            return user.Purchases.FilterByDateTime(x => x.BoughtAt, maxDate.Date).Select(x => new Activity()
+            var now = DateTime.Now;
+            
+            var filteredPurchases = searchSpan switch
+            {
+                SearchSpan.ByDay => user.Purchases.Where(x => x.BoughtAt.Year == now.Year && x.BoughtAt.Day == now.Day),
+                SearchSpan.ByMonth => user.Purchases.Where(x => x.BoughtAt.Year == now.Year && x.BoughtAt.Month == now.Month),
+                SearchSpan.ByYear => user.Purchases.Where(x => x.BoughtAt.Year == now.Year),
+                _ => throw new ArgumentOutOfRangeException(nameof(searchSpan), searchSpan, null)
+            };
+
+            return filteredPurchases.Select(x => new Activity()
             {
                 ActivityType = ActivityType.Purchase,
                 IconUrl = "/api/media/" + (x.VerifiedCompany == null
@@ -33,22 +42,12 @@ namespace MoneyCheckWebApp.Providers.UserActivity
                 Id = x.Id
             });
         }
+    }
 
-        private static IEnumerable<T> FilterByDateTime<T>(this IEnumerable<T> array, Func<T, DateTime> dateTime, DateTime predict, bool more = true)
-        {
-            return array.Where(x =>
-            {
-                var date = dateTime(x).Date;
-                
-                var exr = date > predict && date <= DateTime.Today;
-
-                if (!more)
-                {
-                    exr = !exr;
-                }
-
-                return exr;
-            });
-        }
+    public enum SearchSpan
+    {
+        ByDay,
+        ByMonth,
+        ByYear
     }
 }

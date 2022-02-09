@@ -7,6 +7,7 @@ using MoneyCheckWebApp.Models;
 using MoneyCheckWebApp.Predications.Exceptions;
 using MoneyCheckWebApp.Predications.LinearRegression;
 using MoneyCheckWebApp.Predications.LinearRegression.Extensions;
+using MoneyCheckWebApp.Predications.Wrappers;
 using MoneyCheckWebApp.Providers.UserActivity;
 using MoneyCheckWebApp.Types.UserStats;
 
@@ -25,19 +26,7 @@ namespace MoneyCheckWebApp.Controllers
 
         [HttpGet]
         [Route("get-future-cash")]
-        public IActionResult GetFutureCashSpending()
-        {
-            try
-            {
-                var predicator = new PredicationProcessor(this.ExtractUser().ConfigureArrayProvider());
-
-                return Ok(predicator.PredicateNext());
-            }
-            catch (NoInfoException)
-            {
-                return Ok(-1);
-            }
-        }
+        public IActionResult GetFutureCashSpending() => Ok(this.ExtractUser().PredicateToEndOfMonth());
 
         [HttpGet]
         [Route("get-trace")]
@@ -127,10 +116,10 @@ namespace MoneyCheckWebApp.Controllers
             var invoker = this.ExtractUser();
             var searchLimit = filter switch
             {
-                "today" => TimeSpan.FromDays(1),
-                "month" => DateTime.Today - DateTime.Today.AddMonths(-1),
-                "year" => TimeSpan.FromDays(365),
-                _ => TimeSpan.FromDays(1)
+                "today" => SearchSpan.ByDay,
+                "month" => SearchSpan.ByMonth,
+                "year" => SearchSpan.ByYear,
+                _ => SearchSpan.ByDay
             };
 
             var parsed = ActivityProvider.ParseActivity(invoker, searchLimit);

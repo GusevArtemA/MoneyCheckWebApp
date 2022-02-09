@@ -16,6 +16,7 @@ using MoneyCheckWebApp.Extensions;
 using MoneyCheckWebApp.HostedServices;
 using MoneyCheckWebApp.Models;
 using MoneyCheckWebApp.Predications.InflationPredicating;
+using MoneyCheckWebApp.Predications.Wrappers;
 using MoneyCheckWebApp.Services;
 
 namespace MoneyCheckWebApp

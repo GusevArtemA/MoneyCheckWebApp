@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using MoneyCheckWebApp.Predications.InflationPredicating.NeuralNetwork;
 using MoneyCheckWebApp.Predications.InflationPredicating.StatBerauApi;
@@ -28,6 +29,7 @@ namespace MoneyCheckWebApp.Predications.InflationPredicating
             return await _nnProvider.PredictInflationAsync(_localWeightsProvider, _inflationStatBerauProvider, index);
         }
         
+        [SuppressMessage("ReSharper.DPA", "DPA0002: Excessive memory allocations in SOH", MessageId = "type: System.Double[]")]
         public async Task TrainAsync()
         {
             var trainConfig = await GenerateTrainingConfigAsync();

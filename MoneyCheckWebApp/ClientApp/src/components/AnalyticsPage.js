@@ -11,8 +11,10 @@ import {Box} from "../ui/Box";
 
 import "../assets/scss/pages/analytics.scss";
 import {Container} from "reactstrap";
-import Logo from "../assets/images/logo.svg";
-import {Button, LinkButton} from "../ui/Button";
+import {Button} from "../ui/Button";
+import AnimatedLogo from "../assets/images/animated/animated-logo.svg";
+import {NavLink, Redirect} from "react-router-dom";
+import {CookieHelper} from "../services/CookieHelper";
 
 export function AnalyticsPage() {
     const [splineDiagramData, setSplineDiagram] = useState(null);
@@ -24,6 +26,10 @@ export function AnalyticsPage() {
         api.getStatsForYearAnalytics().then(data => setSplineDiagram(data));
         api.getCategoriesData().then(data => setPieData(data));
     }, []);
+
+    if(!new CookieHelper().canAuthByCookie()) {
+        return <Redirect to="/welcome"/>
+    }
     
     if(splineDiagramData == null || pieData == null) {
         return <div className="max d-flex justify-content-center align-items-center">
@@ -34,11 +40,11 @@ export function AnalyticsPage() {
     return <Container>
         <div className="d-flex justify-content-between align-items-center mb-2 mt-2">
             <h1>Как я тратил деньги в этом году</h1>
-            <img src={Logo} alt="Logotype" width="75"/>
+            <NavLink to="/home"><object width="75" type="image/svg+xml" data={AnimatedLogo}>Animated Logo</object></NavLink>
         </div>
         <SplineDiagramContainer data={splineDiagramData}/>
-        <div className="d-flex flex-row mt-2 justify-content-between align-items-center">
-            <Box className="half-fill-x">
+        <div className="d-flex flex-row mt-2 justify-content-between align-items-center pie-and-export-block">
+            <Box className="half-fill-x pie-chart-wrapper">
                 <PieDiagram data={pieData}/>
             </Box>
             <Box className="d-flex flex-column half-fill-x export-container">

@@ -7,7 +7,7 @@ namespace MoneyCheckWebApp.Predications.InflationPredicating
 {
     public class LocalWeightsProvider : IWeightsProvider
     {
-        private const string WeightsPath = "nn-weights.json"; 
+        private const string WeightsPath = "nn-weights.cache.json"; 
         
         public double[] ProvideWeights()
         {
