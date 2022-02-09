@@ -350,6 +350,46 @@ button[class *= 'icon-button'] {
   user-select: none;
 }
 
+.slider-card, .images-slider-container {
+  width: 200px;
+  height: 200px;
+}
+
+.images-slider-container {
+  width: 250px;
+}
+
+.images-slider-container {
+  position: relative;
+  padding-left: 25px;
+  padding-right: 25px;
+  overflow-x: hidden;
+}
+
+.left-slide-button, .right-slide-button {
+  position: absolute;
+  background: brand.$brand-purple;
+  width: 5px;
+  transition: width 0.3s, opacity 0.3s;
+  height: 20%;
+  top: 40%;
+  cursor: pointer;
+}
+
+.left-slide-button {
+  left: 0;
+}
+
+.right-slide-button {
+  right: 0;
+  background: brand.$brand-purple;
+}
+
+.selected-slider-button {
+  width: 20px;
+  opacity: 0.7;
+}
+
 @media screen  and (max-width: 1200px){
   .brand-button {
     font-size: 18px;

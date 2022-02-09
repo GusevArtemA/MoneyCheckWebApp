@@ -71,9 +71,7 @@ h1 {
 }
 
 .transactions-container {
-  .transaction-description, .transaction-date {
-    color: #888888;
-  }
+  
 
   .transaction-description {
     width: fit-content;
@@ -198,10 +196,23 @@ div[class *= "debtor-list"] {
   }
 }
 
-.transaction-cost {
-  width: 200px;
-}
-
 .cat-cost-combo {
   width: 70%;
+  
+  .cat-cost-component {
+    width: 50%;
+  }
+}
+
+
+.transaction-description, .transaction-date, .date-time-label {
+  color: #888888;
+}
+
+.date-time-label {
+  font-size: 18px;
+}
+
+.transaction-operations-wrapper {
+  width: min-content;
 }

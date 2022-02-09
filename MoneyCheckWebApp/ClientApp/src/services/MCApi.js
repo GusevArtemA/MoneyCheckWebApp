@@ -25,9 +25,9 @@ export class MCApi {
         return await this._fetchJson('/api/web/get-debtors');
     }
     
-    async getCategories()
+    async getCategories(includeDefaultCategories = true)
     {
-        return await this._fetchJson('/api/web/get-categories');
+        return await this._fetchJson('/api/web/get-categories?includeDefaultCategories=' + includeDefaultCategories);
     }
     
     async getCategoriesData() {
@@ -36,6 +36,18 @@ export class MCApi {
     
     async getStatsForYearAnalytics(filter = "year", index = null) {
         return await this._fetchJson(`/api/user-stats/get-trace?filter=${filter}&index=${index ?? ''}`);
+    }
+    
+    async getCatLogos() {
+        return await this._fetchJson('/api/web/get-def-logos');
+    }
+    
+    async getInflationPredication(nowCost, index) {
+        return await this._fetchJson(`/api/inflation-predication/predict?priceNow=${nowCost}&index=${index}`)
+    }
+    
+    async getInflationForYear() {
+        return await this._fetchJson('/api/web/get-inflation-for-year');
     }
     
     /**

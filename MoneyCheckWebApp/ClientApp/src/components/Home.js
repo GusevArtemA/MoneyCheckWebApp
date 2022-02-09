@@ -4,17 +4,21 @@ import {Loader} from "../ui/Loader";
 
 import "../assets/scss/pages/home.scss";
 import {Box} from "../ui/Box";
-import {NavLink} from "react-router-dom";
+import {NavLink, Redirect} from "react-router-dom";
 import {SelectBox} from "../ui/SelectBox";
 
 import '../prototypes';
-import {faAngleDown, faPen, faPlus, faTrash} from "@fortawesome/free-solid-svg-icons";
+import {faAngleDown, faMoneyBill, faPen, faPlus, faTrash} from "@fortawesome/free-solid-svg-icons";
 import Swal from "sweetalert2";
 import {IconButton} from "../ui/IconButton";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import withReactContent from 'sweetalert2-react-content'
 import classNames from "classnames";
 import {AutoComplete} from "../ui/AutoComplete";
+import {ImagesSlider} from "../ui/ImagesSlider";
+import {TextInput} from "../ui/TextInput";
+import AnimatedLogo from "../assets/images/animated/animated-logo.svg";
+import {CookieHelper} from "../services/CookieHelper";
 
 const MySwal = withReactContent(Swal)
 
@@ -22,10 +26,12 @@ export function Home(props) {
     const api = new MCApi();
     const [userInfo, setUserInfo] = useState(null);
     const [categories, setCategories] = useState(null);
+    const [customCategories, setCustomCategories] = useState(null);
     const [debtors, setDebtors] = useState(null);
     const [transactions, setTransactions] = useState(null);
     const [balanceInfo, setBalanceInfo] = useState(null);
     const [refreshing, setRefreshing] = useState(false);
+    const [availableCatIcons, setCatIcons] = useState(null);
     
     useEffect(() => {
         api.getUserInfo().then(data =>
@@ -33,7 +39,10 @@ export function Home(props) {
         
         api.getCategories().then(data =>
             setCategories(data));
-
+        
+        api.getCategories(false).then(data =>
+            setCustomCategories(data));
+        
         api.getBalanceState().then(data =>
             setBalanceInfo(data));
 
@@ -41,25 +50,31 @@ export function Home(props) {
             setTransactions(data));
 
         api.getDebtors().then(data =>
-            setDebtors(data)); 
-        
+            setDebtors(data));
+        api.getCatLogos().then(data => 
+            setCatIcons(data));
         return () => {};
     }, []);
+
+    if(!new CookieHelper().canAuthByCookie()) {
+        return <Redirect to="/welcome "/>
+    }
     
     if(userInfo === null ||
         categories === null ||
         debtors === null ||
         transactions === null ||
         balanceInfo === null ||
+        availableCatIcons === null ||
         refreshing) {
         return <div className="max d-flex justify-content-center align-items-center">
             <Loader/>
         </div>
     }
-    
+
     return <div className="max container">
         <Greeter username={userInfo.username}/>
-        <div className="main-wrapper d-flex flex-row justify-content-around max-height align-items-center">
+        <div className="main-wrapper d-flex flex-row justify-content-around max-height">
             <div className='trans-debtors-wrapper d-flex flex-column align-items-center'>
                 <TransactionsHandler
                     transactions={transactions}
@@ -81,6 +96,10 @@ export function Home(props) {
                             setBalanceInfo(data));
                     })}
                 />
+                <CategoriesHandler needUpdate={() => 
+                    api.getCategories(false).then(data =>
+                        setCustomCategories(data))} 
+                   availableIcons={availableCatIcons} categories={customCategories}/>
             </div>
             <div className="balance-info-wrapper">
                 <BalanceInfo balanceInfo={balanceInfo}/>
@@ -98,8 +117,9 @@ function Greeter(props) {
         time = 'вечер';
     }
 
-    return <div>
+    return <div className="d-flex flex-row justify-content-between align-items-center mt-1">
         <h1 id="greeter">Добрый {time}, {props.username}</h1>
+        <NavLink to="/home"><object width="75" type="image/svg+xml" data={AnimatedLogo}>Animated Logo</object></NavLink>
     </div>
 }
 
@@ -114,10 +134,10 @@ function BalanceInfo(props) {
         <div className="d-flex flex-column">
             <span className="prop">Ваш счет:</span>
             <span id="balance" className="prop-value">{props.balanceInfo.balance} руб</span>
-            {props.balanceInfo.balance > 0 ? <NavLink to='/inflation' id="inflation-router">А сколько это будет в гамбургерах через месяц?</NavLink> : null}
+            <NavLink to='/inflation' id="inflation-router">Расчет инфляции</NavLink>
         </div>
         <div className="d-flex flex-column">
-            <span className="prop">Прогноз на следующий месяц:</span>
+            <span className="prop">Прогноз на конец месяца:</span>
             <span id="future-balance" className="prop-value">{props.balanceInfo.futureCash} руб</span>
         </div>
         <div className="d-flex flex-column">
@@ -129,7 +149,9 @@ function BalanceInfo(props) {
 }
 
 function TransactionsHandler(props) {
-    const [filter, setFilter] = useState("день");
+    const [timeSpan, setTimeSpan] = useState("день");
+    const [filter, setFilter] = useState("нет");
+    const [orderFilter, setOrder] = useState("возрастания");
     
     const selectBoxValueChangedHandler = function (value) {
         let f = 'ERR';
@@ -146,25 +168,74 @@ function TransactionsHandler(props) {
                 break;
         }
 
-        setFilter(f);
+        setTimeSpan(f);
         props.filterValueChanged(f);
     }
     
+    const filterValueChanged = function(value) {
+        setFilter(value);
+    }
+    
+    const orderFilterValueChanged = function (value) {
+        setOrder(value);
+    }
+    
+    let arrayOfTransactions = [...props.transactions];
+    
+    switch (filter) {
+        case "цене":
+            switch (orderFilter) {
+                case "возрастания":
+                    arrayOfTransactions.sort((a, b) => a.amount - b.amount);
+                    break;
+                case "убывания":
+                    arrayOfTransactions.sort((a, b) => b.amount - a.amount);
+                    break;
+            }
+            break;
+        case "дате":
+            switch (orderFilter) {
+                case "возрастания":
+                    arrayOfTransactions.sort((a, b) => Date.parse(a.timeStamp) - Date.parse(b.timeStamp));
+                    break;
+                case "убывания":
+                    arrayOfTransactions.sort((a, b) => Date.parse(b.timeStamp) - Date.parse(a.timeStamp));
+                    break;
+            }
+            break;
+    }
+    
     return <div className="max-width">
-        <div className="d-flex flex-row align-items-start" id="transactions-filter">
-            <h1>Ваши транзакции за этот </h1>
-            <SelectBox items={['день', 'месяц', 'год']} onValueChanged={selectBoxValueChangedHandler}/>
+        <div>
+            <div className="d-flex flex-row align-items-start flex-wrap" id="transactions-filter">
+                <h1>Ваши транзакции за этот </h1>
+                <SelectBox items={['день', 'месяц', 'год']} onValueChanged={selectBoxValueChangedHandler}/>
+            </div>
+            <div className="d-flex flex-row align-items-center justify-content-start mb-1 flex-wrap">
+                <p className="mb-0">Фильтровать по</p>
+                <SelectBox
+                    onValueChanged={filterValueChanged}
+                    items={['нет', 'цене', 'дате']}/>
+                {filter !== 'нет' && <>
+                    <p className="mb-0">в порядке</p>
+                    <SelectBox
+                        items={["возрастания", "убывания"]}
+                        onValueChanged={orderFilterValueChanged}/>
+                </>}
+            </div>
         </div>
-        <TransactionsContainer transactions={props.transactions}
+        <TransactionsContainer transactions={arrayOfTransactions}
                                categories={props.categories}
-                               itemAdded={() => {props.itemAdded(filter);}}/>
+                               itemAdded={() => {props.itemAdded(timeSpan);}}/>
     </div>
 }
 
 function TransactionsContainer(props) {
+    const [capacityId, setCapacityId] = useState(-1);
+    const [capacity, setCapacity] = useState(-1);
+    
     const formAlertToAddTransaction = function() {
         const itemAdded = props.itemAdded;
-        
         MySwal.fire({
             title: 'Добавление транзакции',
             confirmButtonColor: '#2EC321',
@@ -216,6 +287,11 @@ function TransactionsContainer(props) {
         });
     }
     
+    const capacityChangedHandler = function (id, newCap) {
+        setCapacityId(id);
+        setCapacity(newCap);
+    }
+    
     if(props.transactions == null) {
         return <Box className="max-width d-flex flex-column transactions-container justify-content-center align-items-center loading-transactions list-container">
             <Loader/>
@@ -229,19 +305,26 @@ function TransactionsContainer(props) {
     return <Box className="max-width d-flex flex-column transactions-container list-container"
                 rightButton={faPlus}
                 onRightButtonClick={formAlertToAddTransaction}>
-        {props.transactions.map(x => <TransactionContainer key={x.id} onDelete={props.itemAdded} transaction={x}/>)}
+        {props.transactions.map(x => <TransactionContainer onSetAsBaseCapacity={capacityChangedHandler}
+                                                           capacity={capacity}
+                                                           capacityId={capacityId}
+                                                           key={x.id}
+                                                           onItemDelete={props.itemAdded}
+                                                           transaction={x}/>)}
     </Box>
 }
 
 function TransactionContainer(props) {
     const [canBeEdit, setEdit] = useState(false);
     
+    let cost = Math.round(props.transaction.amount / (props.capacity > 0 ? props.capacity : 1) * 100) / 100;
+    
     const deleteTransaction = function () {
         fetch('/api/transactions/remove-purchase?id=' + props.transaction.id, {
             method: 'DELETE'
         }).then(result => {
            if(result.status === 200) {
-               fireDeleted().then(() => props.onDelete());
+               fireDeleted().then(() => props.onItemDelete());
            } else {
                fireSomethingWentWrong();  
            }
@@ -285,7 +368,7 @@ function TransactionContainer(props) {
                         }
                     }).then(result => {
                         if(result.status === 200) {
-                            fireEdited().then(() => props.onDelete());
+                            fireEdited().then(() => props.onItemDelete());
                         } else {
                             fireSomethingWentWrong();
                         }
@@ -295,31 +378,98 @@ function TransactionContainer(props) {
         })
     }
     
+    const capacityChangerHandler = function () {
+        if(props.capacityId === props.transaction.id) {
+            props.onSetAsBaseCapacity(-1, -1);
+            return;
+        }
+        
+        props.onSetAsBaseCapacity(props.transaction.id, props.transaction.amount);
+    }
+    
     return (
         <DeletableContainer
             onMouseEnter={() => setEdit(true)}
             onMouseLeave={() => setEdit(false)}
             className="d-flex flex-row justify-content-between align-items-center p-1 position-relative ч"
-            onDelete={deleteTransaction}>
+            onItemDelete={deleteTransaction}>
             <div>
                 <img src={props.transaction.iconUrl} width='65' alt="*Иконка*" className="transaction-icon"/>
             </div>
-            <div className="d-flex justify-content-between cat-cost-combo">
-                <div className='transaction-description'>
+            <div className="d-flex justify-content-between cat-cost-combo align-items-center">
+                <div className='transaction-description cat-cost-component'>
                     {props.transaction.description}
                 </div>
-                <div className="d-flex flex-row justify-content-end">
-                    <IconButton
-                        onClick={editTransaction}
-                        className={classNames("can-hide", canBeEdit ? "shown" : "hidden")}
-                        icon={faPen}/>
-                    <div>
-                        <span className='transaction-cost'>{props.transaction.amount} руб</span>
+                <div className="d-flex flex-row justify-content-end cat-cost-component">
+                    <div className="transaction-operations-wrapper">
+                        <IconButton
+                            onClick={editTransaction}
+                            className={classNames("can-hide", canBeEdit ? "shown" : "hidden")}
+                            icon={faPen}/>
+                        <IconButton
+                            onClick={capacityChangerHandler}
+                            className={classNames("can-hide", canBeEdit || props.capacityId === props.transaction.id ? "shown" : "hidden")}
+                            icon={faMoneyBill}/>
+                    </div>
+                    <div className="d-flex flex-column justify-content-end align-items-end">
+                        <span className='transaction-cost'>{cost} {props.capacityId !== -1 ? "шт" : "руб"}</span>
+                        <DateSpan className="ml-2" date={props.transaction.timeStamp}/>
                     </div>
                 </div>
             </div>
         </DeletableContainer>
     )
+}
+
+function DateSpan(props) {
+    let dateTime = new Date(props.date);
+    
+    const [month, day, hours, minutes] = [dateTime.getMonth(), dateTime.getDay(), dateTime.getHours(), dateTime.getMinutes()];
+    
+    let monthString;
+    
+    switch (month) {
+        case 0:
+            monthString = "янв";
+            break;
+        case 1: 
+            monthString = "фев";
+            break;
+        case 2: 
+            monthString = "мрт";
+            break;
+        case 3:
+            monthString= "апр";
+            break;
+        case 4:
+            monthString = "май";
+            break;
+        case 5:
+            monthString = "июн";
+            break;
+        case 6:
+            monthString = "июл";
+            break;
+        case 7: 
+            monthString = "авг";
+            break;
+        case 8: 
+            monthString = "сен";
+            break;
+        case 9: 
+            monthString = "окт";
+            break;
+        case 10:
+            monthString = "ноя";
+            break;
+        case 11:
+            monthString = "дек";
+            break;
+    }
+    
+    return <span className={classNames("date-time-label", props.className)}>
+        {day} {monthString}, {hours > 9 ? hours : "0" + hours}:{minutes > 9 ? minutes : "0" + minutes}
+    </span>;
 }
 
 function DebtorsHandler(props) {
@@ -450,7 +600,7 @@ function DebtorContainer(props) {
     
     
     return <div className={(isOpened ? 'opened-debtor-list' : "debtor-list") + ' p-1'}>
-        <DeletableContainer onDelete={removeDebtor} className="d-flex flex-row justify-content-between align-items-center">
+        <DeletableContainer onItemDelete={removeDebtor} className="d-flex flex-row justify-content-between align-items-center">
             <span className="font-weight-bolder debtor-name">{props.debtor.name}</span>
             <div className="d-flex flex-row">
                 <span>{debtorSum} руб</span>
@@ -462,7 +612,7 @@ function DebtorContainer(props) {
         <div className="debts-container">
             {
                 props.debtor.debts.length > 0 ?
-                    props.debtor.debts.map(debt => <DebtContainer debtAdded={props.debtAdded} debt={debt}/>) :
+                    props.debtor.debts.map(debt => <DebtContainer debtAdded={props.debtAdded} debt={debt} key={debt.debtId}/>) :
                     <div className="d-flex justify-content-center">
                         <span>Здесь ничего нет</span>
                     </div>
@@ -485,7 +635,7 @@ function DebtContainer(props) {
         });
     }
     
-    return <DeletableContainer onDelete={removeDebt} key={props.debt.id} className="d-flex flex-row justify-content-between mt-1">
+    return <DeletableContainer onItemDelete={removeDebt} key={props.debt.id} className="d-flex flex-row justify-content-between mt-1">
         <span className={props.debt.amount > 0 ? 'def-debt-span' : 'return-debt-span'}>{props.debt.description}</span>
         <div>
             <span className="font-weight-bolder">
@@ -493,6 +643,82 @@ function DebtContainer(props) {
             </span>
         </div>
     </DeletableContainer>;
+}
+
+function CategoriesHandler(props) {
+    return <div>
+        <h1>Ваши собственные категории</h1>
+        <CategoriesContainer needUpdate={props.needUpdate} availableIcons={props.availableIcons} categories={props.categories}/>
+    </div>
+}
+
+function CategoriesContainer(props) {
+    if(props.categories.length === 0) {
+        return <EmptyBox/>
+    }
+    
+    const addNewCategoryHandler = function () {
+        let icoIndex = 0;
+        MySwal.fire({
+            html: <form>
+                <TextInput id="category-name" type="text" placeholder="Название категории"/>
+                <ImagesSlider items={props.availableIcons} onValueChanged={(a) => icoIndex = a}/>
+            </form>,
+            preConfirm() {
+                Swal.showLoading();
+                let catName = document.getElementById("category-name").value;
+                
+                if(catName === '') {
+                    Swal.showValidationMessage("Название категории обязательно");
+                    return;
+                }
+                
+                fetch('/api/categories/add-category', {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        categoryName: catName,
+                        logoId: props.availableIcons[icoIndex].id
+                    })
+                }).then(response => {
+                    if(response.ok) {
+                        fireAdded();
+                        props.needUpdate();
+                    } else {
+                        fireSomethingWentWrong();
+                    }
+                });
+            }
+        });
+    }
+    
+    return <Box className="box max-width d-flex flex-column transactions-container list-container"
+            rightButton={faPlus}
+            onRightButtonClick={addNewCategoryHandler}>
+        {props.categories.map(x => <CategoryContainer needUpdate={props.needUpdate} key={x.id} category={x}/>)}
+    </Box>
+}
+
+function CategoryContainer(props) {
+    function deleteCategory() {
+        fetch(`/api/categories/delete-category?id=${props.category.id}`, {
+            method: "DELETE"
+        }).then(res => {
+            if(res.ok) {
+                fireDeleted();
+                props.needUpdate();   
+            } else {
+                fireSomethingWentWrong();
+            }
+        })
+    }
+    
+    return <DeletableContainer className="d-flex justify-content-between align-items-center mb-1" onItemDelete={deleteCategory}>
+        <img className="transaction-icon" src={"/api/media/get-category-media-logo?categoryId=" + props.category.id} alt="Логотип категории"/>
+        <span>{props.category.name}</span>
+    </DeletableContainer>
 }
 
 function DeletableContainer(props) {
@@ -525,7 +751,7 @@ function DeletableContainer(props) {
                         cancelButtonText: "Нет"
                     }).then(result => {
                         if(result.isConfirmed) {
-                            props.onDelete();
+                            props.onItemDelete();
                         }
                     })
                 }

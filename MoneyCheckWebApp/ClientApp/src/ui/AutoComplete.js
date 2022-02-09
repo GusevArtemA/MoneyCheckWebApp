@@ -60,7 +60,8 @@ export function AutoComplete(props) {
                 ref={inputRef}
                 className="auto-complete-input"
                 onFocus={onFocusInput}
-                placeholder="Начинайте вводить"/>
+                placeholder="Начинайте вводить"
+                autoComplete="off"/>
         <div className={!blurInput ? 'd-block' : 'd-none'}>
             <div className={"can-hide d-flex flex-column auto-complete-options-container"}>
                 {items.map(x => <OptionContainer item={x} inputRef={inputRef} onValueSelected={onValueSelectedHandler}/>)}
