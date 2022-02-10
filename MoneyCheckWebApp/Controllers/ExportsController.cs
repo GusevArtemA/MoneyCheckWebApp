@@ -23,7 +23,7 @@ namespace MoneyCheckWebApp.Controllers
 
         [HttpGet]
         [Route("csv-purchases")]
-        public async Task<IActionResult> GetCsvPurchases()
+        public IActionResult GetCsvPurchases()
         {
             var invoker = this.ExtractUser();
 
