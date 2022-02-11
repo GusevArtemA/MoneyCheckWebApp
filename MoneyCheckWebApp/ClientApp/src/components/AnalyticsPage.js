@@ -15,6 +15,7 @@ import {Button} from "../ui/Button";
 import AnimatedLogo from "../assets/images/animated/animated-logo.svg";
 import {NavLink, Redirect} from "react-router-dom";
 import {CookieHelper} from "../services/CookieHelper";
+import {PageLoader} from "../ui/PageLoader";
 
 export function AnalyticsPage() {
     const [splineDiagramData, setSplineDiagram] = useState(null);
@@ -32,9 +33,7 @@ export function AnalyticsPage() {
     }
     
     if(splineDiagramData == null || pieData == null) {
-        return <div className="max d-flex justify-content-center align-items-center">
-            <Loader/>
-        </div>
+        return <PageLoader/>
     }
     
     return <Container>

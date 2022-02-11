@@ -19,6 +19,7 @@ import {ImagesSlider} from "../ui/ImagesSlider";
 import {TextInput} from "../ui/TextInput";
 import AnimatedLogo from "../assets/images/animated/animated-logo.svg";
 import {CookieHelper} from "../services/CookieHelper";
+import {PageLoader} from "../ui/PageLoader";
 
 const MySwal = withReactContent(Swal)
 
@@ -67,9 +68,7 @@ export function Home(props) {
         balanceInfo === null ||
         availableCatIcons === null ||
         refreshing) {
-        return <div className="max d-flex justify-content-center align-items-center">
-            <Loader/>
-        </div>
+        return <PageLoader/>
     }
 
     return <div className="max container">
@@ -646,7 +645,7 @@ function DebtContainer(props) {
 }
 
 function CategoriesHandler(props) {
-    return <div>
+    return <div className="max-width">
         <h1>Ваши собственные категории</h1>
         <CategoriesContainer needUpdate={props.needUpdate} availableIcons={props.availableIcons} categories={props.categories}/>
     </div>
