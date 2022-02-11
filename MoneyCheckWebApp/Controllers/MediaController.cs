@@ -24,8 +24,7 @@ namespace MoneyCheckWebApp.Controllers
         /// <summary>
         /// Получает SVG картинку дефолтной категории
         /// </summary>
-        /// <param name="categoryId"></param>
-        /// <param name="includeDefaultCategories"></param>
+        /// <param name="categoryId">Индефикатор</param>
         [HttpGet]
         [Route("get-category-media-logo")]
         public async Task GetDefaultCategoryMediaLogo(long categoryId)

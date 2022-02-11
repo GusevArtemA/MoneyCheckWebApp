@@ -1,3 +1,5 @@
+#nullable disable
+
 namespace MoneyCheckWebApp.ExportingServices.Csv.Movers
 {
     public class MoveResult

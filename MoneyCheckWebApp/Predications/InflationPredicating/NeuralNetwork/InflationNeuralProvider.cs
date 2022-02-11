@@ -1,5 +1,6 @@
+#nullable disable
+
 using System;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace MoneyCheckWebApp.Predications.InflationPredicating.NeuralNetwork

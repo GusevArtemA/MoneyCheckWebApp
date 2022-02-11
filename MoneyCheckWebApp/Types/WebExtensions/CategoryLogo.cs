@@ -1,3 +1,5 @@
+#nullable disable
+
 namespace MoneyCheckWebApp.Types.WebExtensions
 {
     public class CategoryLogo

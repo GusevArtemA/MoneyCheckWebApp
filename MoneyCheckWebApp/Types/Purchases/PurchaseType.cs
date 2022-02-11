@@ -1,7 +1,6 @@
+#nullable disable
+
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using MoneyCheckWebApp.ExportingServices.Csv.Attributes;
 
 namespace MoneyCheckWebApp.Types.Purchases
