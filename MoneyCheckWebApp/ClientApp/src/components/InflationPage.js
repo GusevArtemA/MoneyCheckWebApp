@@ -62,6 +62,14 @@ function InflationForm() {
     }, []);
 
     function refreshData() {
+        if(Number.parseInt(nowCostRef.current.value) <= 0) {
+            nowCostRef.current.value = 1000;
+        }
+
+        if(Number.parseInt(indexRef.current.value) <= 0) {
+            indexRef.current.value = 1;
+        }
+        
         refreshCost(Number.parseInt(nowCostRef.current.value), Number.parseInt(indexRef.current.value));
     }
     

@@ -14,11 +14,8 @@ namespace MoneyCheckWebApp.Controllers
     [Route("/api/exports")]
     public class ExportsController : ControllerBase
     {
-        private readonly MoneyCheckDbContext _context;
-
-        public ExportsController(MoneyCheckDbContext context)
+        public ExportsController()
         {
-            _context = context;
         }
 
         [HttpGet]
@@ -45,9 +42,11 @@ namespace MoneyCheckWebApp.Controllers
 
             var csvBytes = Encoding.UTF8.GetBytes(csv);
 
+            Response.ContentType = "UTF-8";
+            
             return File(csvBytes,
                 "application/csv",
-            $"Транзакции пользователя {invoker.Username} за {DateTime.Today.Year} год.csv");
+                $"Транзакции пользователя {invoker.Username} за {DateTime.Today.Year} год.csv");
         }
     }
 }

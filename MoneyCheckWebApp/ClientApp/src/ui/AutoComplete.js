@@ -16,7 +16,7 @@ export function AutoComplete(props) {
             setItems(props.items);
         }
         
-        setItems(props.items.filter(a => a.startsWith(value)));
+        setItems(props.items.filter(a => a.toLowerCase().startsWith(value.toLowerCase())));
         
         if(props.onInputValueCanged) {
             props.onInputValueCanged(value);    
