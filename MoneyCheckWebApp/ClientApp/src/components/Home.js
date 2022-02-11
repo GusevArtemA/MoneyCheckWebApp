@@ -423,7 +423,7 @@ function TransactionContainer(props) {
 function DateSpan(props) {
     let dateTime = new Date(props.date);
     
-    const [month, day, hours, minutes] = [dateTime.getMonth(), dateTime.getDay(), dateTime.getHours(), dateTime.getMinutes()];
+    const [month, day, hours, minutes] = [dateTime.getMonth(), dateTime.getDate(), dateTime.getHours(), dateTime.getMinutes()];
     
     let monthString;
     
