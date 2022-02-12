@@ -8,6 +8,11 @@ a:hover {
   text-decoration: none;
 }
 
+*::selection {
+  background-color: brand.$brand-purple;
+  color: #FFF;
+}
+
 .box {
   position: relative;
   background: brand.$sub-light-background;
