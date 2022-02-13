@@ -47,7 +47,6 @@ export function AnalyticsPage() {
                 <PieDiagram data={pieData}/>
             </Box>
             <Box className="d-flex flex-column half-fill-x export-container">
-                <ExportAsExcelFileBlock/>
                 <ExportAsCSVBlock/>
             </Box>
         </div>
@@ -72,12 +71,6 @@ function SplineDiagramContainer(props) {
             </SeriesCollectionDirective>
         </ChartComponent>
     </Box>;
-}
-
-function ExportAsExcelFileBlock() {
-    return <Button>
-        Экспорт в Excel
-    </Button>
 }
 
 function ExportAsCSVBlock() {
