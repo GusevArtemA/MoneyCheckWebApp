@@ -404,7 +404,7 @@ function TransactionContainer(props) {
                         <IconButton
                             onClick={editTransaction}
                             className={classNames("can-hide", canBeEdit ? "shown" : "hidden")}
-                            icon={faPen}/>
+                            icon={faPen }/>
                         <IconButton
                             onClick={capacityChangerHandler}
                             className={classNames("can-hide", canBeEdit || props.capacityId === props.transaction.id ? "shown" : "hidden")}
@@ -656,11 +656,27 @@ function CategoriesContainer(props) {
         return <EmptyBox/>
     }
     
+    function invalidKeyPressEnsurer(e) {
+        const invalidChars = ['!', "@", ",",
+                            "\"", "#", "№",
+                            "$", "%", ":",
+                            ";", "^", ".",
+                            "*", "(", ")",
+                            "+", "=", "{",
+                            "}", "|", "\\",
+                            "&", "§", "±",
+                            "<", ">", "?"];
+        
+        if(invalidChars.some(a => a == e.key)) {
+            e.preventDefault();
+        }
+    }
+    
     const addNewCategoryHandler = function () {
         let icoIndex = 0;
         MySwal.fire({
             html: <form>
-                <TextInput id="category-name" type="text" placeholder="Название категории"/>
+                <TextInput id="category-name" type="text" placeholder="Название категории" onKeyPress={invalidKeyPressEnsurer}/>
                 <ImagesSlider items={props.availableIcons} onValueChanged={(a) => icoIndex = a}/>
             </form>,
             preConfirm() {
