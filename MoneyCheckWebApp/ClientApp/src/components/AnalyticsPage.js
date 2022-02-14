@@ -12,10 +12,10 @@ import {Box} from "../ui/Box";
 import "../assets/scss/pages/analytics.scss";
 import {Container} from "reactstrap";
 import {Button} from "../ui/Button";
-import AnimatedLogo from "../assets/images/animated/animated-logo.svg";
 import {NavLink, Redirect} from "react-router-dom";
 import {CookieHelper} from "../services/CookieHelper";
 import {PageLoader} from "../ui/PageLoader";
+import {AnimatedLogo} from "../ui/AnimatedLogo";
 
 export function AnalyticsPage() {
     const [splineDiagramData, setSplineDiagram] = useState(null);
@@ -39,7 +39,7 @@ export function AnalyticsPage() {
     return <Container>
         <div className="d-flex justify-content-between align-items-center mb-2 mt-2">
             <h1>Как я тратил деньги в этом году</h1>
-            <NavLink to="/home"><object width="75" type="image/svg+xml" data={AnimatedLogo}>Animated Logo</object></NavLink>
+            <NavLink to="/home"><AnimatedLogo/></NavLink>
         </div>
         <SplineDiagramContainer data={splineDiagramData}/>
         <div className="d-flex flex-row mt-2 justify-content-between align-items-center pie-and-export-block">

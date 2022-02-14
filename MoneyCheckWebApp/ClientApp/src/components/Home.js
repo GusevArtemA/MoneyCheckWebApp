@@ -17,9 +17,9 @@ import classNames from "classnames";
 import {AutoComplete} from "../ui/AutoComplete";
 import {ImagesSlider} from "../ui/ImagesSlider";
 import {TextInput} from "../ui/TextInput";
-import AnimatedLogo from "../assets/images/animated/animated-logo.svg";
 import {CookieHelper} from "../services/CookieHelper";
 import {PageLoader} from "../ui/PageLoader";
+import {AnimatedLogo} from "../ui/AnimatedLogo";
 
 const MySwal = withReactContent(Swal)
 
@@ -73,7 +73,7 @@ export function Home(props) {
 
     return <div className="max container">
         <Greeter username={userInfo.username}/>
-        <div className="main-wrapper d-flex flex-row justify-content-around max-height">
+        <div className="main-home-wrapper d-flex flex-row justify-content-around max-height">
             <div className='trans-debtors-wrapper d-flex flex-column align-items-center'>
                 <TransactionsHandler
                     transactions={transactions}
@@ -118,7 +118,7 @@ function Greeter(props) {
 
     return <div className="d-flex flex-row justify-content-between align-items-center mt-1">
         <h1 id="greeter">Добрый {time}, {props.username}</h1>
-        <NavLink to="/home"><object width="75" type="image/svg+xml" data={AnimatedLogo}>Animated Logo</object></NavLink>
+        <NavLink to="/home"><AnimatedLogo/></NavLink>
     </div>
 }
 
