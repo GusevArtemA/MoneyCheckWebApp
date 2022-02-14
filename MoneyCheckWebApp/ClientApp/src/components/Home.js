@@ -17,8 +17,9 @@ import classNames from "classnames";
 import {AutoComplete} from "../ui/AutoComplete";
 import {ImagesSlider} from "../ui/ImagesSlider";
 import {TextInput} from "../ui/TextInput";
-import AnimatedLogo from "../assets/images/animated/animated-logo.svg";
 import {CookieHelper} from "../services/CookieHelper";
+import {PageLoader} from "../ui/PageLoader";
+import {AnimatedLogo} from "../ui/AnimatedLogo";
 
 const MySwal = withReactContent(Swal)
 
@@ -67,14 +68,12 @@ export function Home(props) {
         balanceInfo === null ||
         availableCatIcons === null ||
         refreshing) {
-        return <div className="max d-flex justify-content-center align-items-center">
-            <Loader/>
-        </div>
+        return <PageLoader/>
     }
 
     return <div className="max container">
         <Greeter username={userInfo.username}/>
-        <div className="main-wrapper d-flex flex-row justify-content-around max-height">
+        <div className="main-home-wrapper d-flex flex-row justify-content-around max-height">
             <div className='trans-debtors-wrapper d-flex flex-column align-items-center'>
                 <TransactionsHandler
                     transactions={transactions}
@@ -119,7 +118,7 @@ function Greeter(props) {
 
     return <div className="d-flex flex-row justify-content-between align-items-center mt-1">
         <h1 id="greeter">Добрый {time}, {props.username}</h1>
-        <NavLink to="/home"><object width="75" type="image/svg+xml" data={AnimatedLogo}>Animated Logo</object></NavLink>
+        <NavLink to="/home"><AnimatedLogo/></NavLink>
     </div>
 }
 
@@ -405,7 +404,7 @@ function TransactionContainer(props) {
                         <IconButton
                             onClick={editTransaction}
                             className={classNames("can-hide", canBeEdit ? "shown" : "hidden")}
-                            icon={faPen}/>
+                            icon={faPen }/>
                         <IconButton
                             onClick={capacityChangerHandler}
                             className={classNames("can-hide", canBeEdit || props.capacityId === props.transaction.id ? "shown" : "hidden")}
@@ -424,7 +423,7 @@ function TransactionContainer(props) {
 function DateSpan(props) {
     let dateTime = new Date(props.date);
     
-    const [month, day, hours, minutes] = [dateTime.getMonth(), dateTime.getDay(), dateTime.getHours(), dateTime.getMinutes()];
+    const [month, day, hours, minutes] = [dateTime.getMonth(), dateTime.getDate(), dateTime.getHours(), dateTime.getMinutes()];
     
     let monthString;
     
@@ -646,7 +645,7 @@ function DebtContainer(props) {
 }
 
 function CategoriesHandler(props) {
-    return <div>
+    return <div className="max-width">
         <h1>Ваши собственные категории</h1>
         <CategoriesContainer needUpdate={props.needUpdate} availableIcons={props.availableIcons} categories={props.categories}/>
     </div>
@@ -657,11 +656,27 @@ function CategoriesContainer(props) {
         return <EmptyBox/>
     }
     
+    function invalidKeyPressEnsurer(e) {
+        const invalidChars = ['!', "@", ",",
+                            "\"", "#", "№",
+                            "$", "%", ":",
+                            ";", "^", ".",
+                            "*", "(", ")",
+                            "+", "=", "{",
+                            "}", "|", "\\",
+                            "&", "§", "±",
+                            "<", ">", "?"];
+        
+        if(invalidChars.some(a => a == e.key)) {
+            e.preventDefault();
+        }
+    }
+    
     const addNewCategoryHandler = function () {
         let icoIndex = 0;
         MySwal.fire({
             html: <form>
-                <TextInput id="category-name" type="text" placeholder="Название категории"/>
+                <TextInput id="category-name" type="text" placeholder="Название категории" onKeyPress={invalidKeyPressEnsurer}/>
                 <ImagesSlider items={props.availableIcons} onValueChanged={(a) => icoIndex = a}/>
             </form>,
             preConfirm() {

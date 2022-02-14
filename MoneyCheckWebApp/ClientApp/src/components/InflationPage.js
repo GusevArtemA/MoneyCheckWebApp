@@ -10,9 +10,9 @@ import {ChartComponent, Inject, Category,
 import {SeriesCollectionDirective, SeriesDirective} from "@syncfusion/ej2-react-charts/src/chart/series-directive";
 import {Box} from "../ui/Box";
 import {DataLabel, Tooltip} from "@syncfusion/ej2-react-charts";
-import AnimatedLogo from "../assets/images/animated/animated-logo.svg";
 import {NavLink, Redirect} from "react-router-dom";
 import {CookieHelper} from "../services/CookieHelper";
+import {AnimatedLogo} from "../ui/AnimatedLogo";
 
 export function InflationPage() {
     const [inflations, setInflations] = useState(null);
@@ -33,7 +33,7 @@ export function InflationPage() {
     return <Container className="max">
         <div className="d-flex flex-row justify-content-between align-items-center mt-1">
             <h1>Сколько это будет стоить?</h1>
-            <NavLink to="/home"><object width="75" type="image/svg+xml" data={AnimatedLogo}>Animated Logo</object></NavLink>
+            <NavLink to="/home"><AnimatedLogo/></NavLink>
         </div>
         <InflationForm/>
         <div>

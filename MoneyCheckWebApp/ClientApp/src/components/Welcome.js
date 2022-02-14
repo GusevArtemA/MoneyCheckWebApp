@@ -9,6 +9,7 @@ import {RegistrationForm} from "./RegistrationForm";
 import {ReactComponent as Logo} from "../assets/images/logo.svg";
 import {CookieHelper} from "../services/CookieHelper";
 import {Redirect} from "react-router-dom";
+import {AnimatedLogo} from "../ui/AnimatedLogo";
 
 export function Welcome(props) {
     const cookieHelper = new CookieHelper();
@@ -18,9 +19,9 @@ export function Welcome(props) {
     }
     
     return (
-        <div className="max">
+        <div className="max">            
             <div className="main-wrapper d-flex flex-row justify-content-around align-items-center">
-                <StatisticsBox/>
+                <AnimatedLogo width="300" className="logo"/>
                 <div className="forms-wrapper max-height d-flex align-items-center justify-content-center flex-column form-pre-wrapper">
                     <Box className="form-wrapper">
                         <LoginForm withLogo={false}/>
@@ -29,10 +30,7 @@ export function Welcome(props) {
                         <RegistrationForm/>
                     </Box>
                 </div>
-            </div>
-            <div className="logo-wrapper d-flex justify-content-center align-items-center">
-                <Logo id="logo"/>
-            </div>
+            </div>                
         </div>
     );
 }
@@ -44,33 +42,3 @@ function IndicatorWithValue(props) {
     </div>
 }
 
-function StatisticsBox() {
-    const [statistics, setStatistics] = useState(null);
-    
-    useEffect(() => {
-        const interval = setInterval(() => {
-            fetch('/stats/get', {
-                method: 'GET'
-            }).then(response => response.json()).then(json => setStatistics(json));
-        }, 2000);
-
-        return () => {
-           clearInterval(interval);
-       }
-    })
-    
-    let displayElement = statistics == null ?
-        <div className="m-5">
-            <Loader/>
-        </div> :
-        <Box className="d-flex flex-column statistics justify-content-center align-items-start pl-5">
-            <IndicatorWithValue indicator="Транзакций за сегодня" value={statistics.purchasesCountToday}/>
-            <IndicatorWithValue indicator="Последняя транзакция" value={statistics.lastTransaction}/>
-            <IndicatorWithValue indicator="Пользователей с нами" value={statistics.peopleWithUs}/>
-        </Box>;
-
-    return <div className="statistics-wrapper">
-        <h1>Статистика:</h1>
-        {displayElement}
-    </div>;
-}

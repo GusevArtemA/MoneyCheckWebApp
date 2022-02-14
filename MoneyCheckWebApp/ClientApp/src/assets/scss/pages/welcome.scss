@@ -38,7 +38,7 @@ html, body {
 .form-wrapper {
   padding: 20px;
   width: 500px;
-  height: 40%;
+  height: 300px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -62,18 +62,7 @@ form, .brand-text-input-pre-wrapper {
 
 @media screen and (max-width: 1300px) {
   .form-wrapper {
-    width: 300px;
-  }
-}
-
-@media screen and (max-width: 1100px) {
-  .statistics-indicator {
-    font-size: 32px !important;
-    line-height: 1em !important;
-  }
-  
-  .statistics-value {
-    font-size: 30px !important;
+    width: 500px;
   }
 }
 
@@ -83,20 +72,31 @@ form, .brand-text-input-pre-wrapper {
   }
   
   .forms-wrapper {
-    order: 0;
-    width: 95%;
-
-    .brand-text-input-pre-wrapper {
-      width: 100%;
-    }
+    order: -1;
   }
   
   .main-wrapper {
     flex-direction: column !important;
+    position: relative !important;
   }
   
-  .form-wrapper,
-  .statistics,{
-    width: 100% !important;
+  .logo {
+    width: 100px;  
+    margin-top: 20px;
   }
+}
+
+@media screen and (max-width: 520px) {
+  .form-wrapper {
+    width: 100%;
+  }
+}
+
+.main-wrapper {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }

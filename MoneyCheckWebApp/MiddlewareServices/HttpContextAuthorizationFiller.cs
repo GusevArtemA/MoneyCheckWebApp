@@ -1,6 +1,4 @@
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
 using MoneyCheckWebApp.Models;
 
 namespace MoneyCheckWebApp.MiddlewareServices
