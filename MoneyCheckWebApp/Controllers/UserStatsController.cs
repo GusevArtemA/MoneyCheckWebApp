@@ -110,6 +110,18 @@ namespace MoneyCheckWebApp.Controllers
                 }));
 
         [HttpGet]
+        [Route("get-categories-stats-day")]
+        public IActionResult GetCategoriesDataByDay() => 
+            Ok(this.ExtractUser().Purchases.Where(x => x.BoughtAt.Date == DateTime.Today)
+                .GroupBy(x => x.Category)
+                .Select(x => new CategoryDataType()
+                {
+                    Id = x.Key.Id,
+                    CategoryName = x.Key.CategoryName,
+                    CategoryAmount = x.Select(z => z.Amount).Sum()
+                }));
+        
+        [HttpGet]
         [Route("get-transactions")]
         public IActionResult GetTransactions(string filter)
         {

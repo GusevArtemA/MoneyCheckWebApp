@@ -417,3 +417,82 @@ button[class *= 'icon-button'] {
   justify-content: center;
   align-items: center;
 }
+
+.manage-account-wrapper {
+  width: 600px;
+  height: 100%;
+  position: fixed;
+  left: 0;
+  top: 0;
+  padding: 10px;
+  
+  .account-settings-wrapper {
+    transform: translateX(-600px);
+  }
+}
+
+.burger {
+  width: 70px;
+  height: 50px;
+  margin-bottom: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-direction: column;
+  cursor: pointer;
+  
+  div[class*='burger'] {
+    width: 100%;
+    height: 10px;
+    border-radius: 30px;
+    background: brand.$brand-purple;
+    transition: transform 0.3s, opacity 0.3s, background-color 0.3s;
+    transform-origin: left;
+  }
+  
+  .burger-1-opened {
+      transform: rotateZ(35.54deg);
+  }
+  
+  .burger-2-opened {
+      opacity: 0;
+  }
+  
+  .burger-3-opened {
+    transform: rotateZ(-35.54deg);
+  }
+}
+
+.fill-screen-account {
+  z-index: 100000;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  background: rgba(134, 134, 134, 0.22);
+  
+  .account-settings-wrapper {
+    transform: translateX(20px);
+  }
+}
+
+.account-settings-wrapper {
+  width: 500px;
+  transition: transform 0.3s ease-out;
+}
+
+.nav-bar {
+  flex-wrap: wrap;
+  
+  a {
+    margin: 0 5px 0 5px;
+    transition: transform 0.3s;
+    
+    &:hover {
+      transform: translateY(-5px);
+    }
+  }
+}
+
+.quit-but {
+  color: brand.$brand-red;
+  cursor: pointer;
+}

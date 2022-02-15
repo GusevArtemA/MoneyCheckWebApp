@@ -51,7 +51,7 @@ namespace MoneyCheckWebApp.Predications.InflationPredicating
         {
             InflationRates = await _inflationStatBerauProvider.ProvideInflationArrayAsync(),
             LearnRate = 0.01,
-            MaxEpochs = 10000
+            MaxEpochs = 9500
         };
     }
 }

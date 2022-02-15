@@ -5,13 +5,11 @@ import {ChartComponent, Inject, Category,
         AccumulationChartComponent, AccumulationSeriesCollectionDirective, AccumulationSeriesDirective,
         AccumulationLegend, PieSeries, AccumulationDataLabel} from "@syncfusion/ej2-react-charts";
 import {SeriesCollectionDirective, SeriesDirective} from "@syncfusion/ej2-react-charts/src/chart/series-directive";
-import {Loader} from "../ui/Loader";
 import {MCApi} from "../services/MCApi";
 import {Box} from "../ui/Box";
 
 import "../assets/scss/pages/analytics.scss";
 import {Container} from "reactstrap";
-import {Button} from "../ui/Button";
 import {NavLink, Redirect} from "react-router-dom";
 import {CookieHelper} from "../services/CookieHelper";
 import {PageLoader} from "../ui/PageLoader";
@@ -35,12 +33,12 @@ export function AnalyticsPage() {
     if(splineDiagramData == null || pieData == null) {
         return <PageLoader/>
     }
+
+    if(splineDiagramData.length === 0 || pieData.length === 0) {
+        return <SpendMoneyToGetStats/>
+    }
     
-    return <Container>
-        <div className="d-flex justify-content-between align-items-center mb-2 mt-2">
-            <h1>Как я тратил деньги в этом году</h1>
-            <NavLink to="/home"><AnimatedLogo/></NavLink>
-        </div>
+    return <div>
         <SplineDiagramContainer data={splineDiagramData}/>
         <div className="d-flex flex-row mt-2 justify-content-between align-items-center pie-and-export-block">
             <Box className="half-fill-x pie-chart-wrapper">
@@ -50,7 +48,7 @@ export function AnalyticsPage() {
                 <ExportAsCSVBlock/>
             </Box>
         </div>
-    </Container>
+    </div>
 }
 
 function SplineDiagramContainer(props) {
@@ -89,4 +87,10 @@ function PieDiagram(props) {
             }}/>
         </AccumulationSeriesCollectionDirective>
     </AccumulationChartComponent>
+}
+
+function SpendMoneyToGetStats() {
+    return <div className="position-absolute d-flex justify-content-center align-items-center max text-center">
+        <span className="colored-in-brand-purple font-weight-bold spend-money-to-get-stats">Совершайте покупки, чтобы получать статистику 💸</span>
+    </div>
 }
