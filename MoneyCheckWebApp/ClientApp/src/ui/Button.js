@@ -2,7 +2,7 @@ import React from "react";
 
 export class Button extends React.Component {
     render() {
-        return <button className={`brand-button ${this.props.className}`}>{this.props.children}</button>
+        return <button {...this.props} className={`brand-button ${this.props.className}`}>{this.props.children}</button>
     }
 }
 

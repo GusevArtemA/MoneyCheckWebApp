@@ -50,6 +50,10 @@ export class MCApi {
         return await this._fetchJson('/api/web/get-inflation-for-year');
     }
     
+    async getDayStats() {
+        return await this._fetchJson('/api/user-stats/get-categories-stats-day');    
+    }
+    
     /**
      * Fetches json with following url
      * @private

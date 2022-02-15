@@ -137,7 +137,7 @@ function BalanceInfo(props) {
         </div>
         <div className="d-flex flex-column">
             <span className="prop">Прогноз на конец месяца:</span>
-            <span id="future-balance" className="prop-value">{props.balanceInfo.futureCash} руб</span>
+            <span id="future-balance" className="prop-value">{props.balanceInfo.futureCash >= 0 ? props.balanceInfo.futureCash + " руб" : "Нет покупок"}</span>
         </div>
         <div className="d-flex flex-column">
             <span className="prop">Сегодня потрачено:</span>

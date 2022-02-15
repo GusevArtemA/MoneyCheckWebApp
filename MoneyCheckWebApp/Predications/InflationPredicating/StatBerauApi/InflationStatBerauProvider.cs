@@ -44,7 +44,7 @@ namespace MoneyCheckWebApp.Predications.InflationPredicating.StatBerauApi
             
             await File.WriteAllTextAsync(statBerauCachePath, JsonSerializer.Serialize(doubleArrayed));
 
-            return doubleArrayed;
+            return doubleArrayed.Reverse().ToArray();
         }
     }
 }
