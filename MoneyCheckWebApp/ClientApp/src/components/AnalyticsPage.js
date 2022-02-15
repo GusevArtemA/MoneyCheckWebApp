@@ -38,11 +38,7 @@ export function AnalyticsPage() {
         return <SpendMoneyToGetStats/>
     }
     
-    return <Container>
-        <div className="d-flex justify-content-between align-items-center mb-2 mt-2">
-            <h1>Как я тратил деньги в этом году</h1>
-            <NavLink to="/home"><AnimatedLogo/></NavLink>
-        </div>
+    return <div>
         <SplineDiagramContainer data={splineDiagramData}/>
         <div className="d-flex flex-row mt-2 justify-content-between align-items-center pie-and-export-block">
             <Box className="half-fill-x pie-chart-wrapper">
@@ -52,7 +48,7 @@ export function AnalyticsPage() {
                 <ExportAsCSVBlock/>
             </Box>
         </div>
-    </Container>
+    </div>
 }
 
 function SplineDiagramContainer(props) {

@@ -31,11 +31,7 @@ export function InflationPage() {
         return <PageLoader/>;
     }
     
-    return <Container className="max">
-        <div className="d-flex flex-row justify-content-between align-items-center mt-1">
-            <h1>Сколько это будет стоить?</h1>
-            <NavLink to="/home"><AnimatedLogo/></NavLink>
-        </div>
+    return <div className="max">
         <InflationForm/>
         <div>
             <h1>Прогноз инфляции с помощью нейросети <span className="colored-in-brand-purple money-check-infl-label">Money Check</span></h1>
@@ -43,7 +39,7 @@ export function InflationPage() {
                 <SplineDiagramContainer data={inflations}/>
             </Box>
         </div>
-    </Container>    
+    </div>    
 }
 
 function InflationForm() {

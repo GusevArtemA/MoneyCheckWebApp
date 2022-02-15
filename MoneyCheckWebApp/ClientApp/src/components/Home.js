@@ -71,8 +71,7 @@ export function Home(props) {
         return <PageLoader/>
     }
 
-    return <div className="max container">
-        <Greeter username={userInfo.username}/>
+    return <div className="max">
         <div className="main-home-wrapper d-flex flex-row justify-content-around max-height">
             <div className='trans-debtors-wrapper d-flex flex-column align-items-center'>
                 <TransactionsHandler

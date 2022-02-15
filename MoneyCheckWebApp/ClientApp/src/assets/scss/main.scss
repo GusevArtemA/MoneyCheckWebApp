@@ -478,3 +478,21 @@ button[class *= 'icon-button'] {
   width: 500px;
   transition: transform 0.3s ease-out;
 }
+
+.nav-bar {
+  flex-wrap: wrap;
+  
+  a {
+    margin: 0 5px 0 5px;
+    transition: transform 0.3s;
+    
+    &:hover {
+      transform: translateY(-5px);
+    }
+  }
+}
+
+.quit-but {
+  color: brand.$brand-red;
+  cursor: pointer;
+}

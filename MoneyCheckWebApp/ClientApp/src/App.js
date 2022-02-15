@@ -7,7 +7,7 @@ import {Home} from "./components/Home";
 import "./App.css";
 import {AnalyticsPage} from "./components/AnalyticsPage";
 import {InflationPage} from "./components/InflationPage";
-import {ManageAccountComponent} from "./components/ManageAccountComponent";
+import {MainHeader} from "./components/MainHeader";
 
 export default class App extends Component {
   static displayName = App.name;
@@ -15,7 +15,7 @@ export default class App extends Component {
   render () {
     return (
         <Layout>
-            <Route path={['/home', '/analytics', '/inflation']} component={ManageAccountComponent}/>
+            <Route path={['/home', '/analytics', '/inflation']} component={MainHeader}/>
             <Switch>
                 <Route exact path='/login' component={Login} />
                 <Route exact path='/welcome' component={Welcome} />
