@@ -26,7 +26,7 @@ namespace MoneyCheckWebApp.Predications.InflationPredicating.StatBerauApi
 
                     if (deserializedArray != null)
                     {
-                        return deserializedArray;
+                        return deserializedArray.Reverse().ToArray();
                     }
                 }
             }
