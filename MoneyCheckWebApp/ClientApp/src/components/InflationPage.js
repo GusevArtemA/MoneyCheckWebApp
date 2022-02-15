@@ -13,6 +13,7 @@ import {DataLabel, Tooltip} from "@syncfusion/ej2-react-charts";
 import {NavLink, Redirect} from "react-router-dom";
 import {CookieHelper} from "../services/CookieHelper";
 import {AnimatedLogo} from "../ui/AnimatedLogo";
+import {PageLoader} from "../ui/PageLoader";
 
 export function InflationPage() {
     const [inflations, setInflations] = useState(null);
@@ -27,7 +28,7 @@ export function InflationPage() {
     }
     
     if(inflations === null) {
-        return <Loader/>;
+        return <PageLoader/>;
     }
     
     return <Container className="max">

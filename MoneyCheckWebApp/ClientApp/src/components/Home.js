@@ -336,7 +336,7 @@ function TransactionContainer(props) {
             html: <div>
                 <input className="swal2-input" type="number" id="change-amount" placeholder={`${props.transaction.amount} руб`}/>
             </div>,
-            preConfirm(inputValue) {
+            preConfirm() {
                 Swal.showLoading();
                 
                 let apiObj = {
@@ -364,7 +364,7 @@ function TransactionContainer(props) {
                         body: JSON.stringify(apiObj),
                         headers: {
                             "Content-Type": "application/json"
-                        }
+                            }
                     }).then(result => {
                         if(result.status === 200) {
                             fireEdited().then(() => props.onItemDelete());

@@ -421,13 +421,13 @@ button[class *= 'icon-button'] {
 .manage-account-wrapper {
   width: 600px;
   height: 100%;
-  position: absolute;
+  position: fixed;
   left: 0;
   top: 0;
   padding: 10px;
   
   .account-settings-wrapper {
-    transform: translateX(-500px);
+    transform: translateX(-600px);
   }
 }
 
@@ -466,6 +466,7 @@ button[class *= 'icon-button'] {
 .fill-screen-account {
   z-index: 100000;
   backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   background: rgba(134, 134, 134, 0.22);
   
   .account-settings-wrapper {

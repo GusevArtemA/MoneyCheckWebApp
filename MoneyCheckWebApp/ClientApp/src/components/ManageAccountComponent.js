@@ -46,7 +46,7 @@ function AccountSettings({isOpen, ...props}) {
     }
     
     if(userInfo == null || dayStats == null) {
-        return <div className="max d-flex justify-content-center align-items-center">
+        return <div className="max d-flex justify-content-center align-items-center account-settings-wrapper">
             <Loader/>
         </div>
     }
