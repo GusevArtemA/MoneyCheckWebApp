@@ -139,6 +139,10 @@ function BalanceInfo(props) {
             <span id="future-balance" className="prop-value">{props.balanceInfo.futureCash >= 0 ? props.balanceInfo.futureCash + " руб" : "Нет покупок"}</span>
         </div>
         <div className="d-flex flex-column">
+            <span className="prop">Прогноз баланса с учетом инфляции:</span>
+            <span id="future-balance-inflation" className="prop-value">{props.balanceInfo.inflationCash + " руб"}</span>
+        </div>
+        <div className="d-flex flex-column">
             <span className="prop">Сегодня потрачено:</span>
             <span id="today-spent" className="prop-value">{props.balanceInfo.todaySpent} руб</span>
             <NavLink to='/analytics' id="want-to-see-year-router">Хочу посмотреть, как я тратил деньги этот год</NavLink>

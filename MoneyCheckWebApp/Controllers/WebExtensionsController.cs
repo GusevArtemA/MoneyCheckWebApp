@@ -22,7 +22,8 @@ namespace MoneyCheckWebApp.Controllers
         private readonly MoneyCheckDbContext _context;
         private readonly InflationPredicationProcessor _inflationPredicationProcessor;
 
-        public WebExtensionsController(MoneyCheckDbContext context, InflationPredicationProcessor inflationPredicationProcessor)
+        public WebExtensionsController(MoneyCheckDbContext context,
+            InflationPredicationProcessor inflationPredicationProcessor)
         {
             _context = context;
             _inflationPredicationProcessor = inflationPredicationProcessor;
@@ -33,7 +34,7 @@ namespace MoneyCheckWebApp.Controllers
         /// </summary>
         [HttpGet]
         [Route("user-balance-stats")]
-        public IActionResult GetUserBalanceStats()
+        public async Task<IActionResult> GetUserBalanceStats()
         {
             var invoker = this.ExtractUser();
 
@@ -42,13 +43,16 @@ namespace MoneyCheckWebApp.Controllers
                 .Select(x => x.Amount)
                 .Sum();
 
-            var futureSpend = invoker.PredicateToEndOfMonth();;
+            var futureSpend = invoker.PredicateToEndOfMonth();
+            var inflationRate = await _inflationPredicationProcessor.PredicateAsync(1);
+            var inlfationCost = Math.Round((double)invoker.Balance - (double)invoker.Balance * (inflationRate - 1));
 
             return Ok(new UserStatsBalanceType()
             {
                 Balance = invoker.Balance,
                 FutureCash = futureSpend,
-                TodaySpent = todaySpent
+                TodaySpent = todaySpent,
+                InflationCash = inlfationCost
             });
         }
 
