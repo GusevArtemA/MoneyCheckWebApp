@@ -13,6 +13,10 @@ a:hover {
   color: #FFF;
 }
 
+*[class *= 'fa-'] {
+  color: brand.$brand-purple;
+}
+
 .box {
   position: relative;
   background: brand.$sub-light-background;
