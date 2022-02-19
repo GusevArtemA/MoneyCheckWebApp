@@ -57,25 +57,27 @@ function QuitButton() {
         Swal.fire({
             icon: 'question',
             title: "Вы уверены, что хотите выйти?"
-        }).then(() => {
-            setLoading(true);
-            fetch('/auth/api/logout?token=' + cookieHelper.getCookie('cmAuthToken'), {
-                method: 'POST'
-            }).then(res => {
-                if(res.status === 200) {
-                    cookieHelper.deleteAllCookies();
-                    setRedirect(true);
-                }  else {
-                    setLoading(false);
-                    Swal.fire({
-                        title: 'Не получилось выйти...',
-                        text: 'Попробуйте позже',
-                        showConfirmButton: false,
-                        timer: 1000,
-                        icon: 'error'
-                    });
-                }
-            });
+        }).then((res) => {
+            if(res.isConfirmed) {
+                setLoading(true);
+                fetch('/auth/api/logout?token=' + cookieHelper.getCookie('cmAuthToken'), {
+                    method: 'POST'
+                }).then(res => {
+                    if(res.status === 200) {
+                        cookieHelper.deleteAllCookies();
+                        setRedirect(true);
+                    }  else {
+                        setLoading(false);
+                        Swal.fire({
+                            title: 'Не получилось выйти...',
+                            text: 'Попробуйте позже',
+                            showConfirmButton: false,
+                            timer: 1000,
+                            icon: 'error'
+                        });
+                    }
+                });    
+            }
         })
     }
     
