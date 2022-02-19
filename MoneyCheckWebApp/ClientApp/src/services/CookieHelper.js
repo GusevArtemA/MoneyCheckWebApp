@@ -19,7 +19,7 @@ export class CookieHelper {
             const cookie = cookies[i];
             const eqPos = cookie.indexOf("=");
             const name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
-            document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT";
+            document.cookie = name + "=;Max-Age=0; path = /; domain=" + window.location.hostname
         }
     }
 }
