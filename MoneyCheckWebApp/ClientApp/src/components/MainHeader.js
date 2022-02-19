@@ -58,6 +58,7 @@ function QuitButton() {
             title: "Вы уверены, что хотите выйти?",
             confirmButtonText: 'Да',
             showCancelButton: true,
+            confirmButtonColor: '#DE3842',
             cancelButtonText: "Нет"
         }).then((res) => {
             if(res.isConfirmed) {
