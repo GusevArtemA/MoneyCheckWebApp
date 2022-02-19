@@ -4,7 +4,16 @@ import {Link, Redirect} from "react-router-dom";
 import {CookieHelper} from "../services/CookieHelper";
 import classNames from "classnames";
 import {IconButton} from "../ui/IconButton";
-import {faChartPie, faCoins, faDoorOpen, faHome, faPen} from "@fortawesome/free-solid-svg-icons";
+import {
+    faChartPie,
+    faCloudSun,
+    faCoins,
+    faDoorOpen,
+    faHome,
+    faMoon,
+    faPen,
+    faSun
+} from "@fortawesome/free-solid-svg-icons";
 import {AnimatedLogo} from "../ui/AnimatedLogo";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import Swal from "sweetalert2";
@@ -91,14 +100,19 @@ function Greeter() {
     let hours = now.getHours();
     
     if(hours >= 0 && hours <= 3 || hours >= 21 && hours <= 23) {
-        time = 'Доброй ночи 🌛';
+        return <span className="font-weight-bold text-center">
+            Доброй ночи
+            <FontAwesomeIcon className="ml-1" icon={faMoon}/>
+        </span>
     } else if(hours < 21 && hours >= 17) {
-        time = 'Добрый вечер 🌄';
+        return <span className="font-weight-bold text-center">
+            Добрый вечер
+            <FontAwesomeIcon className="ml-1" icon={faCloudSun} />
+        </span>
     } else {
-        time = 'Добрый день ☀';
+        return <span className="font-weight-bold text-center">
+            Добрый день
+            <FontAwesomeIcon className="ml-1" icon={faSun} />
+        </span>
     }
-    
-    return <span className="font-weight-bold text-center">
-        {time}
-    </span>
 }
