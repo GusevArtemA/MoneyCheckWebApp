@@ -7,11 +7,9 @@ export class CookieHelper {
     }
 
     canAuthByCookie() {
-        if(this.getCookie('cmAuthToken') === undefined) {
-            return false;
-        }
-
-        return true;
+        let cookie = this.getCookie('cmAuthToken');
+        
+        return !(cookie === undefined || cookie === null || cookie === '');
     }
     
     deleteAllCookies() {
