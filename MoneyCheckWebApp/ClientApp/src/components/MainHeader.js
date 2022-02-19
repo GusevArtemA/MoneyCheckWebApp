@@ -38,16 +38,6 @@ function NavPanel() {
     </div>
 }
 
-function NameChanger({name, ...props}) {
-    const [editable, setEdit] = useState(false);
-    
-    return <div onMouseEnter={() => setEdit(true)}
-                onMouseLeave={() => setEdit(false)}>
-        <span>{name}</span>
-        <IconButton icon={faPen} className={classNames('can-hide', editable ? 'shown' : 'hidden')}/>
-    </div>
-}
-
 function QuitButton() {
     const [logout, setLogout] = useState(false);
     const [redirect, setRedirect] = useState(false);
@@ -65,7 +55,10 @@ function QuitButton() {
     if(logout) {
         Swal.fire({
             icon: 'question',
-            title: "Вы уверены, что хотите выйти?"
+            title: "Вы уверены, что хотите выйти?",
+            confirmButtonText: 'Да',
+            showCancelButton: true,
+            cancelButtonText: "Нет"
         }).then((res) => {
             if(res.isConfirmed) {
                 setLoading(true);
@@ -73,10 +66,9 @@ function QuitButton() {
                     method: 'POST'
                 }).then(res => {
                     if(res.status === 200) {
-                        cookieHelper.deleteAllCookies();
                         setRedirect(true);
+                        cookieHelper.deleteAllCookies();
                     }  else {
-                        setLoading(false);
                         Swal.fire({
                             title: 'Не получилось выйти...',
                             text: 'Попробуйте позже',
@@ -85,8 +77,9 @@ function QuitButton() {
                             icon: 'error'
                         });
                     }
-                });    
+                });
             }
+            setLogout(false);
         })
     }
     
