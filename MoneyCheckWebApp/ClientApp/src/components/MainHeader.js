@@ -1,4 +1,4 @@
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import React from "react";
 import {Link, Redirect} from "react-router-dom";
 import {CookieHelper} from "../services/CookieHelper";
@@ -18,8 +18,33 @@ import {AnimatedLogo} from "../ui/AnimatedLogo";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import Swal from "sweetalert2";
 import {PageLoader} from "../ui/PageLoader";
+import {MCApi} from "../services/MCApi";
 
 export function MainHeader() {
+    const [authGrant, setGrant] = useState('LOADING_GRANT');
+    const cookieHelper = new CookieHelper();
+    
+    useEffect(() => {
+        cookieHelper.checkIfCookieCanUseForAuth().then(res => {
+            if(res) {
+                setGrant("GRANTED");
+            } else {
+                setGrant("GRANT_FAILED");
+            }
+        })
+    }, []);
+    
+    if(!cookieHelper.canAuthByCookie()) {
+        return <Redirect to="/welcome"/>
+    }
+    
+    if(authGrant === 'LOADING_GRANT') {
+        return <PageLoader/>
+    } else if(authGrant === 'GRANT_FAILED') {
+        cookieHelper.deleteAllCookies();
+        return <Redirect to="/welcome"/>
+    }
+    
     return <div className="d-flex flex-row justify-content-between align-items-center mt-2">
         <div className="d-flex flex-row align-items-center">
             <QuitButton/>

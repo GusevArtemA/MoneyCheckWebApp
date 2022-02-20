@@ -11,13 +11,6 @@ namespace MoneyCheckWebApp.Services
 {
     public class CookieService
     {
-        private readonly MoneyCheckDbContext _context;
-
-        public CookieService(MoneyCheckDbContext context)
-        {
-            _context = context;
-        }
-
         public void GenerateAuthCookies(HttpRequest request, HttpResponse response,
             UserAuthToken token, int cookieLifetime)
         {

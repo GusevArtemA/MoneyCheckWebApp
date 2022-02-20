@@ -54,6 +54,14 @@ export class MCApi {
         return await this._fetchJson('/api/user-stats/get-categories-stats-day');    
     }
     
+    async isTokenActive(token) {
+        let res = await fetch('/api/token-ensurer/ensure', {
+            method: 'GET'
+        });
+        
+        return res.ok;
+    }
+    
     /**
      * Fetches json with following url
      * @private

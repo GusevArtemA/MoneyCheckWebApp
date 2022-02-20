@@ -1,3 +1,5 @@
+import {MCApi} from "./MCApi";
+
 export class CookieHelper {
     getCookie(cookieName) {
         let matches = document.cookie.match(new RegExp(
@@ -10,6 +12,12 @@ export class CookieHelper {
         let cookie = this.getCookie('cmAuthToken');
         
         return !(cookie === undefined || cookie === null || cookie === '');
+    }
+    
+    async checkIfCookieCanUseForAuth() {
+        const api = new MCApi();
+        
+        return await api.isTokenActive(this.getCookie("cmAuthToken"));
     }
     
     deleteAllCookies() {

@@ -9,11 +9,9 @@ import {MCApi} from "../services/MCApi";
 import {Box} from "../ui/Box";
 
 import "../assets/scss/pages/analytics.scss";
-import {Container} from "reactstrap";
-import {NavLink, Redirect} from "react-router-dom";
+import {Redirect} from "react-router-dom";
 import {CookieHelper} from "../services/CookieHelper";
 import {PageLoader} from "../ui/PageLoader";
-import {AnimatedLogo} from "../ui/AnimatedLogo";
 
 export function AnalyticsPage() {
     const [splineDiagramData, setSplineDiagram] = useState(null);
@@ -26,9 +24,6 @@ export function AnalyticsPage() {
         api.getCategoriesData().then(data => setPieData(data));
     }, []);
 
-    if(!new CookieHelper().canAuthByCookie()) {
-        return <Redirect to="/welcome"/>
-    }
     
     if(splineDiagramData == null || pieData == null) {
         return <PageLoader/>

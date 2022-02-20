@@ -56,10 +56,6 @@ export function Home(props) {
             setCatIcons(data));
         return () => {};
     }, []);
-
-    if(!new CookieHelper().canAuthByCookie()) {
-        return <Redirect to="/welcome "/>
-    }
     
     if(userInfo === null ||
         categories === null ||
@@ -655,26 +651,6 @@ function CategoriesHandler(props) {
 }
 
 function CategoriesContainer(props) {
-    if(props.categories.length === 0) {
-        return <EmptyBox/>
-    }
-    
-    function invalidKeyPressEnsurer(e) {
-        const invalidChars = ['!', "@", ",",
-                            "\"", "#", "№",
-                            "$", "%", ":",
-                            ";", "^", ".",
-                            "*", "(", ")",
-                            "+", "=", "{",
-                            "}", "|", "\\",
-                            "&", "§", "±",
-                            "<", ">", "?"];
-        
-        if(invalidChars.some(a => a == e.key)) {
-            e.preventDefault();
-        }
-    }
-    
     const addNewCategoryHandler = function () {
         let icoIndex = 0;
         MySwal.fire({
@@ -685,12 +661,12 @@ function CategoriesContainer(props) {
             preConfirm() {
                 Swal.showLoading();
                 let catName = document.getElementById("category-name").value;
-                
+
                 if(catName === '') {
                     Swal.showValidationMessage("Название категории обязательно");
                     return;
                 }
-                
+
                 fetch('/api/categories/add-category', {
                     method: "POST",
                     headers: {
@@ -710,6 +686,27 @@ function CategoriesContainer(props) {
                 });
             }
         });
+    }
+    
+    if(props.categories.length === 0) {
+        return <EmptyBox rightButton={faPlus}
+                         onRightButtonClick={addNewCategoryHandler}/>
+    }
+    
+    function invalidKeyPressEnsurer(e) {
+        const invalidChars = ['!', "@", ",",
+                            "\"", "#", "№",
+                            "$", "%", ":",
+                            ";", "^", ".",
+                            "*", "(", ")",
+                            "+", "=", "{",
+                            "}", "|", "\\",
+                            "&", "§", "±",
+                            "<", ">", "?"];
+        
+        if(invalidChars.some(a => a == e.key)) {
+            e.preventDefault();
+        }
     }
     
     return <Box className="box max-width d-flex flex-column transactions-container list-container"
