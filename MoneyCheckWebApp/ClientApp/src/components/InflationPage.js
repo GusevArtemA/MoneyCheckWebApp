@@ -4,15 +4,11 @@ import {Container} from "reactstrap";
 import {Loader} from "../ui/Loader";
 import {MCApi} from "../services/MCApi";
 import "../assets/scss/pages/inflation.scss";
-import LogoSvg from "../assets/images/logo.svg";
 import {ChartComponent, Inject, Category,
     Legend, SplineSeries, ColumnSeries,} from "@syncfusion/ej2-react-charts";
 import {SeriesCollectionDirective, SeriesDirective} from "@syncfusion/ej2-react-charts/src/chart/series-directive";
 import {Box} from "../ui/Box";
 import {DataLabel, Tooltip} from "@syncfusion/ej2-react-charts";
-import {NavLink, Redirect} from "react-router-dom";
-import {CookieHelper} from "../services/CookieHelper";
-import {AnimatedLogo} from "../ui/AnimatedLogo";
 import {PageLoader} from "../ui/PageLoader";
 
 export function InflationPage() {
@@ -22,10 +18,6 @@ export function InflationPage() {
     useEffect(() => {
         api.getInflationForYear().then(data => setInflations(data));
     }, []);
-    
-    if(!new CookieHelper().canAuthByCookie()) {
-        return <Redirect to="/welcome"/>
-    }
     
     if(inflations === null) {
         return <PageLoader/>;

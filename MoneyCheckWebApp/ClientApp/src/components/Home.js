@@ -56,10 +56,6 @@ export function Home(props) {
             setCatIcons(data));
         return () => {};
     }, []);
-
-    if(!new CookieHelper().canAuthByCookie()) {
-        return <Redirect to="/welcome "/>
-    }
     
     if(userInfo === null ||
         categories === null ||
