@@ -130,7 +130,7 @@ namespace MoneyCheckWebApp.Controllers
         public IActionResult GetAllDefaultLogos() => Ok(_context.DefaultLogosForCategories.Select(x => new CategoryLogo()
         {
             Id = x.Id,
-            Url = "/api/media/get-category-media-logo?categoryId=" + x.Id
+            Url = "/api/media/get-logo?id=" + x.Id
         }));
     }
 }
