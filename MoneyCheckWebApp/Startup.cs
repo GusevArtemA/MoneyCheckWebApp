@@ -102,9 +102,8 @@ namespace MoneyCheckWebApp
 
             app.UseRouting();
 
-            app.UseCookieAuthorizationMiddleware(); //ПО промежуточного слоя по Cookie
-            app.UseTokenAuthorizationMiddleware(); //ПО промежуточного слоя по токену
-            
+            app.UseAuthMidlleware();
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(

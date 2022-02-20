@@ -43,7 +43,7 @@ namespace MoneyCheckWebApp.Controllers
                 .Select(x => x.Amount)
                 .Sum();
 
-            var futureSpend = invoker.PredicateToEndOfMonth();
+            var futureSpend = /*invoker.PredicateToEndOfMonth();*/0;
             var inflationRate = await _inflationPredicationProcessor.PredicateAsync(1);
             var inlfationCost = Math.Round((double)invoker.Balance - (double)invoker.Balance * (inflationRate - 1));
 
