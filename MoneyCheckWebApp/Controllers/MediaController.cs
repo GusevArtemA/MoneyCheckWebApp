@@ -60,6 +60,23 @@ namespace MoneyCheckWebApp.Controllers
             await Response.WriteAsync(logo.Svg);
         }
 
+        [HttpGet("get-logo")]
+        public async Task GetLogo(long id)
+        {
+            var logo = await _context.DefaultLogosForCategories.FirstOrDefaultAsync(x => x.Id == id);
+
+            if (logo == null)
+            {
+                Response.StatusCode = 400;
+                await Response.WriteAsync(Statuses.CategoryLogoFailedStatus);
+                return;
+            }
+
+            Response.ContentType = "image/svg+xml";
+
+            await Response.WriteAsync(logo.Svg);
+        }
+        
         /// <summary>
         /// Получает картинку верифицированной компании
         /// </summary>
@@ -80,5 +97,7 @@ namespace MoneyCheckWebApp.Controllers
             Response.ContentType = "image/svg+xml";
             await Response.WriteAsync(company.LogoSvg);
         }
+        
+        
     }
 }
