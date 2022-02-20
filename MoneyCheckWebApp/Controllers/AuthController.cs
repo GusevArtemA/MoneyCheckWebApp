@@ -115,10 +115,12 @@ namespace MoneyCheckWebApp.Controllers
                 return BadRequest(Statuses.UserAlreadyCreatedStatus);
             }
             
-            using var md5 = new Md5HashHelper();
+            var md5 = new Md5HashHelper();
             var password = logUp.Password;
 
             var encoded = md5.Compute(password);
+
+            md5.Dispose();
 
             var user = new User()
             {
